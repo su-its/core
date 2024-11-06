@@ -1,0 +1,36 @@
+# ソースファイル（コンパイル前）
+src/
+
+# 開発用設定ファイル
+biome.json
+.eslintrc*
+.prettierrc*
+.editorconfig
+tsconfig.json
+jest.config.js
+
+# ドキュメント（必要に応じて含める場合は除外しない）
+# docs/
+
+# git関連
+.git/
+.gitignore
+.github/
+
+# 環境変数
+.env*
+
+# その他
+node_modules/
+coverage/
+*.log
+*.tgz
+
+# 開発用スクリプト
+scripts/
+tests/
+
+# IDE設定
+.vscode/
+.idea/
+*.iml
