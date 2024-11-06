@@ -11,11 +11,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "prisma"
-  ],
+  "files": ["dist", "prisma"],
   "scripts": {
+    "postinstall": "prisma generate --schema=node_modules/@shizuoka-its/core/prisma/schema.prisma",
     "build": "tsc",
     "prepare": "npm run build",
     "prebuild": "rimraf dist",
