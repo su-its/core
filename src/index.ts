@@ -1,10 +1,30 @@
-import { type Prisma, PrismaClient } from "@prisma/client";
+import {
+  type DiscordAccount,
+  type Event,
+  type Exhibit,
+  type Member,
+  type MemberEvent,
+  type MemberExhibit,
+  type Prisma,
+  PrismaClient,
+} from "@prisma/client";
+
 import { createRepositories } from "./repositories";
 import { createServices } from "./services";
 
 // 基本機能のエクスポート
 export * from "./repositories";
 export * from "./services";
+
+// Prismaドメインモデルのエクスポート
+export type {
+  Member,
+  Event,
+  Exhibit,
+  DiscordAccount,
+  MemberEvent,
+  MemberExhibit,
+};
 
 // クライアント関連の型定義
 type ClientOptions = {
