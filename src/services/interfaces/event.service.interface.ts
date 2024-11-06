@@ -13,6 +13,7 @@ export interface IEventService
   findUpcoming(limit?: number): Promise<Event[]>;
   findWithMembers(id: string): Promise<Event | null>;
   findWithExhibits(id: string): Promise<Event | null>;
+  findByName(name: string): Promise<Event[]>;
   registerMember(eventId: string, memberId: string): Promise<void>;
   unregisterMember(eventId: string, memberId: string): Promise<void>;
 }

@@ -76,6 +76,16 @@ export class EventService
     return event;
   }
 
+  async findByName(name: string): Promise<Event[]> {
+    return await this.repository.findMany({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+    });
+  }
+
   async registerMember(eventId: string, memberId: string): Promise<void> {
     // イベントの存在確認
     const event = await this.repository.findById(eventId);
