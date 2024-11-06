@@ -9,8 +9,6 @@ biome.json
 tsconfig.json
 jest.config.js
 
-# ドキュメント（必要に応じて含める場合は除外しない）
-# docs/
 
 # git関連
 .git/
