@@ -5,41 +5,51 @@ ITSで使用する共通のデータベースアクセス層とビジネスロ�
 ## インストール
 
 ```bash
-npm install @su-its/core
+npm install @shizuoka-its/core
 ```
 
 ## 使い方
-
 ```typescript
 import { createClient } from '@su-its/core'
 
 async function example() {
-  const client = createClient()
-  const { services } = client
-
-  // メンバーの作成
-  const member = await services.member.create({
-    name: "山田太郎",
-    studentId: "20240001",
-    departments: ["情報工学科"],
-    email: "yamada@example.com"
+  // クライアントの作成（オプションあり）
+  const client = createClient({
+    prismaOptions: {
+      log: ['query', 'error']
+    }
   })
 
-  // Discordアカウントの紐付け
-  await services.discordAccount.create({
-    id: "discord_user_id", // Discord IDをそのまま使用
-    nickName: "Yamada Taro",
-    memberId: member.id
-  })
+  try {
+    const { services } = client
 
-  // イベントの作成
-  const event = await services.event.create({
-    name: "プログラミング勉強会",
-    date: new Date("2024-12-01")
-  })
+    // メンバーの作成
+    const member = await services.member.create({
+      name: "山田太郎",
+      studentId: "20240001",
+      departments: ["情報工学科"],
+      email: "yamada@example.com"
+    })
 
-  // イベントへの参加登録
-  await services.event.registerMember(event.id, member.id)
+    // Discordアカウントの紐付け
+    await services.discordAccount.create({
+      id: "discord_user_id", // Discord IDをそのまま使用
+      nickName: "Yamada Taro",
+      memberId: member.id
+    })
+
+    // イベントの作成
+    const event = await services.event.create({
+      name: "プログラミング勉強会",
+      date: new Date("2024-12-01")
+    })
+
+    // イベントへの参加登録
+    await services.event.registerMember(event.id, member.id)
+  } finally {
+    // 必ずクリーンアップ
+    await client.disconnect()
+  }
 }
 ```
 
@@ -107,4 +117,4 @@ npx prisma migrate dev
 
 ## コントリビューター
 
-- [@KinjiKawaguchi]
+- @KinjiKawaguchi
