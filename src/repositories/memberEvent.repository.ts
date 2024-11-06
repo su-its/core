@@ -1,4 +1,4 @@
-import type { MemberEvent, PrismaClient, Prisma } from "@prisma/client";
+import type { MemberEvent, Prisma, PrismaClient } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
 import type { IMemberEventRepository } from "./interfaces/memberEvent.repository.interface";
 

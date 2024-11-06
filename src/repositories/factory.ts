@@ -1,8 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
-import { MemberRepository } from "./member.repository";
 import { DiscordAccountRepository } from "./discordAccount.repository";
 import { EventRepository } from "./event.repository";
 import { ExhibitRepository } from "./exhibit.repository";
+import { MemberRepository } from "./member.repository";
 import { MemberEventRepository } from "./memberEvent.repository";
 import { MemberExhibitRepository } from "./memberExhibit.repository";
 
