@@ -26,6 +26,7 @@ model Member {
 
 model DiscordAccount {
   id        String   @id @default(uuid())
+  discordId String   @map("discord_id")
   nickName  String   @map("nick_name")
   memberId  String   @map("member_id")
   member    Member   @relation(fields: [memberId], references: [id])
