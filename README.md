@@ -113,7 +113,7 @@ npx prisma migrate dev
 
 ## データベースマイグレーション
 
-詳細は[マイグレーションガイド](./docs/migration/README.md)を参照してください。
+詳細は[マイグレーションガイド](./docs/migration.md)を参照してください。
 
 ## コントリビューター
 
