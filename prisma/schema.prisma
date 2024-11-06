@@ -11,7 +11,7 @@ model Member {
   id            String           @id @default(uuid())
   name          String
   studentId     String          @map("student_id")
-  departments   String[]
+  department    String
   email         String          @unique
   personalEmail String?         @map("personal_email")
   // リレーション

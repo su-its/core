@@ -11,10 +11,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "prisma"
-  ],
+  "files": ["dist", "prisma"],
   "scripts": {
     "postinstall": "prisma generate",
     "build": "tsc",
@@ -24,12 +21,16 @@
     "prepublishOnly": "npm run build",
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
-    "version:major": "npm version major"
+    "version:major": "npm version major",
+    "version:alpha": "npm version prerelease --preid=alpha",
+    "version:beta": "npm version prerelease --preid=beta",
+    "version:rc": "npm version prerelease --preid=rc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/node": "^22.9.0",
     "prisma": "^5.22.0",
     "rimraf": "^6.0.1",
