@@ -1,6 +1,6 @@
 {
   "name": "@shizuoka-its/core",
-  "version": "0.1.3_0",
+  "version": "0.1.3_1",
   "description": "ITS core library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "files": ["dist", "prisma"],
   "scripts": {
-    "postinstall": "prisma generate --schema=node_modules/@shizuoka-its/core/prisma/schema.prisma",
+    "postinstall": "prisma generate",
     "build": "tsc",
     "prepare": "npm run build",
     "prebuild": "rimraf dist",
