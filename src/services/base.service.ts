@@ -1,5 +1,5 @@
-import type { IBaseService } from "./interfaces/base.service.interface";
 import type { IBaseRepository } from "../repositories/interfaces/base.repository.interface";
+import type { IBaseService } from "./interfaces/base.service.interface";
 
 export abstract class BaseService<
   T, // T: エンティティの型
