@@ -4,7 +4,7 @@ import type { IBaseService } from "./base.service.interface";
 export interface MemberCreateDTO {
   name: string;
   studentId: string;
-  departments: string[];
+  department: string;
   email: string;
   personalEmail?: string;
 }
