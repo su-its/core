@@ -1,4 +1,4 @@
-import type { Exhibit, PrismaClient, Prisma } from "@prisma/client";
+import type { Exhibit, Prisma, PrismaClient } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
 import type { IExhibitRepository } from "./interfaces/exhibit.repository.interface";
 
