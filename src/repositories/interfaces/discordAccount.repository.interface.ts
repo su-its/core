@@ -9,5 +9,4 @@ export interface IDiscordAccountRepository
     Prisma.DiscordAccountFindManyArgs
   > {
   findByMemberId(memberId: string): Promise<DiscordAccount[]>;
-  findByDiscordId(discordId: string): Promise<DiscordAccount | null>;
 }

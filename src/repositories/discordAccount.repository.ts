@@ -15,9 +15,9 @@ export class DiscordAccountRepository
     super(prisma, "discordAccount");
   }
 
-  async findById(id: string): Promise<DiscordAccount | null> {
+  async findById(discordId: string): Promise<DiscordAccount | null> {
     return this.prisma.discordAccount.findUnique({
-      where: { id },
+      where: { id: discordId },
       include: {
         member: true,
       },
@@ -28,7 +28,10 @@ export class DiscordAccountRepository
     data: Prisma.DiscordAccountCreateInput,
   ): Promise<DiscordAccount> {
     return this.prisma.discordAccount.create({
-      data,
+      data: {
+        ...data,
+        id: data.id, // NOTE: ここでDiscordIDを指定
+      },
       include: {
         member: true,
       },
@@ -36,11 +39,11 @@ export class DiscordAccountRepository
   }
 
   async update(
-    id: string,
+    discordId: string,
     data: Prisma.DiscordAccountUpdateInput,
   ): Promise<DiscordAccount> {
     return this.prisma.discordAccount.update({
-      where: { id },
+      where: { id: discordId },
       data,
       include: {
         member: true,
@@ -48,9 +51,9 @@ export class DiscordAccountRepository
     });
   }
 
-  async delete(id: string): Promise<DiscordAccount> {
+  async delete(discordId: string): Promise<DiscordAccount> {
     return this.prisma.discordAccount.delete({
-      where: { id },
+      where: { id: discordId },
     });
   }
 
@@ -63,12 +66,6 @@ export class DiscordAccountRepository
   async findByMemberId(memberId: string): Promise<DiscordAccount[]> {
     return this.prisma.discordAccount.findMany({
       where: { memberId },
-    });
-  }
-
-  async findByDiscordId(discordId: string): Promise<DiscordAccount | null> {
-    return this.prisma.discordAccount.findFirst({
-      where: { discordId },
     });
   }
 }
