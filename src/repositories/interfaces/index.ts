@@ -5,3 +5,4 @@ export * from "./event.repository.interface";
 export * from "./exhibit.repository.interface";
 export * from "./memberEvent.repository.interface";
 export * from "./memberExhibit.repository.interface";
+export * from "./lightningTalk.repository.interface";
