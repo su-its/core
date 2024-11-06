@@ -2,6 +2,7 @@ import type { Repositories } from "../repositories";
 import { DiscordAccountService } from "./discordAccount.service";
 import { EventService } from "./event.service";
 import { ExhibitService } from "./exhibit.service";
+import { LightningTalkService } from "./lightningTalk.service";
 import { MemberService } from "./member.service";
 
 export const createServices = (repositories: Repositories) => {
@@ -21,6 +22,10 @@ export const createServices = (repositories: Repositories) => {
       repositories.event,
       repositories.member,
       repositories.memberExhibit,
+    ),
+    lightningTalk: new LightningTalkService(
+      repositories.lightningTalk,
+      repositories.exhibit,
     ),
   };
 };

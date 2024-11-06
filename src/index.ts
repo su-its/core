@@ -6,6 +6,7 @@ import {
   type MemberEvent,
   type MemberExhibit,
   type Prisma,
+  type LightningTalk,
   PrismaClient,
 } from "@prisma/client";
 
@@ -24,6 +25,7 @@ export type {
   DiscordAccount,
   MemberEvent,
   MemberExhibit,
+  LightningTalk,
 };
 
 // クライアント関連の型定義
@@ -37,6 +39,7 @@ export type {
   IEventService,
   IExhibitService,
   IDiscordAccountService,
+  ILightningTalkService,
 } from "./services/interfaces";
 
 // DTOのエクスポート
@@ -49,6 +52,8 @@ export type {
   ExhibitUpdateDTO,
   DiscordAccountCreateDTO,
   DiscordAccountUpdateDTO,
+  LightningTalkCreateDTO,
+  LightningTalkUpdateDTO,
 } from "./services/interfaces";
 
 // クライアント作成関数

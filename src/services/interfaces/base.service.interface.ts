@@ -1,7 +1,7 @@
-export interface IBaseService<T, CreateDTO, UpdateDTO> {
+export interface IBaseService<T, CreateInput, UpdateInput> {
   findById(id: string): Promise<T | null>;
-  create(data: CreateDTO): Promise<T>;
-  update(id: string, data: UpdateDTO): Promise<T>;
+  create(data: CreateInput): Promise<T>;
+  update(id: string, data: UpdateInput): Promise<T>;
   delete(id: string): Promise<T>;
   findMany(): Promise<T[]>;
 }
