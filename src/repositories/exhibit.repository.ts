@@ -47,6 +47,13 @@ export class ExhibitRepository
   async findByEventId(eventId: string): Promise<Exhibit[]> {
     return this.prisma.exhibit.findMany({
       where: { eventId },
+      include: {
+        members: {
+          include: {
+            member: true,
+          },
+        },
+      },
     });
   }
 
