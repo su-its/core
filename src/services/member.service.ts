@@ -56,6 +56,10 @@ export class MemberService
     return this.repository.findByStudentId(studentId);
   }
 
+  async findByName(name: string): Promise<Member[]> {
+    return this.repository.findByName(name);
+  }
+
   async addDiscordAccount(
     memberId: string,
     discordId: string,

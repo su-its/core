@@ -55,4 +55,10 @@ export class MemberRepository
       where: { studentId },
     });
   }
+
+  async findByName(name: string): Promise<Member[]> {
+    return this.prisma.member.findMany({
+      where: { name },
+    });
+  }
 }

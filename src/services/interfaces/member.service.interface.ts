@@ -15,6 +15,7 @@ export interface IMemberService
   extends IBaseService<Member, MemberCreateDTO, MemberUpdateDTO> {
   findByEmail(email: string): Promise<Member | null>;
   findByStudentId(studentId: string): Promise<Member[]>;
+  findByName(name: string): Promise<Member[]>;
   addDiscordAccount(
     memberId: string,
     discordId: string,
