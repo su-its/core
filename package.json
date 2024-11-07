@@ -13,7 +13,7 @@
   },
   "files": ["dist", "prisma"],
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "build": "tsc",
     "prepare": "npm run build",
     "prebuild": "rimraf dist",
