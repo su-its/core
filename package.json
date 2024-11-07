@@ -1,6 +1,6 @@
 {
   "name": "@shizuoka-its/core",
-  "version": "0.3.1-rc.1",
+  "version": "0.3.1-rc.2",
   "description": "ITS core library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
