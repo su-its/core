@@ -11,10 +11,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist",
-    "prisma"
-  ],
+  "files": ["dist", "prisma"],
   "scripts": {
     "postinstall": "prisma generate",
     "build": "tsc",
