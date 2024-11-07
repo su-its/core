@@ -2,11 +2,11 @@ import {
   type DiscordAccount,
   type Event,
   type Exhibit,
+  type LightningTalk,
   type Member,
   type MemberEvent,
   type MemberExhibit,
   type Prisma,
-  type LightningTalk,
   PrismaClient,
 } from "@prisma/client";
 
