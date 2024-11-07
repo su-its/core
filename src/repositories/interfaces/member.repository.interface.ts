@@ -10,4 +10,5 @@ export interface IMemberRepository
   > {
   findByEmail(email: string): Promise<Member | null>;
   findByStudentId(studentId: string): Promise<Member[]>;
+  findByName(name: string): Promise<Member[]>;
 }
