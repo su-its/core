@@ -65,7 +65,17 @@ export class LightningTalkRepository
           eventId,
         },
       },
-      include: { exhibit: true },
+      include: {
+        exhibit: {
+          include: {
+            members: {
+              include: {
+                member: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
