@@ -57,10 +57,26 @@ model Exhibit {
   eventId     String         @map("event_id")
   event       Event          @relation(fields: [eventId], references: [id])
   members     MemberExhibit[]
+
+  // 必要だがアクセスしない関係として定義
+  lightningTalk LightningTalk?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
   @@map("exhibits")
+}
+
+// イベント中のLT
+model LightningTalk {
+  exhibitId   String   @id @map("exhibit_id")    // PKかつFKとして使用
+  exhibit     Exhibit  @relation(fields: [exhibitId], references: [id])
+  startTime   DateTime @map("start_time")
+  duration    Int      // 分単位
+  slideUrl    String?  @map("slide_url")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("lightning_talks")
 }
 
 // ジャンクションテーブル（Member - Event）
