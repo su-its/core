@@ -52,7 +52,17 @@ export class LightningTalkRepository
   ): Promise<(LightningTalk & { exhibit: Exhibit }) | null> {
     return this.prisma.lightningTalk.findUnique({
       where: { exhibitId: id },
-      include: { exhibit: true },
+      include: {
+        exhibit: {
+          include: {
+            members: {
+              include: {
+                member: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -65,7 +75,17 @@ export class LightningTalkRepository
           eventId,
         },
       },
-      include: { exhibit: true },
+      include: {
+        exhibit: {
+          include: {
+            members: {
+              include: {
+                member: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
