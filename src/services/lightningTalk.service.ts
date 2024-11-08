@@ -30,7 +30,11 @@ export class LightningTalkService
   async findById(
     id: string,
   ): Promise<(LightningTalk & { exhibit: Exhibit }) | null> {
-    return this.repository.findById(id);
+    return this.repository.findById(id, {
+      exhibit: {
+        include: { members: true, event: true },
+      },
+    });
   }
 
   async create(
@@ -90,6 +94,10 @@ export class LightningTalkService
   async findByEventId(
     eventId: string,
   ): Promise<(LightningTalk & { exhibit: Exhibit })[]> {
-    return this.repository.findByEventId(eventId);
+    return this.repository.findByEventId(eventId, {
+      exhibit: {
+        include: { members: true, event: true },
+      },
+    });
   }
 }
