@@ -32,7 +32,14 @@ export class LightningTalkService
   async findById(id: string): Promise<LightningTalkWithAll | null> {
     return this.repository.findById(id, {
       exhibit: {
-        include: { members: true, event: true },
+        include: {
+          event: true,
+          members: {
+            include: {
+              member: true,
+            },
+          },
+        },
       },
     });
   }
@@ -90,7 +97,14 @@ export class LightningTalkService
   async findByEventId(eventId: string): Promise<LightningTalkWithAll[]> {
     return this.repository.findByEventId(eventId, {
       exhibit: {
-        include: { members: true, event: true },
+        include: {
+          event: true,
+          members: {
+            include: {
+              member: true,
+            },
+          },
+        },
       },
     });
   }
