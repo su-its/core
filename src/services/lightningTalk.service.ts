@@ -1,17 +1,18 @@
-import type { Exhibit, LightningTalk, Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import type { IExhibitRepository } from "../repositories/interfaces/exhibit.repository.interface";
 import type { ILightningTalkRepository } from "../repositories/interfaces/lightningTalk.repository.interface";
-import type { LightningTalkRepository } from "../repositories/lightningTalk.repository";
 import { BaseService } from "./base.service";
 import type {
   ILightningTalkService,
   LightningTalkCreateDTO,
   LightningTalkUpdateDTO,
+  LightningTalkWithAll,
+  LightningTalkWithExhibit,
 } from "./interfaces/lightningTalk.service.interface";
 
 export class LightningTalkService
   extends BaseService<
-    LightningTalk & { exhibit: Exhibit },
+    LightningTalkWithExhibit,
     LightningTalkCreateDTO,
     LightningTalkUpdateDTO,
     Prisma.LightningTalkFindManyArgs,
@@ -27,9 +28,8 @@ export class LightningTalkService
   ) {
     super(lightningTalkrepository);
   }
-  async findById(
-    id: string,
-  ): Promise<(LightningTalk & { exhibit: Exhibit }) | null> {
+
+  async findById(id: string): Promise<LightningTalkWithAll | null> {
     return this.repository.findById(id, {
       exhibit: {
         include: { members: true, event: true },
@@ -39,14 +39,12 @@ export class LightningTalkService
 
   async create(
     data: LightningTalkCreateDTO,
-  ): Promise<LightningTalk & { exhibit: Exhibit }> {
-    // 展示の存在確認
+  ): Promise<LightningTalkWithExhibit> {
     const exhibit = await this.exhibitRepository.findById(data.exhibitId);
     if (!exhibit) {
       throw new Error("Exhibit not found");
     }
 
-    // すでにLTとして登録されていないか確認
     const existingLT = await this.repository.findById(data.exhibitId);
     if (existingLT) {
       throw new Error("This exhibit is already registered as a lightning talk");
@@ -63,8 +61,7 @@ export class LightningTalkService
   async update(
     id: string,
     data: LightningTalkUpdateDTO,
-  ): Promise<LightningTalk & { exhibit: Exhibit }> {
-    // LTの存在確認
+  ): Promise<LightningTalkWithExhibit> {
     const lightningTalk = await this.repository.findById(id);
     if (!lightningTalk) {
       throw new Error("Lightning talk not found");
@@ -77,8 +74,7 @@ export class LightningTalkService
     });
   }
 
-  async delete(id: string): Promise<LightningTalk & { exhibit: Exhibit }> {
-    // LTの存在確認
+  async delete(id: string): Promise<LightningTalkWithExhibit> {
     const lightningTalk = await this.repository.findById(id);
     if (!lightningTalk) {
       throw new Error("Lightning talk not found");
@@ -87,13 +83,11 @@ export class LightningTalkService
     return this.repository.delete(id);
   }
 
-  async findMany(): Promise<(LightningTalk & { exhibit: Exhibit })[]> {
+  async findMany(): Promise<LightningTalkWithExhibit[]> {
     return this.repository.findMany();
   }
 
-  async findByEventId(
-    eventId: string,
-  ): Promise<(LightningTalk & { exhibit: Exhibit })[]> {
+  async findByEventId(eventId: string): Promise<LightningTalkWithAll[]> {
     return this.repository.findByEventId(eventId, {
       exhibit: {
         include: { members: true, event: true },

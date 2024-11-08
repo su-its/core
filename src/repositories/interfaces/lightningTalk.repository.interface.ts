@@ -2,6 +2,14 @@ import type { Prisma } from "@prisma/client";
 import type { IBaseRepository } from "./base.repository.interface";
 
 type DefaultInclude = { exhibit: true };
+type AllInclude = {
+  exhibit: {
+    include: {
+      event: true;
+      members: true;
+    };
+  };
+};
 
 export interface ILightningTalkRepository
   extends IBaseRepository<
@@ -27,13 +35,13 @@ export interface ILightningTalkRepository
     id: string,
     include?: T,
   ): Promise<Prisma.LightningTalkGetPayload<{
-    include: DefaultInclude;
+    include: AllInclude;
   }> | null>;
 
   findByEventId<T extends Prisma.LightningTalkInclude>(
     eventId: string,
     include?: T,
-  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>[]>;
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: AllInclude }>[]>;
 
   findMany(
     args?: Omit<Prisma.LightningTalkFindManyArgs, "include">,

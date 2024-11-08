@@ -3,6 +3,14 @@ import { BaseRepository } from "./base.repository";
 import type { ILightningTalkRepository } from "./interfaces/lightningTalk.repository.interface";
 
 type DefaultInclude = { exhibit: true };
+type AllInclude = {
+  exhibit: {
+    include: {
+      event: true;
+      members: true;
+    };
+  };
+};
 
 export class LightningTalkRepository
   extends BaseRepository<
@@ -50,25 +58,39 @@ export class LightningTalkRepository
     id: string,
     include?: Prisma.LightningTalkInclude,
   ): Promise<Prisma.LightningTalkGetPayload<{
-    include: DefaultInclude;
+    include: AllInclude;
   }> | null> {
     return this.prisma.lightningTalk.findUnique({
       where: { exhibitId: id },
-      include: { ...include, exhibit: true },
+      include: {
+        exhibit: {
+          include: {
+            event: true,
+            members: true,
+          },
+        },
+      },
     });
   }
 
   async findByEventId(
     eventId: string,
     include?: Prisma.LightningTalkInclude,
-  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>[]> {
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: AllInclude }>[]> {
     return this.prisma.lightningTalk.findMany({
       where: {
         exhibit: {
           eventId,
         },
       },
-      include: { ...include, exhibit: true },
+      include: {
+        exhibit: {
+          include: {
+            event: true,
+            members: true,
+          },
+        },
+      },
     });
   }
 
