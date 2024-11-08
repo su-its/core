@@ -11,14 +11,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "prisma"],
+  "files": [
+    "dist",
+    "prisma"
+  ],
   "scripts": {
     "postinstall": "prisma generate",
-    "build": "tsc",
-    "prepare": "npm run build",
-    "prebuild": "rimraf dist",
     "prisma:generate": "prisma generate",
-    "prepublishOnly": "npm run build",
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
     "version:major": "npm version major",
@@ -30,11 +29,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.9.0",
-    "prisma": "^5.22.0",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.6.3"
+    "prisma": "^5.22.0"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0"
