@@ -52,6 +52,7 @@ model Exhibit {
   id          String          @id @default(uuid())
   name        String
   description String?
+  markdownContent String?     @map("markdown_content")
   url         String?
   // リレーション
   eventId     String         @map("event_id")
