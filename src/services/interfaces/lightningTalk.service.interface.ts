@@ -1,5 +1,24 @@
-import type { Exhibit, LightningTalk } from "@prisma/client";
+// lightningTalk.service.interface.ts
+import type { Prisma } from "@prisma/client";
 import type { IBaseService } from "./base.service.interface";
+
+export type DefaultInclude = { exhibit: true };
+export type ExhibitInclude = {
+  exhibit: {
+    include: {
+      event: true;
+      members: true;
+    };
+  };
+};
+
+export type LightningTalkWithExhibit = Prisma.LightningTalkGetPayload<{
+  include: DefaultInclude;
+}>;
+
+export type LightningTalkWithAll = Prisma.LightningTalkGetPayload<{
+  include: ExhibitInclude;
+}>;
 
 export interface LightningTalkCreateDTO {
   exhibitId: string;
@@ -16,21 +35,17 @@ export interface LightningTalkUpdateDTO {
 
 export interface ILightningTalkService
   extends IBaseService<
-    LightningTalk & { exhibit: Exhibit }, // 常にexhibitを含む
+    LightningTalkWithExhibit,
     LightningTalkCreateDTO,
     LightningTalkUpdateDTO
   > {
-  findById(id: string): Promise<(LightningTalk & { exhibit: Exhibit }) | null>;
-  create(
-    data: LightningTalkCreateDTO,
-  ): Promise<LightningTalk & { exhibit: Exhibit }>;
+  findById(id: string): Promise<LightningTalkWithAll | null>;
+  create(data: LightningTalkCreateDTO): Promise<LightningTalkWithExhibit>;
   update(
     id: string,
     data: LightningTalkUpdateDTO,
-  ): Promise<LightningTalk & { exhibit: Exhibit }>;
-  delete(id: string): Promise<LightningTalk & { exhibit: Exhibit }>;
-  findMany(): Promise<(LightningTalk & { exhibit: Exhibit })[]>;
-  findByEventId(
-    eventId: string,
-  ): Promise<(LightningTalk & { exhibit: Exhibit })[]>;
+  ): Promise<LightningTalkWithExhibit>;
+  delete(id: string): Promise<LightningTalkWithExhibit>;
+  findMany(): Promise<LightningTalkWithExhibit[]>;
+  findByEventId(eventId: string): Promise<LightningTalkWithAll[]>;
 }
