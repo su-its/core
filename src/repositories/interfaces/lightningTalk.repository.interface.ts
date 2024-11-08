@@ -6,7 +6,11 @@ type AllInclude = {
   exhibit: {
     include: {
       event: true;
-      members: true;
+      members: {
+        include: {
+          member: true;
+        };
+      };
     };
   };
 };

@@ -7,7 +7,11 @@ export type ExhibitInclude = {
   exhibit: {
     include: {
       event: true;
-      members: true;
+      members: {
+        include: {
+          member: true;
+        };
+      };
     };
   };
 };

@@ -7,7 +7,11 @@ type AllInclude = {
   exhibit: {
     include: {
       event: true;
-      members: true;
+      members: {
+        include: {
+          member: true;
+        };
+      };
     };
   };
 };
@@ -66,7 +70,11 @@ export class LightningTalkRepository
         exhibit: {
           include: {
             event: true,
-            members: true,
+            members: {
+              include: {
+                member: true,
+              },
+            },
           },
         },
       },
@@ -87,7 +95,11 @@ export class LightningTalkRepository
         exhibit: {
           include: {
             event: true,
-            members: true,
+            members: {
+              include: {
+                member: true,
+              },
+            },
           },
         },
       },
