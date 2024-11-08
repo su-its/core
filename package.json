@@ -16,10 +16,11 @@
     "prisma"
   ],
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "build": "tsc",
+    "prebuild": "rimraf dist",
     "prepare": "npm run build",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "npx prisma generate",
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
     "version:major": "npm version major",
@@ -31,7 +32,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prisma": "^5.22.0"
+    "@types/node": "^22.9.0",
+    "prisma": "^5.22.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0"
