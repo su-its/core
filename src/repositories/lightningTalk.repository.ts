@@ -1,15 +1,12 @@
-import type {
-  Exhibit,
-  LightningTalk,
-  Prisma,
-  PrismaClient,
-} from "@prisma/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
 import type { ILightningTalkRepository } from "./interfaces/lightningTalk.repository.interface";
 
+type DefaultInclude = { exhibit: true };
+
 export class LightningTalkRepository
   extends BaseRepository<
-    LightningTalk & { exhibit: Exhibit },
+    Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>,
     Prisma.LightningTalkCreateInput,
     Prisma.LightningTalkUpdateInput,
     Prisma.LightningTalkFindManyArgs
@@ -22,7 +19,7 @@ export class LightningTalkRepository
 
   async create(
     data: Prisma.LightningTalkCreateInput,
-  ): Promise<LightningTalk & { exhibit: Exhibit }> {
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>> {
     return this.prisma.lightningTalk.create({
       data,
       include: { exhibit: true },
@@ -32,7 +29,7 @@ export class LightningTalkRepository
   async update(
     id: string,
     data: Prisma.LightningTalkUpdateInput,
-  ): Promise<LightningTalk & { exhibit: Exhibit }> {
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>> {
     return this.prisma.lightningTalk.update({
       where: { exhibitId: id },
       data,
@@ -40,7 +37,9 @@ export class LightningTalkRepository
     });
   }
 
-  async delete(id: string): Promise<LightningTalk & { exhibit: Exhibit }> {
+  async delete(
+    id: string,
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>> {
     return this.prisma.lightningTalk.delete({
       where: { exhibitId: id },
       include: { exhibit: true },
@@ -49,52 +48,36 @@ export class LightningTalkRepository
 
   async findById(
     id: string,
-  ): Promise<(LightningTalk & { exhibit: Exhibit }) | null> {
+    include?: Prisma.LightningTalkInclude,
+  ): Promise<Prisma.LightningTalkGetPayload<{
+    include: DefaultInclude;
+  }> | null> {
     return this.prisma.lightningTalk.findUnique({
       where: { exhibitId: id },
-      include: {
-        exhibit: {
-          include: {
-            members: {
-              include: {
-                member: true,
-              },
-            },
-          },
-        },
-      },
+      include: { ...include, exhibit: true },
     });
   }
 
   async findByEventId(
     eventId: string,
-  ): Promise<(LightningTalk & { exhibit: Exhibit })[]> {
+    include?: Prisma.LightningTalkInclude,
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>[]> {
     return this.prisma.lightningTalk.findMany({
       where: {
         exhibit: {
           eventId,
         },
       },
-      include: {
-        exhibit: {
-          include: {
-            members: {
-              include: {
-                member: true,
-              },
-            },
-          },
-        },
-      },
+      include: { ...include, exhibit: true },
     });
   }
 
   async findMany(
-    args?: Prisma.LightningTalkFindManyArgs,
-  ): Promise<(LightningTalk & { exhibit: Exhibit })[]> {
+    args?: Omit<Prisma.LightningTalkFindManyArgs, "include">,
+  ): Promise<Prisma.LightningTalkGetPayload<{ include: DefaultInclude }>[]> {
     return this.prisma.lightningTalk.findMany({
       ...args,
-      include: { ...args?.include, exhibit: true },
+      include: { exhibit: true },
     });
   }
 }
