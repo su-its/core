@@ -24,9 +24,12 @@
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
     "version:major": "npm version major",
-    "version:alpha": "npm version prerelease --preid=alpha",
-    "version:beta": "npm version prerelease --preid=beta",
-    "version:rc": "npm version prerelease --preid=rc"
+    "version:alpha": "npm version prerelease --preid=alpha && npm run publish:alpha",
+    "version:beta": "npm version prerelease --preid=beta && npm run publish:beta",
+    "version:rc": "npm version prerelease --preid=rc && npm run publish:rc",
+    "publish:alpha": "npm publish --tag alpha",
+    "publish:beta": "npm publish --tag beta",
+    "publish:rc": "npm publish --tag rc"
   },
   "keywords": [],
   "author": "",
