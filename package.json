@@ -1,6 +1,6 @@
 {
   "name": "@shizuoka-its/core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "ITS core library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["dist", "prisma"],
+  "files": [
+    "dist",
+    "prisma"
+  ],
   "scripts": {
     "postinstall": "prisma generate",
     "build": "tsc",
