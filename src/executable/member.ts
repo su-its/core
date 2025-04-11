@@ -1,13 +1,13 @@
-import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepository";
 import {
 	ChangeDiscordNickNameUseCase,
 	ConnectDiscordAccountUseCase,
-	GetMemberUseCase,
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
+	GetMemberUseCase,
 	RegisterMemberUseCase, // Note: Typo in original class name
 	UpdateMemberUseCase,
 } from "@/application/usecase";
+import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepository";
 
 export function createMemberUseCases() {
 	const memberRepo = new PrismaMemberRepository();

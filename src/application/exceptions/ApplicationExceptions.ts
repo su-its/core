@@ -18,3 +18,10 @@ export class MemberNotFoundException extends ApplicationException {
 		this.name = "MemberNotFoundException";
 	}
 }
+
+export class DiscordAccountNotConnectedException extends ApplicationException {
+	constructor(message = "このDiscordアカウントは紐づいていません") {
+		super(message);
+		this.name = "DiscordAccountNotConnectedException";
+	}
+}

@@ -1,9 +1,9 @@
-import { MemberNotFoundException } from "@/application/exceptions/ApplicationExceptions";
 import { DiscordAccount } from "@/domain/member/DiscordAccount";
 import type { Member } from "@/domain/member/Member";
 import type { MemberRepository } from "@/domain/member/MemberRepository";
 import { Email } from "@/domain/value-objects/Email";
 import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
+import { MemberNotFoundException } from "../exceptions/ApplicationExceptions";
 
 export class UpdateMemberUseCase {
 	constructor(private readonly memberRepo: MemberRepository) {}

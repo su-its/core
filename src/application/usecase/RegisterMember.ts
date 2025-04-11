@@ -1,10 +1,13 @@
-import { MemberEmailAlreadyExistsException } from "@/application/exceptions/ApplicationExceptions";
 import { DiscordAccount } from "@/domain/member/DiscordAccount";
 import { Member } from "@/domain/member/Member";
 import type { MemberRepository } from "@/domain/member/MemberRepository";
 import { Email } from "@/domain/value-objects/Email";
 import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
 import { v4 as uuid } from "uuid";
+import {
+	DiscordAccountNotConnectedException,
+	MemberEmailAlreadyExistsException,
+} from "../exceptions/ApplicationExceptions";
 
 export class RegisterMemberUseCase {
 	constructor(private readonly memberRepo: MemberRepository) {}
@@ -21,9 +24,7 @@ export class RegisterMemberUseCase {
 		// TODO: この入力値のバリデーションはUsecaseが本来着目するべき処理の流れという関心事では無い
 		if (input.discordNickName) {
 			if (!input.discordAccountId) {
-				throw new Error(
-					"discordNickNameを指定する場合はdiscordAccountIdも指定してください",
-				);
+				throw new DiscordAccountNotConnectedException();
 			}
 		}
 		const existingMember = await this.memberRepo.findByEmail(input.email);
