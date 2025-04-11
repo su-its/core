@@ -1,6 +1,9 @@
-import { MemberNotFoundException } from "@/application/exceptions/ApplicationExceptions";
 import type { Member } from "@/domain/member/Member";
 import type { MemberRepository } from "@/domain/member/MemberRepository";
+import {
+	DiscordAccountNotConnectedException,
+	MemberNotFoundException,
+} from "../exceptions/ApplicationExceptions";
 
 export class ChangeDiscordNickNameUseCase {
 	constructor(private readonly memberRepo: MemberRepository) {}
@@ -18,7 +21,7 @@ export class ChangeDiscordNickNameUseCase {
 
 		const discordAccount = member.getDiscordAccountById(input.discordAccountId);
 		if (!discordAccount) {
-			throw new Error();
+			throw new DiscordAccountNotConnectedException();
 		}
 
 		discordAccount.setNickName(input.discordNickName);
