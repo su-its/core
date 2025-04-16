@@ -1,1 +1,1 @@
-export * from "./prismaErrors"
+export * from "./prismaErrors";
