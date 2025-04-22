@@ -2,6 +2,7 @@ import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepo
 import {
 	ChangeDiscordNickNameUseCase,
 	ConnectDiscordAccountUseCase,
+	GetMemberByDiscordIdUseCase,
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
@@ -13,6 +14,8 @@ import type {
 	ChangeDiscordNickNameOutput,
 	ConnectDiscordAccountInput,
 	ConnectDiscordAccountOutput,
+	GetMemberByDiscordIdInput,
+	GetMemberByDiscordIdOutput,
 	GetMemberByEmailInput,
 	GetMemberByEmailOutput,
 	GetMemberInput,
@@ -31,6 +34,10 @@ export type MemberUseCases = {
 	updateMember: IUseCase<UpdateMemberInput, UpdateMemberOutput>;
 	getMember: IUseCase<GetMemberInput, GetMemberOutput>;
 	getMemberByEmail: IUseCase<GetMemberByEmailInput, GetMemberByEmailOutput>;
+	getMemberByDiscordId: IUseCase<
+		GetMemberByDiscordIdInput,
+		GetMemberByDiscordIdOutput
+	>;
 	getMemberList: IUseCase<GetMemberListInput, GetMemberListOutput>;
 	changeDiscordNickName: IUseCase<
 		ChangeDiscordNickNameInput,
@@ -49,6 +56,7 @@ export function createMemberUseCases(): MemberUseCases {
 		registerMember: new RegisterMemberUseCase(memberRepo),
 		updateMember: new UpdateMemberUseCase(memberRepo),
 		getMember: new GetMemberUseCase(memberRepo),
+		getMemberByDiscordId: new GetMemberByDiscordIdUseCase(memberRepo),
 		getMemberByEmail: new GetMemberByEmailUseCase(memberRepo),
 		getMemberList: new GetMemberListUseCase(memberRepo),
 		changeDiscordNickName: new ChangeDiscordNickNameUseCase(memberRepo),
