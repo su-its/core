@@ -9,7 +9,7 @@ import type { IUseCase } from "./BaseUseCase";
 export interface ConnectDiscordAccountInput {
 	memberId: string;
 	discordAccountId: string;
-	discordNickName: string;
+	discordNickName?: string;
 }
 
 export type ConnectDiscordAccountOutput = Member;
@@ -29,7 +29,7 @@ export class ConnectDiscordAccountUseCase
 
 		const discordAccount = new DiscordAccount(
 			input.discordAccountId,
-			input.discordNickName,
+			input.discordNickName ?? "",
 			member.id,
 		);
 
