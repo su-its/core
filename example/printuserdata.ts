@@ -1,4 +1,4 @@
-import { createMemberUseCases, type Member } from "../src/";
+import { type Member, createMemberUseCases } from "../src/";
 
 const memberUseCases = createMemberUseCases();
 
