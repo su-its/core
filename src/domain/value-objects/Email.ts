@@ -1,14 +1,12 @@
 import { InvalidEmailFormatException } from "../exceptions/DomainExceptions";
+import { ValueObject } from "./ValueObject";
 
-export class Email {
-	constructor(private value: string) {
+export class Email extends ValueObject<string> {
+	protected validate(): void {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		if (!emailRegex.test(value)) {
-			throw new InvalidEmailFormatException();
-		}
-	}
-
-	getValue() {
-		return this.value;
+		this.throwIfInvalid(
+			emailRegex.test(this.value),
+			new InvalidEmailFormatException(),
+		);
 	}
 }

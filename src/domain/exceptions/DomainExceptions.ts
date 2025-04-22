@@ -42,3 +42,10 @@ export class InvalidUniversityEmailException extends DomainException {
 		this.name = "InvalidUniversityEmailException";
 	}
 }
+
+export class InvalidDepartmentException extends DomainException {
+	constructor(message = "無効な学部識別子です") {
+		super(message);
+		this.name = "InvalidDepartmentException";
+	}
+}
