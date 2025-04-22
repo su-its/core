@@ -4,6 +4,7 @@ import type { MemberRepository } from "@/domain/member/MemberRepository";
 import { Email } from "@/domain/value-objects/Email";
 import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
 import { MemberNotFoundException } from "../exceptions/ApplicationExceptions";
+import { Department } from "@/domain/value-objects/Departments";
 
 export class UpdateMemberUseCase {
 	constructor(private readonly memberRepo: MemberRepository) {}
@@ -30,7 +31,7 @@ export class UpdateMemberUseCase {
 			member.setStudentId(input.studentId);
 		}
 		if (input.department) {
-			member.setDepartment(input.department);
+			member.setDepartment(Department.fromString(input.department));
 		}
 		if (input.email) {
 			member.setEmail(new UniversityEmail(input.email));

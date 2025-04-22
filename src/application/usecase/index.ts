@@ -1,3 +1,4 @@
+export * from "./BaseUseCase";
 export * from "./ChangeDiscordNickName";
 export * from "./ConnectDiscordAccount";
 export * from "./GetMember";
