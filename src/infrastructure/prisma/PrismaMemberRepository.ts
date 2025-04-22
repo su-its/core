@@ -1,6 +1,6 @@
 import { Member } from "@/domain/member/Member";
 import type { MemberRepository } from "@/domain/member/MemberRepository";
-import type { Department } from "@/domain/value-objects/Departments";
+import { Department } from "@/domain/value-objects/Departments";
 import { Email } from "@/domain/value-objects/Email";
 import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
 import { type Prisma, PrismaClient } from "@prisma/client";
@@ -17,7 +17,7 @@ export class PrismaMemberRepository implements MemberRepository {
 			record.id,
 			record.name,
 			record.studentId,
-			record.department as Department,
+			Department.fromString(record.department),
 			new UniversityEmail(record.email),
 			record.personalEmail ? new Email(record.personalEmail) : undefined,
 		);
@@ -85,7 +85,7 @@ export class PrismaMemberRepository implements MemberRepository {
 			update: {
 				name: member.name,
 				studentId: member.studentId,
-				department: member.department,
+				department: member.department.toString(),
 				email: member.email.getValue(),
 				personalEmail: member.personalEmail?.getValue(),
 			},
@@ -93,7 +93,7 @@ export class PrismaMemberRepository implements MemberRepository {
 				id: member.id,
 				name: member.name,
 				studentId: member.studentId,
-				department: member.department,
+				department: member.department.toString(),
 				email: member.email.getValue(),
 				personalEmail: member.personalEmail?.getValue(),
 			},

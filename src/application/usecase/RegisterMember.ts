@@ -8,19 +8,27 @@ import {
 	DiscordAccountNotConnectedException,
 	MemberEmailAlreadyExistsException,
 } from "../exceptions/ApplicationExceptions";
+import type { IUseCase } from "./BaseUseCase";
+import { Department } from "@/domain/value-objects/Departments";
 
-export class RegisterMemberUseCase {
+export interface RegisterMemberInput {
+	name: string;
+	studentId: string;
+	department: string;
+	email: string;
+	personalEmail?: string;
+	discordAccountId?: string;
+	discordNickName?: string;
+}
+
+export type RegisterMemberOutput = Member;
+
+export class RegisterMemberUseCase
+	implements IUseCase<RegisterMemberInput, RegisterMemberOutput>
+{
 	constructor(private readonly memberRepo: MemberRepository) {}
 
-	async execute(input: {
-		name: string;
-		studentId: string;
-		department: "CS" | "BI" | "IA"; // departmentはユニオン型
-		email: string;
-		personalEmail?: string;
-		discordAccountId?: string;
-		discordNickName?: string;
-	}): Promise<Member> {
+	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
 		// TODO: この入力値のバリデーションはUsecaseが本来着目するべき処理の流れという関心事では無い
 		if (input.discordNickName) {
 			if (!input.discordAccountId) {
@@ -41,7 +49,7 @@ export class RegisterMemberUseCase {
 			uuid(),
 			input.name,
 			input.studentId,
-			input.department,
+			Department.fromString(input.department),
 			universityEmail,
 			personalEmail,
 		);
