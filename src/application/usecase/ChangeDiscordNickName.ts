@@ -1,5 +1,4 @@
-import type { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
+import type { Member, MemberRepository } from "../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberNotFoundException,
@@ -13,10 +12,14 @@ export interface ChangeDiscordNickNameInput {
 
 export type ChangeDiscordNickNameOutput = Member;
 
-export class ChangeDiscordNickNameUseCase implements IUseCase<ChangeDiscordNickNameInput, ChangeDiscordNickNameOutput> {
+export class ChangeDiscordNickNameUseCase
+	implements IUseCase<ChangeDiscordNickNameInput, ChangeDiscordNickNameOutput>
+{
 	constructor(private readonly memberRepo: MemberRepository) {}
 
-	async execute(input: ChangeDiscordNickNameInput): Promise<ChangeDiscordNickNameOutput> {
+	async execute(
+		input: ChangeDiscordNickNameInput,
+	): Promise<ChangeDiscordNickNameOutput> {
 		const member = await this.memberRepo.findByDiscordAccountId(
 			input.discordAccountId,
 		);

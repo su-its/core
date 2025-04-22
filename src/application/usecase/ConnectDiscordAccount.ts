@@ -1,6 +1,8 @@
-import { DiscordAccount } from "@/domain/member/DiscordAccount";
-import type { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
+import {
+	DiscordAccount,
+	type Member,
+	type MemberRepository,
+} from "../../domain";
 import { MemberNotFoundException } from "../exceptions/ApplicationExceptions";
 import type { IUseCase } from "./BaseUseCase";
 
