@@ -1,9 +1,11 @@
-import { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
-import { Department } from "@/domain/value-objects/Departments";
-import { Email } from "@/domain/value-objects/Email";
-import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
 import { type Prisma, PrismaClient } from "@prisma/client";
+import {
+	Department,
+	Email,
+	Member,
+	type MemberRepository,
+	UniversityEmail,
+} from "../../domain";
 
 const prisma = new PrismaClient();
 

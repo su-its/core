@@ -1,5 +1,4 @@
-import type { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
+import type { Member, MemberRepository } from "../../domain";
 import type { IUseCase } from "./BaseUseCase";
 
 // 入力パラメータがない場合は空のオブジェクト型

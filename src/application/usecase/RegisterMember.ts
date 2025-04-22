@@ -1,15 +1,17 @@
-import { DiscordAccount } from "@/domain/member/DiscordAccount";
-import { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
-import { Email } from "@/domain/value-objects/Email";
-import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
 import { v4 as uuid } from "uuid";
+import {
+	Department,
+	DiscordAccount,
+	Email,
+	Member,
+	type MemberRepository,
+	UniversityEmail,
+} from "../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberEmailAlreadyExistsException,
 } from "../exceptions/ApplicationExceptions";
 import type { IUseCase } from "./BaseUseCase";
-import { Department } from "@/domain/value-objects/Departments";
 
 export interface RegisterMemberInput {
 	name: string;

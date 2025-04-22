@@ -1,15 +1,48 @@
+import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepository";
 import {
 	ChangeDiscordNickNameUseCase,
 	ConnectDiscordAccountUseCase,
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
-	RegisterMemberUseCase, // Note: Typo in original class name
+	RegisterMemberUseCase,
 	UpdateMemberUseCase,
-} from "@/application/usecase";
-import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepository";
+} from "../application";
+import type {
+	ChangeDiscordNickNameInput,
+	ChangeDiscordNickNameOutput,
+	ConnectDiscordAccountInput,
+	ConnectDiscordAccountOutput,
+	GetMemberByEmailInput,
+	GetMemberByEmailOutput,
+	GetMemberInput,
+	GetMemberListInput,
+	GetMemberListOutput,
+	GetMemberOutput,
+	IUseCase,
+	RegisterMemberInput,
+	RegisterMemberOutput,
+	UpdateMemberInput,
+	UpdateMemberOutput,
+} from "../application";
 
-export function createMemberUseCases() {
+export type MemberUseCases = {
+	registerMember: IUseCase<RegisterMemberInput, RegisterMemberOutput>;
+	updateMember: IUseCase<UpdateMemberInput, UpdateMemberOutput>;
+	getMember: IUseCase<GetMemberInput, GetMemberOutput>;
+	getMemberByEmail: IUseCase<GetMemberByEmailInput, GetMemberByEmailOutput>;
+	getMemberList: IUseCase<GetMemberListInput, GetMemberListOutput>;
+	changeDiscordNickName: IUseCase<
+		ChangeDiscordNickNameInput,
+		ChangeDiscordNickNameOutput
+	>;
+	connectDiscordAccount: IUseCase<
+		ConnectDiscordAccountInput,
+		ConnectDiscordAccountOutput
+	>;
+};
+
+export function createMemberUseCases(): MemberUseCases {
 	const memberRepo = new PrismaMemberRepository();
 
 	return {
@@ -22,5 +55,3 @@ export function createMemberUseCases() {
 		connectDiscordAccount: new ConnectDiscordAccountUseCase(memberRepo),
 	};
 }
-
-export type MemberUseCases = ReturnType<typeof createMemberUseCases>;

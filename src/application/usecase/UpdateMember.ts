@@ -1,19 +1,37 @@
-import { DiscordAccount } from "@/domain/member/DiscordAccount";
-import type { Member } from "@/domain/member/Member";
-import type { MemberRepository } from "@/domain/member/MemberRepository";
-import { Email } from "@/domain/value-objects/Email";
-import { UniversityEmail } from "@/domain/value-objects/UniversityEmail";
+import {
+	Department,
+	DiscordAccount,
+	Email,
+	type Member,
+	type MemberRepository,
+	UniversityEmail,
+} from "../../domain";
 import { MemberNotFoundException } from "../exceptions/ApplicationExceptions";
-import { Department } from "@/domain/value-objects/Departments";
+import type { IUseCase } from "./BaseUseCase";
 
-export class UpdateMemberUseCase {
+export interface UpdateMemberInput {
+	memberId: string;
+	name?: string;
+	studentId?: string;
+	department?: string;
+	email?: string;
+	personalEmail?: string;
+	discordAccountId?: string;
+	discordNickName?: string;
+}
+
+export type UpdateMemberOutput = Member;
+
+export class UpdateMemberUseCase
+	implements IUseCase<UpdateMemberInput, UpdateMemberOutput>
+{
 	constructor(private readonly memberRepo: MemberRepository) {}
 
 	async execute(input: {
 		memberId: string;
 		name?: string;
 		studentId?: string;
-		department?: "CS" | "BI" | "IA"; // departmentはユニオン型
+		department?: string;
 		email?: string;
 		personalEmail?: string;
 		discordAccountId?: string;
