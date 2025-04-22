@@ -1,7 +1,6 @@
 import type { Member, MemberRepository } from "../../domain";
 import type { IUseCase } from "./BaseUseCase";
 
-// 入力パラメータがない場合は空のオブジェクト型
 export type GetMemberListInput = Record<string, never>;
 
 export type GetMemberListOutput = Member[];
