@@ -1,4 +1,3 @@
-import { PrismaMemberRepository } from "@/infrastructure/prisma/PrismaMemberRepository";
 import {
 	ChangeDiscordNickNameUseCase,
 	ConnectDiscordAccountUseCase,
@@ -28,6 +27,7 @@ import type {
 	UpdateMemberInput,
 	UpdateMemberOutput,
 } from "../application";
+import { PrismaMemberRepository } from "../infrastructure/";
 
 export type MemberUseCases = {
 	registerMember: IUseCase<RegisterMemberInput, RegisterMemberOutput>;
