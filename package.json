@@ -1,6 +1,6 @@
 {
   "name": "@shizuoka-its/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "ITS core library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -37,11 +37,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.9.0",
-    "prisma": "^5.22.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "prisma": "^5.22.0"
   }
 }
