@@ -1,6 +1,7 @@
 import { type Prisma, PrismaClient } from "@prisma/client";
 import {
 	Department,
+	DiscordAccount,
 	Email,
 	Member,
 	type MemberRepository,
@@ -23,6 +24,16 @@ export class PrismaMemberRepository implements MemberRepository {
 			new UniversityEmail(record.email),
 			record.personalEmail ? new Email(record.personalEmail) : undefined,
 		);
+
+		for (const discordAccount of record.discordAccounts) {
+			member.addDiscordAccount(
+				new DiscordAccount(
+					discordAccount.id,
+					discordAccount.nickName,
+					discordAccount.memberId,
+				),
+			);
+		}
 
 		return member;
 	}
