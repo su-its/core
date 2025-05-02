@@ -8,45 +8,17 @@ import {
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "../application";
-import type {
-	ChangeDiscordNickNameInput,
-	ChangeDiscordNickNameOutput,
-	ConnectDiscordAccountInput,
-	ConnectDiscordAccountOutput,
-	GetMemberByDiscordIdInput,
-	GetMemberByDiscordIdOutput,
-	GetMemberByEmailInput,
-	GetMemberByEmailOutput,
-	GetMemberInput,
-	GetMemberListInput,
-	GetMemberListOutput,
-	GetMemberOutput,
-	IUseCase,
-	RegisterMemberInput,
-	RegisterMemberOutput,
-	UpdateMemberInput,
-	UpdateMemberOutput,
-} from "../application";
 import { PrismaMemberRepository } from "../infrastructure/";
 
 export type MemberUseCases = {
-	registerMember: IUseCase<RegisterMemberInput, RegisterMemberOutput>;
-	updateMember: IUseCase<UpdateMemberInput, UpdateMemberOutput>;
-	getMember: IUseCase<GetMemberInput, GetMemberOutput>;
-	getMemberByEmail: IUseCase<GetMemberByEmailInput, GetMemberByEmailOutput>;
-	getMemberByDiscordId: IUseCase<
-		GetMemberByDiscordIdInput,
-		GetMemberByDiscordIdOutput
-	>;
-	getMemberList: IUseCase<GetMemberListInput, GetMemberListOutput>;
-	changeDiscordNickName: IUseCase<
-		ChangeDiscordNickNameInput,
-		ChangeDiscordNickNameOutput
-	>;
-	connectDiscordAccount: IUseCase<
-		ConnectDiscordAccountInput,
-		ConnectDiscordAccountOutput
-	>;
+	registerMember: RegisterMemberUseCase;
+	updateMember: UpdateMemberUseCase;
+	getMember: GetMemberUseCase;
+	getMemberByEmail: GetMemberByEmailUseCase;
+	getMemberByDiscordId: GetMemberByDiscordIdUseCase;
+	getMemberList: GetMemberListUseCase;
+	changeDiscordNickName: ChangeDiscordNickNameUseCase;
+	connectDiscordAccount: ConnectDiscordAccountUseCase;
 };
 
 export function createMemberUseCases(): MemberUseCases {
