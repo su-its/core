@@ -2,8 +2,8 @@ import {
 	ExhibitAlreadyExistsException,
 	ExhibitNotFoundException,
 } from "../../exceptions";
-import type { Exhibit } from "./Exhibit";
 import type { LightningTalkDuration, Url } from "../../value-objects";
+import type { Exhibit } from "./Exhibit";
 
 export class Event {
 	private exhibits: Exhibit[] = [];

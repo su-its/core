@@ -1,6 +1,6 @@
+import { LightningTalkNotFoundException } from "../../exceptions";
 import type { LightningTalkDuration, Url } from "../../value-objects";
 import type { LightningTalk } from "./LightningTalk";
-import { LightningTalkNotFoundException } from "../../exceptions";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
 
