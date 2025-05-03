@@ -40,23 +40,17 @@ export class Member {
 	}
 
 	addDiscordAccount(discordAccount: DiscordAccount) {
-		const existingAccount = this.discordAccounts.find(
-			(account) => account.id === discordAccount.id,
-		);
-		if (existingAccount) {
+		if (this.getDiscordAccountById(discordAccount.id)) {
 			throw new DiscordAccountAlreadyConnectedException();
 		}
 		this.discordAccounts.push(discordAccount);
 	}
 
 	removeDiscordAccount(discordAccountId: string) {
-		const accountIndex = this.discordAccounts.findIndex(
-			(account) => account.id === discordAccountId,
+		this.getDiscordAccountOrThrow(discordAccountId);
+		this.discordAccounts = this.discordAccounts.filter(
+			(account) => account.id !== discordAccountId,
 		);
-		if (accountIndex === -1) {
-			throw new DiscordAccountNotConnectedException();
-		}
-		this.discordAccounts.splice(accountIndex, 1);
 	}
 
 	getDiscordAccounts() {
@@ -67,5 +61,17 @@ export class Member {
 		return this.discordAccounts.find(
 			(account) => account.id === discordAccountId,
 		);
+	}
+
+	getDiscordAccountOrThrow(discordAccountId: string) {
+		const account = this.getDiscordAccountById(discordAccountId);
+		if (!account) {
+			throw new DiscordAccountNotConnectedException();
+		}
+		return account;
+	}
+
+	setDiscordAccountNickName(discordAccountId: string, newNickName: string) {
+		this.getDiscordAccountOrThrow(discordAccountId).setNickName(newNickName);
 	}
 }
