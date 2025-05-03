@@ -20,4 +20,13 @@ export class LightningTalk {
 	changeStartTime(newStartTime: Date): void {
 		this.startTime = newStartTime;
 	}
+
+	toSnapshot() {
+		return {
+			exhibitId: this.exhibitId,
+			startTime: this.startTime,
+			durationMinutes: this.durationMinutes,
+			slideUrl: this.slideUrl,
+		};
+	}
 }

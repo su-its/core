@@ -93,26 +93,27 @@ export class PrismaMemberRepository implements MemberRepository {
 	}
 
 	async save(member: Member): Promise<void> {
+		const memberSnapshot = member.toSnapshot();
 		await prisma.member.upsert({
-			where: { id: member.id },
+			where: { id: memberSnapshot.id },
 			update: {
-				name: member.name,
-				studentId: member.studentId,
-				department: member.department.toString(),
-				email: member.email.getValue(),
-				personalEmail: member.personalEmail?.getValue(),
+				name: memberSnapshot.name,
+				studentId: memberSnapshot.studentId,
+				department: memberSnapshot.department.toString(),
+				email: memberSnapshot.email.getValue(),
+				personalEmail: memberSnapshot.personalEmail?.getValue(),
 			},
 			create: {
-				id: member.id,
-				name: member.name,
-				studentId: member.studentId,
-				department: member.department.toString(),
-				email: member.email.getValue(),
-				personalEmail: member.personalEmail?.getValue(),
+				id: memberSnapshot.id,
+				name: memberSnapshot.name,
+				studentId: memberSnapshot.studentId,
+				department: memberSnapshot.department.toString(),
+				email: memberSnapshot.email.getValue(),
+				personalEmail: memberSnapshot.personalEmail?.getValue(),
 			},
 		});
 
-		for (const discordAccount of member.getDiscordAccounts()) {
+		for (const discordAccount of memberSnapshot.discordAccounts) {
 			await prisma.discordAccount.upsert({
 				where: { id: discordAccount.id },
 				update: { nickName: discordAccount.nickName },
