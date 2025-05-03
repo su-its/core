@@ -1,22 +1,22 @@
 import {
 	DiscordAccountAlreadyConnectedException,
 	DiscordAccountNotConnectedException,
-} from "../exceptions/DomainExceptions";
-import type { Department } from "../value-objects/Departments";
-import type { Email } from "../value-objects/Email";
-import type { UniversityEmail } from "../value-objects/UniversityEmail";
+} from "../../exceptions/DomainExceptions";
+import type { Department } from "../../value-objects/Departments";
+import type { Email } from "../../value-objects/Email";
+import type { UniversityEmail } from "../../value-objects/UniversityEmail";
 import type { DiscordAccount } from "./DiscordAccount";
 
 export class Member {
 	private discordAccounts: DiscordAccount[] = [];
 
 	constructor(
-		readonly id: string,
-		public name: string,
-		public studentId: string,
-		public department: Department,
-		public email: UniversityEmail,
-		public personalEmail?: Email,
+		public readonly id: string,
+		private name: string,
+		private studentId: string,
+		private department: Department,
+		private email: UniversityEmail,
+		private personalEmail?: Email,
 	) {}
 
 	setName(newName: string) {
