@@ -69,4 +69,15 @@ export class Exhibit {
 		}
 		return this.lightningTalk;
 	}
+
+	toSnapshot() {
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			markdownContent: this.markdownContent,
+			url: this.url,
+			lightningTalk: this.lightningTalk?.toSnapshot(),
+		};
+	}
 }
