@@ -93,3 +93,12 @@ export class LightningTalkNotFoundException extends DomainException {
 		this.name = "LightningTalkNotFoundException";
 	}
 }
+
+export class LightningTalkExhibitIdMismatchException extends DomainException {
+	constructor(
+		message = "指定されたライトニングトークのidが展示のidと一致していません",
+	) {
+		super(message);
+		this.name = "LightningTalkExhibitIdMismatchException";
+	}
+}

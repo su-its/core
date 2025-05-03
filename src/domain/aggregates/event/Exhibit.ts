@@ -1,8 +1,29 @@
-import { LightningTalkNotFoundException } from "../../exceptions";
+import {
+	LightningTalkExhibitIdMismatchException,
+	LightningTalkNotFoundException,
+} from "../../exceptions";
 import type { LightningTalkDuration, Url } from "../../value-objects";
 import type { LightningTalk } from "./LightningTalk";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
+
+	// NOTE: LightningTalkのExhibitコンストラクタ(TypeScriptは2つのコンストラクタを持てないため)
+	static createWithLightningTalk(
+		id: string,
+		name: string,
+		lt: LightningTalk,
+		description?: string,
+		markdownContent?: string,
+		url?: Url,
+	) {
+		const exhibit = new Exhibit(id, name, description, markdownContent, url);
+		// NOTE: ここで例外を投げるのは、Exhibit の id と LightningTalk の exhibitId が一致しているかどうかをチェックしているため
+		if (lt.exhibitId !== id) {
+			throw new LightningTalkExhibitIdMismatchException();
+		}
+		exhibit.lightningTalk = lt;
+		return exhibit;
+	}
 
 	constructor(
 		public readonly id: string,
@@ -47,16 +68,5 @@ export class Exhibit {
 			);
 		}
 		return this.lightningTalk;
-	}
-
-	toSnapshot() {
-		return {
-			id: this.id,
-			name: this.name,
-			description: this.description,
-			markdownContent: this.markdownContent,
-			url: this.url,
-			lightningTalk: this.lightningTalk?.toSnapshot(),
-		};
 	}
 }
