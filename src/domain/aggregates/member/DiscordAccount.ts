@@ -8,4 +8,12 @@ export class DiscordAccount {
 	setNickName(newNickName: string) {
 		this.nickName = newNickName;
 	}
+
+	toSnapshot() {
+		return {
+			id: this.id,
+			nickName: this.nickName,
+			memberId: this.memberId,
+		};
+	}
 }

@@ -19,19 +19,9 @@ export class Event {
 		this.name = newName;
 	}
 
-	// NOTE: 時間を変更した時に、時間系のプロパティを持つエンティティの時間を変更する必要がある？
 	public changeDate(newDate: Date): void {
+		// NOTE: 時間を変更した時に、時間系のプロパティを持つエンティティの時間を変更する必要がある？
 		this.date = newDate;
-	}
-
-	private getExhibitOrThrow(exhibitId: string): Exhibit {
-		const exhibit = this.exhibits.find((x) => x.id === exhibitId);
-		if (!exhibit) {
-			throw new ExhibitNotFoundException(
-				`Exhibit(id=${exhibitId}) が見つかりません`,
-			);
-		}
-		return exhibit;
 	}
 
 	public addExhibit(exhibit: Exhibit): void {
@@ -91,5 +81,24 @@ export class Event {
 		newSlideUrl: Url,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkSlideUrl(newSlideUrl);
+	}
+
+	private getExhibitOrThrow(exhibitId: string): Exhibit {
+		const exhibit = this.exhibits.find((x) => x.id === exhibitId);
+		if (!exhibit) {
+			throw new ExhibitNotFoundException(
+				`Exhibit(id=${exhibitId}) が見つかりません`,
+			);
+		}
+		return exhibit;
+	}
+
+	toSnapshot() {
+		return {
+			id: this.id,
+			name: this.name,
+			date: this.date,
+			exhibits: this.exhibits.map((exhibit) => exhibit.toSnapshot()),
+		};
 	}
 }

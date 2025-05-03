@@ -74,4 +74,18 @@ export class Member {
 	setDiscordAccountNickName(discordAccountId: string, newNickName: string) {
 		this.getDiscordAccountOrThrow(discordAccountId).setNickName(newNickName);
 	}
+
+	toSnapshot() {
+		return {
+			id: this.id,
+			name: this.name,
+			studentId: this.studentId,
+			department: this.department,
+			email: this.email,
+			personalEmail: this.personalEmail,
+			discordAccounts: this.discordAccounts.map((account) =>
+				account.toSnapshot(),
+			),
+		};
+	}
 }

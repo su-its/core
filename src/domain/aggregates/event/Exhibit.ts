@@ -28,15 +28,6 @@ export class Exhibit {
 		this.url = newUrl;
 	}
 
-	private getLightningTalkOrThrow(): LightningTalk {
-		if (!this.lightningTalk) {
-			throw new LightningTalkNotFoundException(
-				`Exhibit(id=${this.id}) に紐づく LightningTalk が存在しません`,
-			);
-		}
-		return this.lightningTalk;
-	}
-
 	public changeLightningTalkStartTime(newStartTime: Date): void {
 		this.getLightningTalkOrThrow().changeStartTime(newStartTime);
 	}
@@ -47,5 +38,25 @@ export class Exhibit {
 
 	public changeLightningTalkSlideUrl(newSlideUrl: Url): void {
 		this.getLightningTalkOrThrow().changeSlideUrl(newSlideUrl);
+	}
+
+	private getLightningTalkOrThrow(): LightningTalk {
+		if (!this.lightningTalk) {
+			throw new LightningTalkNotFoundException(
+				`Exhibit(id=${this.id}) に紐づく LightningTalk が存在しません`,
+			);
+		}
+		return this.lightningTalk;
+	}
+
+	toSnapshot() {
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			markdownContent: this.markdownContent,
+			url: this.url,
+			lightningTalk: this.lightningTalk?.toSnapshot(),
+		};
 	}
 }
