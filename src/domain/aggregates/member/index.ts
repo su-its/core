@@ -1,3 +1,3 @@
 export * from "./Member";
 export * from "./MemberRepository";
-export * from "./DiscordAccount";
+// NOTE: DiscordAccountは集約ルートじゃないので公開しない
