@@ -1,9 +1,9 @@
-import type { Member, MemberRepository } from "../../domain";
+import type { Member, MemberRepository } from "../../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberNotFoundException,
-} from "../exceptions/ApplicationExceptions";
-import type { IUseCase } from "./BaseUseCase";
+} from "../../exceptions/ApplicationExceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeDiscordNickNameInput {
 	discordAccountId: string;
@@ -12,10 +12,13 @@ export interface ChangeDiscordNickNameInput {
 
 export type ChangeDiscordNickNameOutput = Member;
 
-export class ChangeDiscordNickNameUseCase
-	implements IUseCase<ChangeDiscordNickNameInput, ChangeDiscordNickNameOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class ChangeDiscordNickNameUseCase extends IUseCase<
+	ChangeDiscordNickNameInput,
+	ChangeDiscordNickNameOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(
 		input: ChangeDiscordNickNameInput,

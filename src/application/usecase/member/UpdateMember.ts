@@ -5,9 +5,9 @@ import {
 	type Member,
 	type MemberRepository,
 	UniversityEmail,
-} from "../../domain";
-import { MemberNotFoundException } from "../exceptions/ApplicationExceptions";
-import type { IUseCase } from "./BaseUseCase";
+} from "../../../domain";
+import { MemberNotFoundException } from "../../exceptions/ApplicationExceptions";
+import { IUseCase } from "../base";
 
 export interface UpdateMemberInput {
 	memberId: string;
@@ -22,21 +22,15 @@ export interface UpdateMemberInput {
 
 export type UpdateMemberOutput = Member;
 
-export class UpdateMemberUseCase
-	implements IUseCase<UpdateMemberInput, UpdateMemberOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class UpdateMemberUseCase extends IUseCase<
+	UpdateMemberInput,
+	UpdateMemberOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
-	async execute(input: {
-		memberId: string;
-		name?: string;
-		studentId?: string;
-		department?: string;
-		email?: string;
-		personalEmail?: string;
-		discordAccountId?: string;
-		discordNickName?: string;
-	}): Promise<Member> {
+	async execute(input: UpdateMemberInput): Promise<UpdateMemberOutput> {
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
 			throw new MemberNotFoundException();

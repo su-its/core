@@ -6,12 +6,12 @@ import {
 	Member,
 	type MemberRepository,
 	UniversityEmail,
-} from "../../domain";
+} from "../../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberEmailAlreadyExistsException,
-} from "../exceptions/ApplicationExceptions";
-import type { IUseCase } from "./BaseUseCase";
+} from "../../exceptions/ApplicationExceptions";
+import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {
 	name: string;
@@ -25,10 +25,13 @@ export interface RegisterMemberInput {
 
 export type RegisterMemberOutput = Member;
 
-export class RegisterMemberUseCase
-	implements IUseCase<RegisterMemberInput, RegisterMemberOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class RegisterMemberUseCase extends IUseCase<
+	RegisterMemberInput,
+	RegisterMemberOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
 		// TODO: この入力値のバリデーションはUsecaseが本来着目するべき処理の流れという関心事では無い

@@ -1,5 +1,5 @@
-import type { Member, MemberRepository } from "../../domain";
-import type { IUseCase } from "./BaseUseCase";
+import type { Member, MemberRepository } from "../../../domain";
+import type { IUseCase } from "../base";
 
 export interface GetMemberInput {
 	id: string;
