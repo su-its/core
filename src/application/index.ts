@@ -1,2 +1,2 @@
-export * from "./usecase";
+export * from "./usecase/member";
 export * from "./exceptions";
