@@ -5,6 +5,20 @@ export class ApplicationException extends Error {
 	}
 }
 
+export class EventNotFoundException extends ApplicationException {
+	constructor(message = "イベントが見つかりません") {
+		super(message);
+		this.name = "EventNotFoundException";
+	}
+}
+
+export class ExhibitNotFoundException extends ApplicationException {
+	constructor(message = "展示が見つかりません") {
+		super(message);
+		this.name = "ExhibitNotFoundException";
+	}
+}
+
 export class MemberEmailAlreadyExistsException extends ApplicationException {
 	constructor(message = "このメールアドレスは既に登録されています") {
 		super(message);
