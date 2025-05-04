@@ -18,6 +18,9 @@ export type EventUseCases = {
 	removeExhibitFromEvent: eventUsecases.RemoveExhibitFromEvent;
 };
 
+/**
+ * @beta 将来的にAPIが変更される可能性があります。
+ */
 export function createEventUseCases(): EventUseCases {
 	const eventRepo = new PrismaEventRepository();
 
