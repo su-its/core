@@ -6,6 +6,7 @@ import type { LightningTalkDuration, Url } from "../../value-objects";
 import type { LightningTalk } from "./LightningTalk";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
+	private memberIds: Set<string> = new Set();
 
 	// NOTE: LightningTalkのExhibitコンストラクタ(TypeScriptは2つのコンストラクタを持てないため)
 	static createWithLightningTalk(
@@ -33,6 +34,10 @@ export class Exhibit {
 		private url?: Url,
 	) {}
 
+	getMemberIds(): string[] {
+		return Array.from(this.memberIds);
+	}
+
 	changeName(newName: string): void {
 		this.name = newName;
 	}
@@ -59,6 +64,14 @@ export class Exhibit {
 
 	public changeLightningTalkSlideUrl(newSlideUrl: Url): void {
 		this.getLightningTalkOrThrow().changeSlideUrl(newSlideUrl);
+	}
+
+	public addMemberId(memberId: string): void {
+		this.memberIds.add(memberId);
+	}
+
+	public removeMemberId(memberId: string): void {
+		this.memberIds.delete(memberId);
 	}
 
 	private getLightningTalkOrThrow(): LightningTalk {

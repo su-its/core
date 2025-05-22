@@ -1,5 +1,6 @@
 import {
 	ExhibitAlreadyExistsException,
+	ExhibitHasMemberException,
 	ExhibitNotFoundException,
 } from "../../exceptions";
 import type { LightningTalkDuration, Url } from "../../value-objects";
@@ -7,6 +8,7 @@ import type { Exhibit } from "./Exhibit";
 
 export class Event {
 	private exhibits: Exhibit[] = [];
+	private memberIds: Set<string> = new Set();
 
 	constructor(
 		public readonly id: string,
@@ -14,6 +16,14 @@ export class Event {
 		// TODO: 期間を指定したい
 		private date: Date,
 	) {}
+
+	public getExhibits(): Exhibit[] {
+		return this.exhibits;
+	}
+
+	public getMemberIds(): string[] {
+		return Array.from(this.memberIds);
+	}
 
 	public changeName(newName: string): void {
 		this.name = newName;
@@ -29,6 +39,10 @@ export class Event {
 			throw new ExhibitAlreadyExistsException(
 				`Exhibit(id=${exhibit.id}) は既に存在します`,
 			);
+		}
+		// NOTE: Exhibitに登録するタイミングでEventのmemberIdsにも登録する必要がある
+		for (const memberId of exhibit.getMemberIds()) {
+			this.memberIds.add(memberId);
 		}
 		this.exhibits.push(exhibit);
 	}
@@ -93,12 +107,33 @@ export class Event {
 		return exhibit;
 	}
 
+	public addMemberId(memberId: string): void {
+		this.memberIds.add(memberId);
+	}
+
+	public removeMemberId(memberId: string): void {
+		for (const exhibit of this.exhibits) {
+			if (exhibit.getMemberIds().includes(memberId)) {
+				throw new ExhibitHasMemberException();
+			}
+		}
+		this.memberIds.delete(memberId);
+	}
+
+	public addExhibitMemberId(exhibitId: string, memberId: string): void {
+		this.getExhibitOrThrow(exhibitId).addMemberId(memberId);
+		// NOTE: Exhibitに登録するタイミングでEventのmemberIdsにも登録する必要がある
+		this.memberIds.add(memberId);
+	}
+
+	public removeExhibitMemberId(exhibitId: string, memberId: string): void {}
 	toSnapshot() {
 		return {
 			id: this.id,
 			name: this.name,
 			date: this.date,
 			exhibits: this.exhibits.map((exhibit) => exhibit.toSnapshot()),
+			memberIds: Array.from(this.memberIds),
 		};
 	}
 }
