@@ -97,6 +97,18 @@ export class PrismaEventRepository implements EventRepository {
 			},
 		});
 
+		// MemberExhibit（展示参加者）も先に削除
+		await prisma.memberExhibit.deleteMany({
+			where: {
+				exhibitId: {
+					in: await this.findObsoleteExhibitIds(
+						snapshot.id,
+						snapshotExhibitIds,
+					),
+				},
+			},
+		});
+
 		// exhibit 削除
 		await prisma.exhibit.deleteMany({
 			where: {
@@ -147,6 +159,44 @@ export class PrismaEventRepository implements EventRepository {
 					where: { exhibitId: ex.id },
 				});
 			}
+		}
+
+		// 4) MemberEvent（イベント参加者）を同期
+		const eventMemberIds = event.getMemberIds();
+		// 古い参加者を削除
+		await prisma.memberEvent.deleteMany({
+			where: {
+				eventId: snapshot.id,
+				memberId: { notIn: eventMemberIds },
+			},
+		});
+		// 新しい参加者を登録（重複スキップ）
+		await prisma.memberEvent.createMany({
+			data: eventMemberIds.map((memberId) => ({
+				memberId,
+				eventId: snapshot.id,
+			})),
+			skipDuplicates: true,
+		});
+
+		// 5) MemberExhibit（展示参加者）を同期
+		for (const exhibitDomain of event.getExhibits()) {
+			const exhibitMemberIds = exhibitDomain.getMemberIds();
+			// 古い展示参加者を削除
+			await prisma.memberExhibit.deleteMany({
+				where: {
+					exhibitId: exhibitDomain.id,
+					memberId: { notIn: exhibitMemberIds },
+				},
+			});
+			// 新しい展示参加者を登録（重複スキップ）
+			await prisma.memberExhibit.createMany({
+				data: exhibitMemberIds.map((memberId) => ({
+					memberId,
+					exhibitId: exhibitDomain.id,
+				})),
+				skipDuplicates: true,
+			});
 		}
 	}
 
