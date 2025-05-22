@@ -102,3 +102,12 @@ export class LightningTalkExhibitIdMismatchException extends DomainException {
 		this.name = "LightningTalkExhibitIdMismatchException";
 	}
 }
+
+export class ExhibitHasMemberException extends DomainException {
+	constructor(
+		message = "イベントに紐づいた展示に当該メンバーがいるため、Eventから削除できません",
+	) {
+		super(message);
+		this.name = "ExhibitHasMemberException";
+	}
+}
