@@ -1,3 +1,4 @@
+import { EventNotFoundException } from "../../exceptions";
 import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
 import type { Member } from "../../../domain/aggregates/member/Member";
 import type { MemberRepository } from "../../../domain/aggregates/member/MemberRepository";
@@ -17,6 +18,9 @@ export class GetMembersByExhibit
 
 	async execute(input: GetMembersByExhibitInput): Promise<Member[]> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
+		if (!event) {
+			throw new EventNotFoundException();
+		}
 		const members = await Promise.all(
 			event
 				.getMemberIds()
