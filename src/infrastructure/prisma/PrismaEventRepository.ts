@@ -183,6 +183,31 @@ export class PrismaEventRepository implements EventRepository {
 		return this.toDomain(record);
 	}
 
+	async findByParticipantMemberId(memberId: string): Promise<Event[]> {
+		const records = await prisma.event.findMany({
+			where: {
+				members: { some: { memberId: memberId } },
+			},
+			include: {
+				exhibits: { include: { lightningTalk: true } },
+			},
+		});
+		return records.map((r) => this.toDomain(r));
+	}
+
+	async findByExhibitId(exhibitId: string): Promise<Event | null> {
+		const record = await prisma.event.findFirst({
+			where: {
+				exhibits: { some: { id: exhibitId } },
+			},
+			include: {
+				exhibits: { include: { lightningTalk: true } },
+			},
+		});
+		if (!record) return null;
+		return this.toDomain(record);
+	}
+
 	async findAll(): Promise<Event[]> {
 		const records = await prisma.event.findMany({
 			include: {
