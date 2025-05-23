@@ -1,5 +1,9 @@
 import * as eventUsecases from "../application/usecase/event";
-import { PrismaEventRepository } from "../infrastructure";
+import * as eventParticipationUsecases from "../application/usecase/eventParticipation";
+import {
+	PrismaEventRepository,
+	PrismaMemberRepository,
+} from "../infrastructure";
 
 export type EventUseCases = {
 	createEvent: eventUsecases.CreateEvent;
@@ -16,6 +20,14 @@ export type EventUseCases = {
 	changeLightningTalkSlideUrl: eventUsecases.ChangeLightningTalkSlideUrl;
 	changeLightningTalkStartTime: eventUsecases.ChangeLightningTalkStartTime;
 	removeExhibitFromEvent: eventUsecases.RemoveExhibitFromEvent;
+	registerMemberToEvent: eventParticipationUsecases.RegisterMemberToEvent;
+	removeMemberFromEvent: eventParticipationUsecases.RemoveMemberFromEvent;
+	getEventsByMember: eventParticipationUsecases.GetEventsByMember;
+	getMembersByEvent: eventParticipationUsecases.GetMembersByEvent;
+	registerMemberToExhibit: eventParticipationUsecases.RegisterMemberToExhibit;
+	removeMemberFromExhibit: eventParticipationUsecases.RemoveMemberFromExhibit;
+	getExhibitsByMember: eventParticipationUsecases.GetExhibitsByMember;
+	getMembersByExhibit: eventParticipationUsecases.GetMembersByExhibit;
 };
 
 /**
@@ -23,6 +35,7 @@ export type EventUseCases = {
  */
 export function createEventUseCases(): EventUseCases {
 	const eventRepo = new PrismaEventRepository();
+	const memberRepo = new PrismaMemberRepository();
 
 	return {
 		createEvent: new eventUsecases.CreateEvent(eventRepo),
@@ -47,5 +60,37 @@ export function createEventUseCases(): EventUseCases {
 		changeLightningTalkStartTime:
 			new eventUsecases.ChangeLightningTalkStartTime(eventRepo),
 		removeExhibitFromEvent: new eventUsecases.RemoveExhibitFromEvent(eventRepo),
+		registerMemberToEvent: new eventParticipationUsecases.RegisterMemberToEvent(
+			eventRepo,
+			memberRepo,
+		),
+		removeMemberFromEvent: new eventParticipationUsecases.RemoveMemberFromEvent(
+			eventRepo,
+			memberRepo,
+		),
+		getEventsByMember: new eventParticipationUsecases.GetEventsByMember(
+			eventRepo,
+		),
+		getMembersByEvent: new eventParticipationUsecases.GetMembersByEvent(
+			eventRepo,
+			memberRepo,
+		),
+		registerMemberToExhibit:
+			new eventParticipationUsecases.RegisterMemberToExhibit(
+				eventRepo,
+				memberRepo,
+			),
+		removeMemberFromExhibit:
+			new eventParticipationUsecases.RemoveMemberFromExhibit(
+				memberRepo,
+				eventRepo,
+			),
+		getExhibitsByMember: new eventParticipationUsecases.GetExhibitsByMember(
+			eventRepo,
+		),
+		getMembersByExhibit: new eventParticipationUsecases.GetMembersByExhibit(
+			memberRepo,
+			eventRepo,
+		),
 	};
 }
