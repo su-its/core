@@ -1,6 +1,6 @@
+import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
 import type { Member } from "../../../domain/aggregates/member/Member";
 import type { MemberRepository } from "../../../domain/aggregates/member/MemberRepository";
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
 import { EventNotFoundException } from "../../exceptions/ApplicationExceptions";
 import type { IUseCase } from "../base";
 

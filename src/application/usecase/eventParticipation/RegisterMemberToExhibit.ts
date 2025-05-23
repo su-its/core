@@ -1,8 +1,8 @@
+import type { EventRepository, MemberRepository } from "../../../domain";
 import {
 	EventNotFoundException,
 	MemberNotFoundException,
 } from "../..//exceptions";
-import type { EventRepository, MemberRepository } from "../../../domain";
 import type { IUseCase } from "../base";
 
 export interface RegisterMemberToExhibitInput {
