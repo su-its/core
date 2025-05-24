@@ -3,7 +3,7 @@ import {
 	type Member,
 	type MemberRepository,
 } from "../../../domain";
-import { MemberNotFoundException } from "../../exceptions/ApplicationExceptions";
+import { MemberNotFoundException } from "../../exceptions";
 import type { IUseCase } from "../base";
 
 export interface ConnectDiscordAccountInput {

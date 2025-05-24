@@ -1,6 +1,8 @@
-import type { Event } from "../../../domain/aggregates/event/Event";
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
-import type { LightningTalkDuration } from "../../../domain/value-objects/LightningTalkDuration";
+import type {
+	Event,
+	EventRepository,
+	LightningTalkDuration,
+} from "../../../domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 

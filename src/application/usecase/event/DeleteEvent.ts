@@ -1,4 +1,4 @@
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
+import type { EventRepository } from "../../../domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 

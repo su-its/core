@@ -6,7 +6,7 @@ import {
 	type MemberRepository,
 	UniversityEmail,
 } from "../../../domain";
-import { MemberNotFoundException } from "../../exceptions/ApplicationExceptions";
+import { MemberNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface UpdateMemberInput {

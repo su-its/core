@@ -10,7 +10,7 @@ import {
 import {
 	DiscordAccountNotConnectedException,
 	MemberEmailAlreadyExistsException,
-} from "../../exceptions/ApplicationExceptions";
+} from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {

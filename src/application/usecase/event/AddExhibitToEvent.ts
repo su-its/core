@@ -1,7 +1,9 @@
-import type { EventRepository } from "../../../domain";
-import { Exhibit } from "../../../domain";
-import type { Url } from "../../../domain";
-import type { Event } from "../../../domain";
+import {
+	type Event,
+	type EventRepository,
+	Exhibit,
+	type Url,
+} from "../../../domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 

@@ -1,4 +1,4 @@
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
+import type { Event, EventRepository } from "../../../domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
@@ -7,7 +7,6 @@ export interface RemoveExhibitFromEventInput {
 	exhibitId: string;
 }
 
-import type { Event } from "../../../domain/aggregates/event/Event";
 export type RemoveExhibitFromEventOutput = Event;
 
 /**

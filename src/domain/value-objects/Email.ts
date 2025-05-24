@@ -1,4 +1,4 @@
-import { InvalidEmailFormatException } from "../exceptions/DomainExceptions";
+import { InvalidEmailFormatException } from "../exceptions";
 import { ValueObject } from "./ValueObject";
 
 export class Email extends ValueObject<string> {
