@@ -1,5 +1,4 @@
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
-import type { Exhibit } from "../../../domain/aggregates/event/Exhibit";
+import type { EventRepository, Exhibit } from "../../../domain";
 import type { IUseCase } from "../base";
 
 export interface GetExhibitsByMemberInput {

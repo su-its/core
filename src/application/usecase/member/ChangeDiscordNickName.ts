@@ -2,7 +2,7 @@ import type { Member, MemberRepository } from "../../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberNotFoundException,
-} from "../../exceptions/ApplicationExceptions";
+} from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface ChangeDiscordNickNameInput {

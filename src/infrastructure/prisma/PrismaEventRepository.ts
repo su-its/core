@@ -1,7 +1,12 @@
 import { type Prisma, PrismaClient } from "@prisma/client";
-import type { EventRepository } from "../../domain/aggregates/event";
-import { Event, Exhibit, LightningTalk } from "../../domain/aggregates/event";
-import { LightningTalkDuration, Url } from "../../domain/value-objects";
+import {
+	Event,
+	type EventRepository,
+	Exhibit,
+	LightningTalk,
+	LightningTalkDuration,
+	Url,
+} from "../../domain";
 
 const prisma = new PrismaClient();
 

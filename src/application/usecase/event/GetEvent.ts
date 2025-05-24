@@ -1,5 +1,4 @@
-import type { Event } from "../../../domain/aggregates/event";
-import type { EventRepository } from "../../../domain/aggregates/event/EventRepository";
+import type { Event, EventRepository } from "../../../domain";
 import { IUseCase } from "../base";
 
 export interface GetEventInput {

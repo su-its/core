@@ -1,5 +1,5 @@
-import * as eventUsecases from "../application/usecase/event";
-import * as eventParticipationUsecases from "../application/usecase/eventParticipation";
+import * as eventUsecases from "../application";
+import * as eventParticipationUsecases from "../application";
 import {
 	PrismaEventRepository,
 	PrismaMemberRepository,

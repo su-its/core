@@ -1,4 +1,4 @@
-import { InvalidUniversityEmailException } from "../exceptions/DomainExceptions";
+import { InvalidUniversityEmailException } from "../exceptions";
 import { Email } from "./Email";
 
 const UNIVERSITY_EMAIL_DOMAIN = "@shizuoka.ac.jp";
