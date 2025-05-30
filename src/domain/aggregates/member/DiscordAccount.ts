@@ -1,9 +1,17 @@
 export class DiscordAccount {
 	constructor(
 		readonly id: string, // Discord ID
-		public nickName: string,
-		public memberId: string,
+		private nickName: string,
+		private memberId: string,
 	) {}
+
+	getNickName() {
+		return this.nickName;
+	}
+
+	getMemberId() {
+		return this.memberId;
+	}
 
 	setNickName(newNickName: string) {
 		this.nickName = newNickName;

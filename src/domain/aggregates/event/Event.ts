@@ -17,6 +17,14 @@ export class Event {
 		private date: Date,
 	) {}
 
+	public getName(): string {
+		return this.name;
+	}
+
+	public getDate(): Date {
+		return this.date;
+	}
+
 	public getExhibits(): Exhibit[] {
 		return this.exhibits;
 	}
