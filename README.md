@@ -1,5 +1,5 @@
 # @shizuoka-its/core
-静岡大学情報技術研究部（ITS）で使用する共通のデータベースアクセス層とビジネスロジックを提供するTypeScriptライブラリです。
+静岡大学ITソルーション室（ITS）で使用する共通のデータベースアクセス層とビジネスロジックを提供するTypeScriptライブラリです。
 
 ## インストール
 ```bash
@@ -7,15 +7,17 @@ npm install @shizuoka-its/core
 ```
 
 ## 利用例
-メンバー情報の取得
+メンバー情報表示
 ```ts
 import { createMemberUseCases, type Member } from "@shizuoka-its/core";  
   
 const memberUseCases = createMemberUseCases();  
   
 // メンバー情報の取得  
-const member: Member | null = await memberUseCases.getMemberByEmail  
+const result = await memberUseCases.getMemberByEmail  
   .execute({ email: "example@shizuoka.ac.jp" });
+
+console.log(result.member);
 ```
 
 ## アーキテクチャ
@@ -127,5 +129,5 @@ npx prisma studio
 ```
 
 ## コントリビューター
-@KinjiKawaguchi
-@KikyoNanakusa
+- @KinjiKawaguchi
+- @KikyoNanakusa
