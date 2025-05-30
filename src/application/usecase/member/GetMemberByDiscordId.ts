@@ -1,20 +1,28 @@
 import type { Member, MemberRepository } from "../../../domain";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export interface GetMemberByDiscordIdInput {
 	discordId: string;
 }
 
-export type GetMemberByDiscordIdOutput = Member | null;
+export interface GetMemberByDiscordIdOutput {
+	member: Member | null;
+}
 
-export class GetMemberByDiscordIdUseCase
-	implements IUseCase<GetMemberByDiscordIdInput, GetMemberByDiscordIdOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class GetMemberByDiscordIdUseCase extends IUseCase<
+	GetMemberByDiscordIdInput,
+	GetMemberByDiscordIdOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(
 		input: GetMemberByDiscordIdInput,
 	): Promise<GetMemberByDiscordIdOutput> {
-		return await this.memberRepo.findByDiscordAccountId(input.discordId);
+		const member = await this.memberRepo.findByDiscordAccountId(
+			input.discordId,
+		);
+		return { member };
 	}
 }

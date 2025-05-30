@@ -8,7 +8,9 @@ export interface ChangeExhibitUrlInput {
 	newUrl: Url;
 }
 
-export type ChangeExhibitUrlOutput = Event;
+export interface ChangeExhibitUrlOutput {
+	event: Event;
+}
 
 /**
  * 展示URL変更ユースケース
@@ -28,6 +30,6 @@ export class ChangeExhibitUrl extends IUseCase<
 		}
 		event.changeExhibitUrl(input.exhibitId, input.newUrl);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

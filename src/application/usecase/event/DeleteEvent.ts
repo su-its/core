@@ -1,4 +1,4 @@
-import type { EventRepository } from "../../../domain";
+import type { Event, EventRepository } from "../../../domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
@@ -6,7 +6,9 @@ export interface DeleteEventInput {
 	eventId: string;
 }
 
-export type DeleteEventOutput = undefined;
+export interface DeleteEventOutput {
+	event: Event;
+}
 
 /**
  * イベント削除ユースケース
@@ -22,5 +24,6 @@ export class DeleteEvent extends IUseCase<DeleteEventInput, DeleteEventOutput> {
 			throw new EventNotFoundException();
 		}
 		await this.eventRepository.delete(input.eventId);
+		return { event };
 	}
 }

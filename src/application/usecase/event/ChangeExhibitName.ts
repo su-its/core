@@ -8,7 +8,9 @@ export interface ChangeExhibitNameInput {
 	newName: string;
 }
 
-export type ChangeExhibitNameOutput = Event;
+export interface ChangeExhibitNameOutput {
+	event: Event;
+}
 
 /**
  * 展示名変更ユースケース
@@ -30,6 +32,6 @@ export class ChangeExhibitName extends IUseCase<
 		}
 		event.changeExhibitName(input.exhibitId, input.newName);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

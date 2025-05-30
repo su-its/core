@@ -8,10 +8,12 @@ export interface ChangeLightningTalkSlideUrlInput {
 	newSlideUrl: Url;
 }
 
-export type ChangeLightningTalkSlideUrlOutput = Event;
+export interface ChangeLightningTalkSlideUrlOutput {
+	event: Event;
+}
 
 /**
- * LTスライドURL変更ユースケース
+ * ライトニングトークスライドURL変更ユースケース
  */
 export class ChangeLightningTalkSlideUrl extends IUseCase<
 	ChangeLightningTalkSlideUrlInput,
@@ -33,6 +35,6 @@ export class ChangeLightningTalkSlideUrl extends IUseCase<
 			input.newSlideUrl,
 		);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

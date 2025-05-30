@@ -8,11 +8,10 @@ export interface UpdateEventInput {
 	date?: Date;
 }
 
-export type UpdateEventOutput = Event;
+export interface UpdateEventOutput {
+	event: Event;
+}
 
-/**
- * イベント名・日付の変更ユースケース
- */
 export class UpdateEvent extends IUseCase<UpdateEventInput, UpdateEventOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
@@ -30,6 +29,6 @@ export class UpdateEvent extends IUseCase<UpdateEventInput, UpdateEventOutput> {
 			event.changeDate(input.date);
 		}
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

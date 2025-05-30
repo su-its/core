@@ -1,16 +1,28 @@
 import type { Event, EventRepository } from "../../../domain";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export interface GetEventsByMemberInput {
 	memberId: string;
 }
 
-export class GetEventsByMember
-	implements IUseCase<GetEventsByMemberInput, Event[]>
-{
-	constructor(private readonly eventRepository: EventRepository) {}
+export interface GetEventsByMemberOutput {
+	events: Event[];
+}
 
-	async execute(input: GetEventsByMemberInput): Promise<Event[]> {
-		return await this.eventRepository.findByParticipantMemberId(input.memberId);
+export class GetEventsByMember extends IUseCase<
+	GetEventsByMemberInput,
+	GetEventsByMemberOutput
+> {
+	constructor(private readonly eventRepository: EventRepository) {
+		super();
+	}
+
+	async execute(
+		input: GetEventsByMemberInput,
+	): Promise<GetEventsByMemberOutput> {
+		const events = await this.eventRepository.findByParticipantMemberId(
+			input.memberId,
+		);
+		return { events };
 	}
 }

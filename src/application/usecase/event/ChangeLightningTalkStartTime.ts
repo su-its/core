@@ -8,10 +8,12 @@ export interface ChangeLightningTalkStartTimeInput {
 	newStartTime: Date;
 }
 
-export type ChangeLightningTalkStartTimeOutput = Event;
+export interface ChangeLightningTalkStartTimeOutput {
+	event: Event;
+}
 
 /**
- * LT開始時刻変更ユースケース
+ * ライトニングトーク開始時間変更ユースケース
  */
 export class ChangeLightningTalkStartTime extends IUseCase<
 	ChangeLightningTalkStartTimeInput,
@@ -33,6 +35,6 @@ export class ChangeLightningTalkStartTime extends IUseCase<
 			input.newStartTime,
 		);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

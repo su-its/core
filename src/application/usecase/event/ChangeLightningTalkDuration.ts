@@ -12,10 +12,12 @@ export interface ChangeLightningTalkDurationInput {
 	newDuration: LightningTalkDuration;
 }
 
-export type ChangeLightningTalkDurationOutput = Event;
+export interface ChangeLightningTalkDurationOutput {
+	event: Event;
+}
 
 /**
- * LT持ち時間変更ユースケース
+ * ライトニングトーク時間変更ユースケース
  */
 export class ChangeLightningTalkDuration extends IUseCase<
 	ChangeLightningTalkDurationInput,
@@ -37,6 +39,6 @@ export class ChangeLightningTalkDuration extends IUseCase<
 			input.newDuration,
 		);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

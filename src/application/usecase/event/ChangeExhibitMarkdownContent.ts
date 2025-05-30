@@ -8,10 +8,12 @@ export interface ChangeExhibitMarkdownContentInput {
 	newMarkdownContent: string;
 }
 
-export type ChangeExhibitMarkdownContentOutput = Event;
+export interface ChangeExhibitMarkdownContentOutput {
+	event: Event;
+}
 
 /**
- * 展示Markdownコンテンツ変更ユースケース
+ * 展示マークダウンコンテンツ変更ユースケース
  */
 export class ChangeExhibitMarkdownContent extends IUseCase<
 	ChangeExhibitMarkdownContentInput,
@@ -33,6 +35,6 @@ export class ChangeExhibitMarkdownContent extends IUseCase<
 			input.newMarkdownContent,
 		);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

@@ -3,11 +3,10 @@ import { IUseCase } from "../base";
 
 export type GetEventListInput = Record<string, never>;
 
-export type GetEventListOutput = Event[];
+export interface GetEventListOutput {
+	events: Event[];
+}
 
-/**
- * 全Eventを一覧取得するユースケース
- */
 export class GetEventList extends IUseCase<
 	GetEventListInput,
 	GetEventListOutput
@@ -17,6 +16,7 @@ export class GetEventList extends IUseCase<
 	}
 
 	async execute(_input: GetEventListInput): Promise<GetEventListOutput> {
-		return await this.eventRepository.findAll();
+		const events = await this.eventRepository.findAll();
+		return { events };
 	}
 }
