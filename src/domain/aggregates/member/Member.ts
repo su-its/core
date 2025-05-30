@@ -19,6 +19,30 @@ export class Member {
 		private personalEmail?: Email,
 	) {}
 
+	getName() {
+		return this.name;
+	}
+
+	getStudentId() {
+		return this.studentId;
+	}
+
+	getDepartment() {
+		return this.department;
+	}
+
+	getEmail() {
+		return this.email;
+	}
+
+	getPersonalEmail() {
+		return this.personalEmail;
+	}
+
+	getDiscordAccounts() {
+		return this.discordAccounts;
+	}
+
 	setName(newName: string) {
 		this.name = newName;
 	}
@@ -51,10 +75,6 @@ export class Member {
 		this.discordAccounts = this.discordAccounts.filter(
 			(account) => account.id !== discordAccountId,
 		);
-	}
-
-	getDiscordAccounts() {
-		return this.discordAccounts;
 	}
 
 	getDiscordAccountById(discordAccountId: string) {

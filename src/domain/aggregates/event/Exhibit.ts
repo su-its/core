@@ -34,6 +34,26 @@ export class Exhibit {
 		private url?: Url,
 	) {}
 
+	getName(): string {
+		return this.name;
+	}
+
+	getDescription(): string | undefined {
+		return this.description;
+	}
+
+	getMarkdownContent(): string | undefined {
+		return this.markdownContent;
+	}
+
+	getUrl(): Url | undefined {
+		return this.url;
+	}
+
+	getLightningTalk(): LightningTalk | undefined {
+		return this.lightningTalk;
+	}
+
 	getMemberIds(): string[] {
 		return Array.from(this.memberIds);
 	}

@@ -8,6 +8,18 @@ export class LightningTalk {
 		private slideUrl?: Url,
 	) {}
 
+	getStartTime(): Date {
+		return this.startTime;
+	}
+
+	getDurationMinutes(): LightningTalkDuration {
+		return this.durationMinutes;
+	}
+
+	getSlideUrl(): Url | undefined {
+		return this.slideUrl;
+	}
+
 	changeSlideUrl(newSlideUrl: Url): void {
 		this.slideUrl = newSlideUrl;
 	}
