@@ -1,47 +1,50 @@
 {
-  "name": "@shizuoka-its/core",
-  "version": "1.1.1",
-  "description": "ITS core library",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/su-its/core.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "dist",
-    "prisma"
-  ],
-  "scripts": {
-    "postinstall": "npx prisma generate",
-    "build": "tsc",
-    "prebuild": "rimraf dist",
-    "prepare": "npm run build",
-    "prisma:generate": "npx prisma generate",
-    "version:patch": "npm version patch && npm run publish:latest",
-    "version:minor": "npm version minor && npm run publish:latest",
-    "version:major": "npm version major && npm run publish:latest",
-    "version:alpha": "npm version prerelease --preid=alpha && npm run publish:alpha",
-    "version:beta": "npm version prerelease --preid=beta && npm run publish:beta",
-    "version:rc": "npm version prerelease --preid=rc && npm run publish:rc",
-    "publish:latest": "npm publish --tag latest",
-    "publish:alpha": "npm publish --tag alpha",
-    "publish:beta": "npm publish --tag beta",
-    "publish:rc": "npm publish --tag rc"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^22.9.0",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "prisma": "^5.22.0"
-  }
+	"name": "@shizuoka-its/core",
+	"version": "2.0.0",
+	"description": "ITS core library",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/su-its/core.git"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"dist",
+		"prisma"
+	],
+	"scripts": {
+		"postinstall": "npx prisma generate",
+		"build": "tsc",
+		"prebuild": "rimraf dist",
+		"prepare": "npm run build",
+		"prisma:generate": "npx prisma generate",
+		"version:patch": "npm version patch && npm run publish:latest",
+		"version:minor": "npm version minor && npm run publish:latest",
+		"version:major": "npm version major && npm run publish:latest",
+		"version:alpha": "npm version prerelease --preid=alpha && npm run publish:alpha",
+		"version:beta": "npm version prerelease --preid=beta && npm run publish:beta",
+		"version:rc": "npm version prerelease --preid=rc && npm run publish:rc",
+		"publish:latest": "npm publish --tag latest",
+		"publish:alpha": "npm publish --tag alpha",
+		"publish:beta": "npm publish --tag beta",
+		"publish:rc": "npm publish --tag rc"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/node": "^22.9.0",
+		"prisma": "^5.22.0",
+		"rimraf": "^6.0.1",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "^5.6.3"
+	},
+	"dependencies": {
+		"@prisma/client": "^5.22.0",
+		"uuid": "^11.1.0"
+	}
 }
