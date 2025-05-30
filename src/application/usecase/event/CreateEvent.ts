@@ -8,8 +8,7 @@ export interface CreateEventInput {
 }
 
 export interface CreateEventOutput {
-	success: boolean;
-	message?: string;
+	event: Event;
 }
 
 /**
@@ -29,8 +28,6 @@ export class CreateEvent extends IUseCase<CreateEventInput, CreateEventOutput> {
 		// save
 		await this.eventRepository.save(event);
 
-		return {
-			success: true,
-		};
+		return { event };
 	}
 }

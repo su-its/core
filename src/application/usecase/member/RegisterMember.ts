@@ -23,7 +23,9 @@ export interface RegisterMemberInput {
 	discordNickName?: string;
 }
 
-export type RegisterMemberOutput = Member;
+export interface RegisterMemberOutput {
+	member: Member;
+}
 
 export class RegisterMemberUseCase extends IUseCase<
 	RegisterMemberInput,
@@ -70,6 +72,6 @@ export class RegisterMemberUseCase extends IUseCase<
 
 		await this.memberRepo.save(member);
 
-		return member;
+		return { member };
 	}
 }

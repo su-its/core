@@ -1,16 +1,25 @@
 import type { EventRepository, Exhibit } from "../../../domain";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export interface GetExhibitsByMemberInput {
 	memberId: string;
 }
 
-export class GetExhibitsByMember
-	implements IUseCase<GetExhibitsByMemberInput, Exhibit[]>
-{
-	constructor(private readonly eventRepository: EventRepository) {}
+export interface GetExhibitsByMemberOutput {
+	exhibits: Exhibit[];
+}
 
-	async execute(input: GetExhibitsByMemberInput): Promise<Exhibit[]> {
+export class GetExhibitsByMember extends IUseCase<
+	GetExhibitsByMemberInput,
+	GetExhibitsByMemberOutput
+> {
+	constructor(private readonly eventRepository: EventRepository) {
+		super();
+	}
+
+	async execute(
+		input: GetExhibitsByMemberInput,
+	): Promise<GetExhibitsByMemberOutput> {
 		const events = await this.eventRepository.findByParticipantMemberId(
 			input.memberId,
 		);
@@ -22,6 +31,6 @@ export class GetExhibitsByMember
 				}
 			}
 		}
-		return exhibits;
+		return { exhibits };
 	}
 }

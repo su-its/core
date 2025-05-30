@@ -1,16 +1,22 @@
 import type { Member, MemberRepository } from "../../../domain";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export type GetMemberListInput = Record<string, never>;
 
-export type GetMemberListOutput = Member[];
+export interface GetMemberListOutput {
+	members: Member[];
+}
 
-export class GetMemberListUseCase
-	implements IUseCase<GetMemberListInput, GetMemberListOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class GetMemberListUseCase extends IUseCase<
+	GetMemberListInput,
+	GetMemberListOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(_input: GetMemberListInput): Promise<GetMemberListOutput> {
-		return await this.memberRepo.findAll();
+		const members = await this.memberRepo.findAll();
+		return { members };
 	}
 }

@@ -4,7 +4,7 @@ import {
 	type MemberRepository,
 } from "../../../domain";
 import { MemberNotFoundException } from "../../exceptions";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export interface ConnectDiscordAccountInput {
 	memberId: string;
@@ -12,12 +12,17 @@ export interface ConnectDiscordAccountInput {
 	discordNickName?: string;
 }
 
-export type ConnectDiscordAccountOutput = Member;
+export interface ConnectDiscordAccountOutput {
+	member: Member;
+}
 
-export class ConnectDiscordAccountUseCase
-	implements IUseCase<ConnectDiscordAccountInput, ConnectDiscordAccountOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class ConnectDiscordAccountUseCase extends IUseCase<
+	ConnectDiscordAccountInput,
+	ConnectDiscordAccountOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(
 		input: ConnectDiscordAccountInput,
@@ -37,6 +42,6 @@ export class ConnectDiscordAccountUseCase
 
 		await this.memberRepo.save(member);
 
-		return member;
+		return { member };
 	}
 }

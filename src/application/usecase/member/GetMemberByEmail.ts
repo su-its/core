@@ -1,18 +1,24 @@
 import type { Member, MemberRepository } from "../../../domain";
-import type { IUseCase } from "../base";
+import { IUseCase } from "../base";
 
 export interface GetMemberByEmailInput {
 	email: string;
 }
 
-export type GetMemberByEmailOutput = Member | null;
+export interface GetMemberByEmailOutput {
+	member: Member | null;
+}
 
-export class GetMemberByEmailUseCase
-	implements IUseCase<GetMemberByEmailInput, GetMemberByEmailOutput>
-{
-	constructor(private readonly memberRepo: MemberRepository) {}
+export class GetMemberByEmailUseCase extends IUseCase<
+	GetMemberByEmailInput,
+	GetMemberByEmailOutput
+> {
+	constructor(private readonly memberRepo: MemberRepository) {
+		super();
+	}
 
 	async execute(input: GetMemberByEmailInput): Promise<GetMemberByEmailOutput> {
-		return await this.memberRepo.findByEmail(input.email);
+		const member = await this.memberRepo.findByEmail(input.email);
+		return { member };
 	}
 }

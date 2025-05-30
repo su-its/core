@@ -18,7 +18,9 @@ export interface AddExhibitToEventInput {
 	};
 }
 
-export type AddExhibitToEventOutput = Event;
+export interface AddExhibitToEventOutput {
+	event: Event;
+}
 
 /**
  * イベントに展示を追加するユースケース
@@ -43,6 +45,6 @@ export class AddExhibitToEvent extends IUseCase<
 		event.addExhibit(exhibit);
 		await this.eventRepository.save(event);
 
-		return event;
+		return { event };
 	}
 }

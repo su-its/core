@@ -10,7 +10,9 @@ export interface ChangeDiscordNickNameInput {
 	discordNickName: string;
 }
 
-export type ChangeDiscordNickNameOutput = Member;
+export interface ChangeDiscordNickNameOutput {
+	member: Member;
+}
 
 export class ChangeDiscordNickNameUseCase extends IUseCase<
 	ChangeDiscordNickNameInput,
@@ -39,6 +41,6 @@ export class ChangeDiscordNickNameUseCase extends IUseCase<
 
 		await this.memberRepo.save(member);
 
-		return member;
+		return { member };
 	}
 }

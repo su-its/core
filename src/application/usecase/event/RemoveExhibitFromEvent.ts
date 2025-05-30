@@ -7,7 +7,9 @@ export interface RemoveExhibitFromEventInput {
 	exhibitId: string;
 }
 
-export type RemoveExhibitFromEventOutput = Event;
+export interface RemoveExhibitFromEventOutput {
+	event: Event;
+}
 
 /**
  * イベントから展示を削除するユースケース
@@ -29,6 +31,6 @@ export class RemoveExhibitFromEvent extends IUseCase<
 		}
 		event.removeExhibit(input.exhibitId);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }

@@ -20,7 +20,9 @@ export interface UpdateMemberInput {
 	discordNickName?: string;
 }
 
-export type UpdateMemberOutput = Member;
+export interface UpdateMemberOutput {
+	member: Member;
+}
 
 export class UpdateMemberUseCase extends IUseCase<
 	UpdateMemberInput,
@@ -63,6 +65,6 @@ export class UpdateMemberUseCase extends IUseCase<
 
 		await this.memberRepo.save(member);
 
-		return member;
+		return { member };
 	}
 }

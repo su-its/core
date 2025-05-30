@@ -8,7 +8,9 @@ export interface ChangeExhibitDescriptionInput {
 	newDescription: string;
 }
 
-export type ChangeExhibitDescriptionOutput = Event;
+export interface ChangeExhibitDescriptionOutput {
+	event: Event;
+}
 
 /**
  * 展示説明変更ユースケース
@@ -30,6 +32,6 @@ export class ChangeExhibitDescription extends IUseCase<
 		}
 		event.changeExhibitDescription(input.exhibitId, input.newDescription);
 		await this.eventRepository.save(event);
-		return event;
+		return { event };
 	}
 }
