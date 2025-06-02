@@ -99,7 +99,7 @@ export class PrismaMemberRepository implements MemberRepository {
 			update: {
 				name: memberSnapshot.name,
 				studentId: memberSnapshot.studentId,
-				department: memberSnapshot.department.toString(),
+				department: memberSnapshot.department.getValue(),
 				email: memberSnapshot.email.getValue(),
 				personalEmail: memberSnapshot.personalEmail?.getValue(),
 			},
@@ -107,7 +107,7 @@ export class PrismaMemberRepository implements MemberRepository {
 				id: memberSnapshot.id,
 				name: memberSnapshot.name,
 				studentId: memberSnapshot.studentId,
-				department: memberSnapshot.department.toString(),
+				department: memberSnapshot.department.getValue(),
 				email: memberSnapshot.email.getValue(),
 				personalEmail: memberSnapshot.personalEmail?.getValue(),
 			},
