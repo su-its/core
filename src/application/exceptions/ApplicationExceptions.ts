@@ -23,7 +23,7 @@ export class ExhibitNotFoundException extends ApplicationException {
 
 export class ExhibitNotFoundFromExhibitIdException extends ApplicationException {
 	constructor(exhibitId: string) {
-		const message = `展示が見つかりません: ${exhibitId}`;
+		const message = `指定された展示IDで展示が見つかりません: ${exhibitId}`;
 		super(message);
 		this.name = "ExhibitNotFoundFromExhibitIdException";
 	}
