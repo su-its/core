@@ -5,7 +5,7 @@ export class LightningTalkDuration extends ValueObject<number> {
 	protected validate(): void {
 		this.throwIfInvalid(
 			this.value > 0,
-			new InvalidLightningTalkDurationException(),
+			new InvalidLightningTalkDurationException(this.value),
 		);
 	}
 }

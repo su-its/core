@@ -8,7 +8,7 @@ export class UniversityEmail extends Email {
 		super.validate();
 		this.throwIfInvalid(
 			this.value.endsWith(UNIVERSITY_EMAIL_DOMAIN),
-			new InvalidUniversityEmailException(),
+			new InvalidUniversityEmailException(this.value),
 		);
 	}
 }

@@ -3,7 +3,7 @@ import type {
 	Member,
 	MemberRepository,
 } from "../../../domain";
-import { EventNotFoundException } from "../../exceptions";
+import { ExhibitNotFoundFromExhibitIdException } from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface GetMembersByExhibitInput {
@@ -30,7 +30,7 @@ export class GetMembersByExhibit extends IUseCase<
 	): Promise<GetMembersByExhibitOutput> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new ExhibitNotFoundFromExhibitIdException(input.exhibitId);
 		}
 		const memberResults = await Promise.all(
 			event

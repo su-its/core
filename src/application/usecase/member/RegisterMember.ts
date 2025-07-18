@@ -8,7 +8,6 @@ import {
 	UniversityEmail,
 } from "../../../domain";
 import {
-	DiscordAccountNotConnectedException,
 	MemberEmailAlreadyExistsException,
 } from "../../exceptions";
 import { IUseCase } from "../base";
@@ -39,12 +38,14 @@ export class RegisterMemberUseCase extends IUseCase<
 		// TODO: この入力値のバリデーションはUsecaseが本来着目するべき処理の流れという関心事では無い
 		if (input.discordNickName) {
 			if (!input.discordAccountId) {
-				throw new DiscordAccountNotConnectedException();
+				throw new Error(
+					"discordNickNameが指定されているが、discordAccountIdが指定されていない",
+				);
 			}
 		}
 		const existingMember = await this.memberRepo.findByEmail(input.email);
 		if (existingMember) {
-			throw new MemberEmailAlreadyExistsException();
+			throw new MemberEmailAlreadyExistsException(input.email);
 		}
 
 		const universityEmail = new UniversityEmail(input.email);
