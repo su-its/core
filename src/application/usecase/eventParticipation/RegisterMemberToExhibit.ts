@@ -30,11 +30,11 @@ export class RegisterMemberToExhibit extends IUseCase<
 	): Promise<RegisterMemberToExhibitOutput> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.exhibitId);
 		}
 		const member = await this.memberRepository.findById(input.memberId);
 		if (!member) {
-			throw new MemberNotFoundException();
+			throw new MemberNotFoundException(input.memberId);
 		}
 		event.addExhibitMemberId(input.exhibitId, input.memberId);
 		await this.eventRepository.save(event);

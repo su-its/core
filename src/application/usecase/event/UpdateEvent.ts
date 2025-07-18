@@ -20,7 +20,7 @@ export class UpdateEvent extends IUseCase<UpdateEventInput, UpdateEventOutput> {
 	async execute(input: UpdateEventInput): Promise<UpdateEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		if (input.name !== undefined) {
 			event.changeName(input.name);

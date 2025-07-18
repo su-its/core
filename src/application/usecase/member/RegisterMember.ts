@@ -7,10 +7,7 @@ import {
 	type MemberRepository,
 	UniversityEmail,
 } from "../../../domain";
-import {
-	DiscordAccountNotConnectedException,
-	MemberEmailAlreadyExistsException,
-} from "../../exceptions";
+import { MemberEmailAlreadyExistsException } from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {
@@ -19,8 +16,10 @@ export interface RegisterMemberInput {
 	department: string;
 	email: string;
 	personalEmail?: string;
-	discordAccountId?: string;
-	discordNickName?: string;
+	discordInfo?: {
+		accountId: string;
+		nickName: string;
+	};
 }
 
 export interface RegisterMemberOutput {
@@ -36,15 +35,9 @@ export class RegisterMemberUseCase extends IUseCase<
 	}
 
 	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
-		// TODO: この入力値のバリデーションはUsecaseが本来着目するべき処理の流れという関心事では無い
-		if (input.discordNickName) {
-			if (!input.discordAccountId) {
-				throw new DiscordAccountNotConnectedException();
-			}
-		}
 		const existingMember = await this.memberRepo.findByEmail(input.email);
 		if (existingMember) {
-			throw new MemberEmailAlreadyExistsException();
+			throw new MemberEmailAlreadyExistsException(input.email);
 		}
 
 		const universityEmail = new UniversityEmail(input.email);
@@ -61,10 +54,10 @@ export class RegisterMemberUseCase extends IUseCase<
 			personalEmail,
 		);
 
-		if (input.discordAccountId && input.discordNickName) {
+		if (input.discordInfo) {
 			const discordAccount = new DiscordAccount(
-				input.discordAccountId,
-				input.discordNickName,
+				input.discordInfo.accountId,
+				input.discordInfo.nickName,
 				member.id,
 			);
 			member.addDiscordAccount(discordAccount);
