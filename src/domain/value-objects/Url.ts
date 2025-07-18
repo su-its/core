@@ -12,14 +12,14 @@ export class Url extends ValueObject<string> {
 		} catch {
 			this.throwIfInvalid(
 				false,
-				new InvalidUrlException(`無効な URL 形式です: ${this.value}`),
+				new InvalidUrlException(this.value),
 			);
 			return;
 		}
 
 		this.throwIfInvalid(
 			["http:", "https:"].includes(parsed.protocol),
-			new InvalidUrlProtocolException(),
+			new InvalidUrlProtocolException(this.value, parsed.protocol),
 		);
 	}
 }

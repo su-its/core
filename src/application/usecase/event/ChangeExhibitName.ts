@@ -28,7 +28,7 @@ export class ChangeExhibitName extends IUseCase<
 	): Promise<ChangeExhibitNameOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitName(input.exhibitId, input.newName);
 		await this.eventRepository.save(event);

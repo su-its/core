@@ -30,7 +30,7 @@ export class GetMembersByEvent extends IUseCase<
 	): Promise<GetMembersByEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		const members = (
 			await Promise.all(

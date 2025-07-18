@@ -32,7 +32,7 @@ export class ChangeLightningTalkDuration extends IUseCase<
 	): Promise<ChangeLightningTalkDurationOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitLightningTalkDuration(
 			input.exhibitId,

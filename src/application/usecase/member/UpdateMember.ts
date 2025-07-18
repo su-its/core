@@ -35,7 +35,7 @@ export class UpdateMemberUseCase extends IUseCase<
 	async execute(input: UpdateMemberInput): Promise<UpdateMemberOutput> {
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
-			throw new MemberNotFoundException();
+			throw new MemberNotFoundException(input.memberId);
 		}
 
 		if (input.name) {
