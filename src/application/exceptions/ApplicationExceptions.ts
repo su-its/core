@@ -47,7 +47,7 @@ export class MemberNotFoundException extends ApplicationException {
 
 export class MemberNotFoundFromDiscordAccountIdException extends ApplicationException {
 	constructor(discordAccountId: string) {
-		const message = `メンバーが見つかりません: ${discordAccountId}`;
+		const message = `指定されたDiscordアカウントIDからメンバーが見つかりません: (DiscordアカウントID) ${discordAccountId}`;
 		super(message);
 		this.name = "MemberNotFoundFromDiscordAccountIdException";
 	}
