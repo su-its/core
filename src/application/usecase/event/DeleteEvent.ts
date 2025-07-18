@@ -21,7 +21,7 @@ export class DeleteEvent extends IUseCase<DeleteEventInput, DeleteEventOutput> {
 	async execute(input: DeleteEventInput): Promise<DeleteEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		await this.eventRepository.delete(input.eventId);
 		return { event };

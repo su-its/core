@@ -122,7 +122,7 @@ export class Event {
 	public removeMemberId(memberId: string): void {
 		for (const exhibit of this.exhibits) {
 			if (exhibit.getMemberIds().includes(memberId)) {
-				throw new ExhibitHasMemberException();
+				throw new ExhibitHasMemberException(exhibit.id, memberId);
 			}
 		}
 		this.memberIds.delete(memberId);

@@ -6,7 +6,7 @@ export class Email extends ValueObject<string> {
 		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		this.throwIfInvalid(
 			emailRegex.test(this.value),
-			new InvalidEmailFormatException(),
+			new InvalidEmailFormatException(this.value),
 		);
 	}
 }
