@@ -28,7 +28,7 @@ export class ChangeLightningTalkSlideUrl extends IUseCase<
 	): Promise<ChangeLightningTalkSlideUrlOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitLightningTalkSlideUrl(
 			input.exhibitId,

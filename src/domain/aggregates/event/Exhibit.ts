@@ -20,7 +20,7 @@ export class Exhibit {
 		const exhibit = new Exhibit(id, name, description, markdownContent, url);
 		// NOTE: ここで例外を投げるのは、Exhibit の id と LightningTalk の exhibitId が一致しているかどうかをチェックしているため
 		if (lt.exhibitId !== id) {
-			throw new LightningTalkExhibitIdMismatchException();
+			throw new LightningTalkExhibitIdMismatchException(id, lt.exhibitId);
 		}
 		exhibit.lightningTalk = lt;
 		return exhibit;

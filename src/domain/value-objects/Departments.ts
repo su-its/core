@@ -19,7 +19,7 @@ export class Department extends ValueObject<AllowedDepartment> {
 		];
 		this.throwIfInvalid(
 			validDepartments.includes(this.value),
-			new InvalidDepartmentException(),
+			new InvalidDepartmentException(this.value),
 		);
 	}
 }

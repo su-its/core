@@ -27,7 +27,7 @@ export class RemoveMemberFromExhibit extends IUseCase<
 	): Promise<RemoveMemberFromExhibitOutput> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.exhibitId);
 		}
 		event.removeExhibitMemberId(input.exhibitId, input.memberId);
 		await this.eventRepository.save(event);

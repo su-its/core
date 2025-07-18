@@ -29,7 +29,7 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 	): Promise<ConnectDiscordAccountOutput> {
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
-			throw new MemberNotFoundException();
+			throw new MemberNotFoundException(input.memberId);
 		}
 
 		const discordAccount = new DiscordAccount(

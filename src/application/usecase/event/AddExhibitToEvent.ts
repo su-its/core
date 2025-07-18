@@ -38,7 +38,7 @@ export class AddExhibitToEvent extends IUseCase<
 	): Promise<AddExhibitToEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		const { id, name, description, markdownContent, url } = input.exhibit;
 		const exhibit = new Exhibit(id, name, description, markdownContent, url);

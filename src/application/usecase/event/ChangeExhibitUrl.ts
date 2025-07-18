@@ -26,7 +26,7 @@ export class ChangeExhibitUrl extends IUseCase<
 	async execute(input: ChangeExhibitUrlInput): Promise<ChangeExhibitUrlOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitUrl(input.exhibitId, input.newUrl);
 		await this.eventRepository.save(event);

@@ -28,7 +28,7 @@ export class ChangeExhibitMarkdownContent extends IUseCase<
 	): Promise<ChangeExhibitMarkdownContentOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitMarkdownContent(
 			input.exhibitId,
