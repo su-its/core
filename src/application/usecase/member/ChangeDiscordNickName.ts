@@ -1,7 +1,7 @@
 import type { Member, MemberRepository } from "../../../domain";
 import {
 	DiscordAccountNotConnectedException,
-	MemberNotFoundException,
+	MemberNotFoundFromDiscordAccountIdException,
 } from "../../exceptions";
 import { IUseCase } from "../base";
 
@@ -29,12 +29,17 @@ export class ChangeDiscordNickNameUseCase extends IUseCase<
 			input.discordAccountId,
 		);
 		if (!member) {
-			throw new MemberNotFoundException();
+			throw new MemberNotFoundFromDiscordAccountIdException(
+				input.discordAccountId,
+			);
 		}
 
 		const discordAccount = member.getDiscordAccountById(input.discordAccountId);
 		if (!discordAccount) {
-			throw new DiscordAccountNotConnectedException();
+			throw new DiscordAccountNotConnectedException(
+				member.id,
+				input.discordAccountId,
+			);
 		}
 
 		discordAccount.setNickName(input.discordNickName);

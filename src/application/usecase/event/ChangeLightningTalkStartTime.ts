@@ -28,7 +28,7 @@ export class ChangeLightningTalkStartTime extends IUseCase<
 	): Promise<ChangeLightningTalkStartTimeOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
-			throw new EventNotFoundException();
+			throw new EventNotFoundException(input.eventId);
 		}
 		event.changeExhibitLightningTalkStartTime(
 			input.exhibitId,
