@@ -1,187 +1,145 @@
 {
-  "id": "4056ddaa-d55d-445a-8815-123fa476da5d",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.members": {
+      "name": "members",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "student_id": {
+          "name": "student_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "department": {
+          "name": "department",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "personal_email": {
+          "name": "personal_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "members_email_key": {
+          "name": "members_email_key",
+          "columns": [
+            {
+              "expression": "email",
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
     "public.discord_accounts": {
       "name": "discord_accounts",
       "schema": "",
       "columns": {
         "discord_id": {
           "name": "discord_id",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
         "nick_name": {
           "name": "nick_name",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "member_id": {
           "name": "member_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "discord_accounts_member_id_members_id_fk": {
-          "name": "discord_accounts_member_id_members_id_fk",
+        "discord_accounts_member_id_fkey": {
+          "name": "discord_accounts_member_id_fkey",
           "tableFrom": "discord_accounts",
           "tableTo": "members",
+          "schemaTo": "public",
           "columnsFrom": [
             "member_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.events": {
-      "name": "events",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "date": {
-          "name": "date",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.exhibits": {
-      "name": "exhibits",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "markdown_content": {
-          "name": "markdown_content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar(2048)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "event_id": {
-          "name": "event_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "exhibits_event_id_events_id_fk": {
-          "name": "exhibits_event_id_events_id_fk",
-          "tableFrom": "exhibits",
-          "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.lightning_talks": {
@@ -190,13 +148,13 @@
       "columns": {
         "exhibit_id": {
           "name": "exhibit_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
           "notNull": true
         },
         "start_time": {
           "name": "start_time",
-          "type": "timestamp",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true
         },
@@ -208,44 +166,152 @@
         },
         "slide_url": {
           "name": "slide_url",
-          "type": "varchar(2048)",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "lightning_talks_exhibit_id_exhibits_id_fk": {
-          "name": "lightning_talks_exhibit_id_exhibits_id_fk",
+        "lightning_talks_exhibit_id_fkey": {
+          "name": "lightning_talks_exhibit_id_fkey",
           "tableFrom": "lightning_talks",
           "tableTo": "exhibits",
+          "schemaTo": "public",
           "columnsFrom": [
             "exhibit_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public._prisma_migrations": {
+      "name": "_prisma_migrations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "checksum": {
+          "name": "checksum",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "migration_name": {
+          "name": "migration_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logs": {
+          "name": "logs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rolled_back_at": {
+          "name": "rolled_back_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "applied_steps_count": {
+          "name": "applied_steps_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.events": {
+      "name": "events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     },
     "public.member_events": {
@@ -254,52 +320,53 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "member_id": {
           "name": "member_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "event_id": {
           "name": "event_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {
-        "member_event_unique": {
-          "name": "member_event_unique",
+        "member_events_member_id_event_id_key": {
+          "name": "member_events_member_id_event_id_key",
           "columns": [
             {
               "expression": "member_id",
-              "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
             },
             {
               "expression": "event_id",
-              "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
             }
           ],
           "isUnique": true,
@@ -309,37 +376,39 @@
         }
       },
       "foreignKeys": {
-        "member_events_member_id_members_id_fk": {
-          "name": "member_events_member_id_members_id_fk",
-          "tableFrom": "member_events",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "member_events_event_id_events_id_fk": {
-          "name": "member_events_event_id_events_id_fk",
+        "member_events_event_id_fkey": {
+          "name": "member_events_event_id_fkey",
           "tableFrom": "member_events",
           "tableTo": "events",
+          "schemaTo": "public",
           "columnsFrom": [
             "event_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "member_events_member_id_fkey": {
+          "name": "member_events_member_id_fkey",
+          "tableFrom": "member_events",
+          "tableTo": "members",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     },
     "public.member_exhibits": {
@@ -348,52 +417,53 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "member_id": {
           "name": "member_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "exhibit_id": {
           "name": "exhibit_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {
-        "member_exhibit_unique": {
-          "name": "member_exhibit_unique",
+        "member_exhibits_member_id_exhibit_id_key": {
+          "name": "member_exhibits_member_id_exhibit_id_key",
           "columns": [
             {
               "expression": "member_id",
-              "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
             },
             {
               "expression": "exhibit_id",
-              "isExpression": false,
               "asc": true,
-              "nulls": "last"
+              "nulls": "last",
+              "opclass": "text_ops",
+              "isExpression": false
             }
           ],
           "isUnique": true,
@@ -403,108 +473,116 @@
         }
       },
       "foreignKeys": {
-        "member_exhibits_member_id_members_id_fk": {
-          "name": "member_exhibits_member_id_members_id_fk",
-          "tableFrom": "member_exhibits",
-          "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "member_exhibits_exhibit_id_exhibits_id_fk": {
-          "name": "member_exhibits_exhibit_id_exhibits_id_fk",
+        "member_exhibits_exhibit_id_fkey": {
+          "name": "member_exhibits_exhibit_id_fkey",
           "tableFrom": "member_exhibits",
           "tableTo": "exhibits",
+          "schemaTo": "public",
           "columnsFrom": [
             "exhibit_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "member_exhibits_member_id_fkey": {
+          "name": "member_exhibits_member_id_fkey",
+          "tableFrom": "member_exhibits",
+          "tableTo": "members",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     },
-    "public.members": {
-      "name": "members",
+    "public.exhibits": {
+      "name": "exhibits",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "student_id": {
-          "name": "student_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "department": {
-          "name": "department",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "personal_email": {
-          "name": "personal_email",
-          "type": "varchar(255)",
+        "description": {
+          "name": "description",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
+        "url": {
+          "name": "url",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
+        "event_id": {
+          "name": "event_id",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "markdown_content": {
+          "name": "markdown_content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "members_email_unique": {
-          "name": "members_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+      "foreignKeys": {
+        "exhibits_event_id_fkey": {
+          "name": "exhibits_event_id_fkey",
+          "tableFrom": "exhibits",
+          "tableTo": "events",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
         }
       },
-      "policies": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     }
   },
@@ -515,8 +593,11 @@
   "policies": {},
   "views": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
     "tables": {}
   }
 }

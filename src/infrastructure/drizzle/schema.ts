@@ -1,125 +1,209 @@
 import { relations } from "drizzle-orm";
 import {
+	foreignKey,
 	integer,
 	pgTable,
 	text,
 	timestamp,
 	uniqueIndex,
-	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
-// Members table
-export const members = pgTable("members", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	name: varchar("name", { length: 255 }).notNull(),
-	studentId: varchar("student_id", { length: 255 }).notNull(),
-	department: varchar("department", { length: 255 }).notNull(),
-	email: varchar("email", { length: 255 }).notNull().unique(),
-	personalEmail: varchar("personal_email", { length: 255 }),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$onUpdate(() => new Date()),
-});
+// ============================================================================
+// Tables (introspected from production database)
+// ============================================================================
 
-// Discord accounts table
-export const discordAccounts = pgTable("discord_accounts", {
-	id: varchar("discord_id", { length: 255 }).primaryKey(),
-	nickName: varchar("nick_name", { length: 255 }).notNull(),
-	memberId: uuid("member_id")
-		.notNull()
-		.references(() => members.id),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$onUpdate(() => new Date()),
-});
+export const members = pgTable(
+	"members",
+	{
+		id: text().primaryKey().notNull(),
+		name: text().notNull(),
+		studentId: text("student_id").notNull(),
+		department: text().notNull(),
+		email: text().notNull(),
+		personalEmail: text("personal_email"),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	},
+	(table) => [
+		uniqueIndex("members_email_key").using(
+			"btree",
+			table.email.asc().nullsLast().op("text_ops"),
+		),
+	],
+);
 
-// Events table
+export const discordAccounts = pgTable(
+	"discord_accounts",
+	{
+		discordId: text("discord_id").primaryKey().notNull(),
+		nickName: text("nick_name").notNull(),
+		memberId: text("member_id").notNull(),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.memberId],
+			foreignColumns: [members.id],
+			name: "discord_accounts_member_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
+
 export const events = pgTable("events", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	name: varchar("name", { length: 255 }).notNull(),
-	date: timestamp("date").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$onUpdate(() => new Date()),
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	date: timestamp({ precision: 3, mode: "string" }).notNull(),
+	createdAt: timestamp({ precision: 3, mode: "string" })
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
 });
 
-// Exhibits table
-export const exhibits = pgTable("exhibits", {
-	id: uuid("id").primaryKey().defaultRandom(),
-	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description"),
-	markdownContent: text("markdown_content"),
-	url: varchar("url", { length: 2048 }),
-	eventId: uuid("event_id")
-		.notNull()
-		.references(() => events.id),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$onUpdate(() => new Date()),
-});
+export const exhibits = pgTable(
+	"exhibits",
+	{
+		id: text().primaryKey().notNull(),
+		name: text().notNull(),
+		description: text(),
+		url: text(),
+		eventId: text("event_id").notNull(),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+		markdownContent: text("markdown_content"),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.eventId],
+			foreignColumns: [events.id],
+			name: "exhibits_event_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
 
-// Lightning talks table
-export const lightningTalks = pgTable("lightning_talks", {
-	exhibitId: uuid("exhibit_id")
-		.primaryKey()
-		.references(() => exhibits.id),
-	startTime: timestamp("start_time").notNull(),
-	duration: integer("duration").notNull(),
-	slideUrl: varchar("slide_url", { length: 2048 }),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
-		.notNull()
-		.$onUpdate(() => new Date()),
-});
+export const lightningTalks = pgTable(
+	"lightning_talks",
+	{
+		exhibitId: text("exhibit_id").primaryKey().notNull(),
+		startTime: timestamp("start_time", { precision: 3, mode: "string" }).notNull(),
+		duration: integer().notNull(),
+		slideUrl: text("slide_url"),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.exhibitId],
+			foreignColumns: [exhibits.id],
+			name: "lightning_talks_exhibit_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
 
-// Member-Event junction table
 export const memberEvents = pgTable(
 	"member_events",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
-		memberId: uuid("member_id")
-			.notNull()
-			.references(() => members.id),
-		eventId: uuid("event_id")
-			.notNull()
-			.references(() => events.id),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at")
-			.notNull()
-			.$onUpdate(() => new Date()),
+		id: text().primaryKey().notNull(),
+		memberId: text("member_id").notNull(),
+		eventId: text("event_id").notNull(),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
 	},
 	(table) => [
-		uniqueIndex("member_event_unique").on(table.memberId, table.eventId),
+		uniqueIndex("member_events_member_id_event_id_key").using(
+			"btree",
+			table.memberId.asc().nullsLast().op("text_ops"),
+			table.eventId.asc().nullsLast().op("text_ops"),
+		),
+		foreignKey({
+			columns: [table.eventId],
+			foreignColumns: [events.id],
+			name: "member_events_event_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+		foreignKey({
+			columns: [table.memberId],
+			foreignColumns: [members.id],
+			name: "member_events_member_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
 	],
 );
 
-// Member-Exhibit junction table
 export const memberExhibits = pgTable(
 	"member_exhibits",
 	{
-		id: uuid("id").primaryKey().defaultRandom(),
-		memberId: uuid("member_id")
-			.notNull()
-			.references(() => members.id),
-		exhibitId: uuid("exhibit_id")
-			.notNull()
-			.references(() => exhibits.id),
-		createdAt: timestamp("created_at").defaultNow().notNull(),
-		updatedAt: timestamp("updated_at")
-			.notNull()
-			.$onUpdate(() => new Date()),
+		id: text().primaryKey().notNull(),
+		memberId: text("member_id").notNull(),
+		exhibitId: text("exhibit_id").notNull(),
+		createdAt: timestamp({ precision: 3, mode: "string" })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
 	},
 	(table) => [
-		uniqueIndex("member_exhibit_unique").on(table.memberId, table.exhibitId),
+		uniqueIndex("member_exhibits_member_id_exhibit_id_key").using(
+			"btree",
+			table.memberId.asc().nullsLast().op("text_ops"),
+			table.exhibitId.asc().nullsLast().op("text_ops"),
+		),
+		foreignKey({
+			columns: [table.exhibitId],
+			foreignColumns: [exhibits.id],
+			name: "member_exhibits_exhibit_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+		foreignKey({
+			columns: [table.memberId],
+			foreignColumns: [members.id],
+			name: "member_exhibits_member_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
 	],
 );
 
+export const prismaMigrations = pgTable("_prisma_migrations", {
+	id: varchar({ length: 36 }).primaryKey().notNull(),
+	checksum: varchar({ length: 64 }).notNull(),
+	finishedAt: timestamp("finished_at", { withTimezone: true, mode: "string" }),
+	migrationName: varchar("migration_name", { length: 255 }).notNull(),
+	logs: text(),
+	rolledBackAt: timestamp("rolled_back_at", {
+		withTimezone: true,
+		mode: "string",
+	}),
+	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
+		.defaultNow()
+		.notNull(),
+	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
+});
+
+// ============================================================================
 // Relations
+// ============================================================================
+
 export const membersRelations = relations(members, ({ many }) => ({
 	discordAccounts: many(discordAccounts),
 	memberEvents: many(memberEvents),

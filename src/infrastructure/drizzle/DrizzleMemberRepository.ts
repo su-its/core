@@ -36,7 +36,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 		for (const discordAccount of record.discordAccounts) {
 			member.addDiscordAccount(
 				new DiscordAccount(
-					discordAccount.id,
+					discordAccount.discordId,
 					discordAccount.nickName,
 					discordAccount.memberId,
 				),
@@ -55,7 +55,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 	): Promise<Member | null> {
 		const db = getDb();
 		const discordAccount = await db.query.discordAccounts.findFirst({
-			where: eq(discordAccounts.id, discordAccountId),
+			where: eq(discordAccounts.discordId, discordAccountId),
 		});
 
 		if (!discordAccount) return null;
@@ -113,6 +113,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 		const snapshot = member.toSnapshot();
 
 		// Upsert member
+		const now = new Date().toISOString();
 		await db
 			.insert(members)
 			.values({
@@ -122,7 +123,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 				department: snapshot.department.getValue(),
 				email: snapshot.email.getValue(),
 				personalEmail: snapshot.personalEmail?.getValue() ?? null,
-				updatedAt: new Date(),
+				updatedAt: now,
 			})
 			.onConflictDoUpdate({
 				target: members.id,
@@ -132,7 +133,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 					department: snapshot.department.getValue(),
 					email: snapshot.email.getValue(),
 					personalEmail: snapshot.personalEmail?.getValue() ?? null,
-					updatedAt: new Date(),
+					updatedAt: now,
 				},
 			});
 
@@ -141,16 +142,16 @@ export class DrizzleMemberRepository implements MemberRepository {
 			await db
 				.insert(discordAccounts)
 				.values({
-					id: discordAccount.id,
+					discordId: discordAccount.id,
 					nickName: discordAccount.nickName,
 					memberId: discordAccount.memberId,
-					updatedAt: new Date(),
+					updatedAt: now,
 				})
 				.onConflictDoUpdate({
-					target: discordAccounts.id,
+					target: discordAccounts.discordId,
 					set: {
 						nickName: discordAccount.nickName,
-						updatedAt: new Date(),
+						updatedAt: now,
 					},
 				});
 		}

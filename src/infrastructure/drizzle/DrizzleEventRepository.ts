@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { eq, inArray } from "drizzle-orm";
 import {
 	Event,
@@ -41,7 +42,7 @@ export class DrizzleEventRepository implements EventRepository {
 	 * Converts a database record to a domain Event entity.
 	 */
 	private toDomain(record: EventWithRelations): Event {
-		const event = new Event(record.id, record.name, record.date);
+		const event = new Event(record.id, record.name, new Date(record.date));
 
 		// Load event member IDs
 		for (const memberEvent of record.memberEvents) {
@@ -71,7 +72,7 @@ export class DrizzleEventRepository implements EventRepository {
 			const lt = record.lightningTalk;
 			const lightningTalk = new LightningTalk(
 				lt.exhibitId,
-				lt.startTime,
+				new Date(lt.startTime),
 				new LightningTalkDuration(lt.duration),
 				lt.slideUrl ? new Url(lt.slideUrl) : undefined,
 			);
@@ -102,6 +103,11 @@ export class DrizzleEventRepository implements EventRepository {
 	private async persistEvent(event: Event): Promise<void> {
 		const db = getDb();
 		const snapshot = event.toSnapshot();
+		const now = new Date().toISOString();
+		const dateStr =
+			snapshot.date instanceof Date
+				? snapshot.date.toISOString()
+				: snapshot.date;
 
 		// 1) Event upsert
 		await db
@@ -109,15 +115,15 @@ export class DrizzleEventRepository implements EventRepository {
 			.values({
 				id: snapshot.id,
 				name: snapshot.name,
-				date: snapshot.date,
-				updatedAt: new Date(),
+				date: dateStr,
+				updatedAt: now,
 			})
 			.onConflictDoUpdate({
 				target: events.id,
 				set: {
 					name: snapshot.name,
-					date: snapshot.date,
-					updatedAt: new Date(),
+					date: dateStr,
+					updatedAt: now,
 				},
 			});
 
@@ -173,6 +179,7 @@ export class DrizzleEventRepository implements EventRepository {
 		eventId: string,
 		ex: ReturnType<Event["toSnapshot"]>["exhibits"][number],
 	): Promise<void> {
+		const now = new Date().toISOString();
 		await db
 			.insert(exhibits)
 			.values({
@@ -182,7 +189,7 @@ export class DrizzleEventRepository implements EventRepository {
 				markdownContent: ex.markdownContent ?? null,
 				url: ex.url?.getValue() ?? null,
 				eventId: eventId,
-				updatedAt: new Date(),
+				updatedAt: now,
 			})
 			.onConflictDoUpdate({
 				target: exhibits.id,
@@ -191,27 +198,31 @@ export class DrizzleEventRepository implements EventRepository {
 					description: ex.description ?? null,
 					markdownContent: ex.markdownContent ?? null,
 					url: ex.url?.getValue() ?? null,
-					updatedAt: new Date(),
+					updatedAt: now,
 				},
 			});
 
 		if (ex.lightningTalk) {
+			const startTimeStr =
+				ex.lightningTalk.startTime instanceof Date
+					? ex.lightningTalk.startTime.toISOString()
+					: ex.lightningTalk.startTime;
 			await db
 				.insert(lightningTalks)
 				.values({
 					exhibitId: ex.id,
-					startTime: ex.lightningTalk.startTime,
+					startTime: startTimeStr,
 					duration: ex.lightningTalk.durationMinutes.getValue(),
 					slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
-					updatedAt: new Date(),
+					updatedAt: now,
 				})
 				.onConflictDoUpdate({
 					target: lightningTalks.exhibitId,
 					set: {
-						startTime: ex.lightningTalk.startTime,
+						startTime: startTimeStr,
 						duration: ex.lightningTalk.durationMinutes.getValue(),
 						slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
-						updatedAt: new Date(),
+						updatedAt: now,
 					},
 				});
 		} else {
@@ -228,10 +239,16 @@ export class DrizzleEventRepository implements EventRepository {
 	): Promise<void> {
 		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
 
+		const now = new Date().toISOString();
 		for (const memberId of memberIds) {
 			await db
 				.insert(memberEvents)
-				.values({ memberId, eventId, updatedAt: new Date() })
+				.values({
+					id: randomUUID(),
+					memberId,
+					eventId,
+					updatedAt: now,
+				})
 				.onConflictDoNothing();
 		}
 	}
@@ -245,10 +262,16 @@ export class DrizzleEventRepository implements EventRepository {
 			.delete(memberExhibits)
 			.where(eq(memberExhibits.exhibitId, exhibitId));
 
+		const now = new Date().toISOString();
 		for (const memberId of memberIds) {
 			await db
 				.insert(memberExhibits)
-				.values({ memberId, exhibitId, updatedAt: new Date() })
+				.values({
+					id: randomUUID(),
+					memberId,
+					exhibitId,
+					updatedAt: now,
+				})
 				.onConflictDoNothing();
 		}
 	}
