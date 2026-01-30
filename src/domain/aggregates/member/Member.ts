@@ -1,10 +1,8 @@
 import {
 	DiscordAccountAlreadyConnectedException,
 	DiscordAccountNotConnectedException,
-} from "../../exceptions/DomainExceptions";
-import type { Department } from "../../value-objects/Departments";
-import type { Email } from "../../value-objects/Email";
-import type { UniversityEmail } from "../../value-objects/UniversityEmail";
+} from "../../exceptions";
+import type { Department, Email, UniversityEmail } from "../../value-objects";
 import type { DiscordAccount } from "./DiscordAccount";
 
 export class Member {
