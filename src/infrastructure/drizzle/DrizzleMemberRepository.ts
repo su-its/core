@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { type InferSelectModel, eq } from "drizzle-orm";
 import {
 	Department,
 	DiscordAccount,
@@ -10,12 +10,36 @@ import {
 import { getDb } from "./client";
 import { discordAccounts, members } from "./schema";
 
-type MemberWithDiscordAccounts = typeof members.$inferSelect & {
-	discordAccounts: (typeof discordAccounts.$inferSelect)[];
+// ============================================================================
+// Type Definitions - Derived from Drizzle schema for type safety
+// ============================================================================
+
+/** Base table types inferred from schema */
+type MemberRecord = InferSelectModel<typeof members>;
+type DiscordAccountRecord = InferSelectModel<typeof discordAccounts>;
+
+/** Member with related discord accounts for queries */
+type MemberWithRelations = MemberRecord & {
+	discordAccounts: DiscordAccountRecord[];
 };
 
+/**
+ * Relational query configuration for Member with discord accounts.
+ * Used consistently across all find methods.
+ */
+const memberWithRelationsConfig = {
+	discordAccounts: true,
+} as const;
+
+// ============================================================================
+// Repository Implementation
+// ============================================================================
+
 export class DrizzleMemberRepository implements MemberRepository {
-	private toDomain(record: MemberWithDiscordAccounts): Member {
+	/**
+	 * Converts a database record to a domain Member entity.
+	 */
+	private toDomain(record: MemberWithRelations): Member {
 		const member = new Member(
 			record.id,
 			record.name,
@@ -38,6 +62,10 @@ export class DrizzleMemberRepository implements MemberRepository {
 		return member;
 	}
 
+	// ==========================================================================
+	// Query Methods
+	// ==========================================================================
+
 	async findByDiscordAccountId(
 		discordAccountId: string,
 	): Promise<Member | null> {
@@ -47,7 +75,6 @@ export class DrizzleMemberRepository implements MemberRepository {
 		});
 
 		if (!discordAccount) return null;
-
 		return this.findById(discordAccount.memberId);
 	}
 
@@ -55,75 +82,80 @@ export class DrizzleMemberRepository implements MemberRepository {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.id, id),
-			with: { discordAccounts: true },
+			with: memberWithRelationsConfig,
 		});
 
 		if (!record) return null;
-
-		return this.toDomain(record);
+		return this.toDomain(record as MemberWithRelations);
 	}
 
 	async findByEmail(email: string): Promise<Member | null> {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.email, email),
-			with: { discordAccounts: true },
+			with: memberWithRelationsConfig,
 		});
 
 		if (!record) return null;
-
-		return this.toDomain(record);
+		return this.toDomain(record as MemberWithRelations);
 	}
 
 	async findByStudentId(studentId: string): Promise<Member | null> {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.studentId, studentId),
-			with: { discordAccounts: true },
+			with: memberWithRelationsConfig,
 		});
 
 		if (!record) return null;
-
-		return this.toDomain(record);
+		return this.toDomain(record as MemberWithRelations);
 	}
 
 	async findAll(): Promise<Member[]> {
 		const db = getDb();
 		const records = await db.query.members.findMany({
-			with: { discordAccounts: true },
+			with: memberWithRelationsConfig,
 		});
 
-		return records.map((record) => this.toDomain(record));
+		return records.map((record) =>
+			this.toDomain(record as MemberWithRelations),
+		);
 	}
+
+	// ==========================================================================
+	// Persistence Methods
+	// ==========================================================================
 
 	async save(member: Member): Promise<void> {
 		const db = getDb();
-		const memberSnapshot = member.toSnapshot();
+		const snapshot = member.toSnapshot();
 
+		// Upsert member
 		await db
 			.insert(members)
 			.values({
-				id: memberSnapshot.id,
-				name: memberSnapshot.name,
-				studentId: memberSnapshot.studentId,
-				department: memberSnapshot.department.getValue(),
-				email: memberSnapshot.email.getValue(),
-				personalEmail: memberSnapshot.personalEmail?.getValue() ?? null,
+				id: snapshot.id,
+				name: snapshot.name,
+				studentId: snapshot.studentId,
+				department: snapshot.department.getValue(),
+				email: snapshot.email.getValue(),
+				personalEmail: snapshot.personalEmail?.getValue() ?? null,
 				updatedAt: new Date(),
 			})
 			.onConflictDoUpdate({
 				target: members.id,
 				set: {
-					name: memberSnapshot.name,
-					studentId: memberSnapshot.studentId,
-					department: memberSnapshot.department.getValue(),
-					email: memberSnapshot.email.getValue(),
-					personalEmail: memberSnapshot.personalEmail?.getValue() ?? null,
+					name: snapshot.name,
+					studentId: snapshot.studentId,
+					department: snapshot.department.getValue(),
+					email: snapshot.email.getValue(),
+					personalEmail: snapshot.personalEmail?.getValue() ?? null,
 					updatedAt: new Date(),
 				},
 			});
 
-		for (const discordAccount of memberSnapshot.discordAccounts) {
+		// Upsert discord accounts
+		for (const discordAccount of snapshot.discordAccounts) {
 			await db
 				.insert(discordAccounts)
 				.values({

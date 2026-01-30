@@ -1,4 +1,4 @@
-import { eq, inArray } from "drizzle-orm";
+import { type InferSelectModel, eq, inArray } from "drizzle-orm";
 import {
 	Event,
 	type EventRepository,
@@ -7,7 +7,7 @@ import {
 	LightningTalkDuration,
 	Url,
 } from "../../domain";
-import { getDb } from "./client";
+import { type DrizzleDb, getDb } from "./client";
 import {
 	events,
 	exhibits,
@@ -16,22 +16,52 @@ import {
 	memberExhibits,
 } from "./schema";
 
-type MemberExhibitRecord = typeof memberExhibits.$inferSelect;
+// ============================================================================
+// Type Definitions - Derived from Drizzle schema for type safety
+// ============================================================================
 
-type ExhibitWithLightningTalk = typeof exhibits.$inferSelect & {
-	lightningTalk: typeof lightningTalks.$inferSelect | null;
+/** Base table types inferred from schema */
+type EventRecord = InferSelectModel<typeof events>;
+type ExhibitRecord = InferSelectModel<typeof exhibits>;
+type LightningTalkRecord = InferSelectModel<typeof lightningTalks>;
+type MemberEventRecord = InferSelectModel<typeof memberEvents>;
+type MemberExhibitRecord = InferSelectModel<typeof memberExhibits>;
+
+/** Exhibit with related data for queries */
+type ExhibitWithRelations = ExhibitRecord & {
+	lightningTalk: LightningTalkRecord | null;
 	memberExhibits: MemberExhibitRecord[];
 };
 
-type MemberEventRecord = typeof memberEvents.$inferSelect;
-
-type EventWithExhibits = typeof events.$inferSelect & {
-	exhibits: ExhibitWithLightningTalk[];
+/** Event with all related data for queries */
+type EventWithRelations = EventRecord & {
+	exhibits: ExhibitWithRelations[];
 	memberEvents: MemberEventRecord[];
 };
 
+/**
+ * Relational query configuration for Event with all related data.
+ * Used consistently across all find methods to ensure type safety.
+ */
+const eventWithRelationsConfig = {
+	memberEvents: true,
+	exhibits: {
+		with: {
+			lightningTalk: true,
+			memberExhibits: true,
+		},
+	},
+} as const;
+
+// ============================================================================
+// Repository Implementation
+// ============================================================================
+
 export class DrizzleEventRepository implements EventRepository {
-	private toDomain(record: EventWithExhibits): Event {
+	/**
+	 * Converts a database record to a domain Event entity.
+	 */
+	private toDomain(record: EventWithRelations): Event {
 		const event = new Event(record.id, record.name, record.date);
 
 		// Load event member IDs
@@ -39,35 +69,9 @@ export class DrizzleEventRepository implements EventRepository {
 			event.addMemberId(memberEvent.memberId);
 		}
 
+		// Load exhibits
 		for (const exhibitRecord of record.exhibits) {
-			let exhibit: Exhibit;
-
-			if (exhibitRecord.lightningTalk) {
-				const ltRecord = exhibitRecord.lightningTalk;
-				const lightningTalk = new LightningTalk(
-					ltRecord.exhibitId,
-					ltRecord.startTime,
-					new LightningTalkDuration(ltRecord.duration),
-					ltRecord.slideUrl ? new Url(ltRecord.slideUrl) : undefined,
-				);
-
-				exhibit = Exhibit.createWithLightningTalk(
-					exhibitRecord.id,
-					exhibitRecord.name,
-					lightningTalk,
-					exhibitRecord.description ?? undefined,
-					exhibitRecord.markdownContent ?? undefined,
-					exhibitRecord.url ? new Url(exhibitRecord.url) : undefined,
-				);
-			} else {
-				exhibit = new Exhibit(
-					exhibitRecord.id,
-					exhibitRecord.name,
-					exhibitRecord.description ?? undefined,
-					exhibitRecord.markdownContent ?? undefined,
-					exhibitRecord.url ? new Url(exhibitRecord.url) : undefined,
-				);
-			}
+			const exhibit = this.createExhibitFromRecord(exhibitRecord);
 
 			// Load exhibit member IDs
 			for (const memberExhibit of exhibitRecord.memberExhibits) {
@@ -79,6 +83,42 @@ export class DrizzleEventRepository implements EventRepository {
 
 		return event;
 	}
+
+	/**
+	 * Creates an Exhibit domain entity from a database record.
+	 */
+	private createExhibitFromRecord(record: ExhibitWithRelations): Exhibit {
+		if (record.lightningTalk) {
+			const lt = record.lightningTalk;
+			const lightningTalk = new LightningTalk(
+				lt.exhibitId,
+				lt.startTime,
+				new LightningTalkDuration(lt.duration),
+				lt.slideUrl ? new Url(lt.slideUrl) : undefined,
+			);
+
+			return Exhibit.createWithLightningTalk(
+				record.id,
+				record.name,
+				lightningTalk,
+				record.description ?? undefined,
+				record.markdownContent ?? undefined,
+				record.url ? new Url(record.url) : undefined,
+			);
+		}
+
+		return new Exhibit(
+			record.id,
+			record.name,
+			record.description ?? undefined,
+			record.markdownContent ?? undefined,
+			record.url ? new Url(record.url) : undefined,
+		);
+	}
+
+	// ==========================================================================
+	// Persistence Methods
+	// ==========================================================================
 
 	private async persistEvent(event: Event): Promise<void> {
 		const db = getDb();
@@ -104,121 +144,31 @@ export class DrizzleEventRepository implements EventRepository {
 
 		// 2) Find obsolete exhibits and clean up
 		const snapshotExhibitIds = snapshot.exhibits.map((ex) => ex.id);
-		const obsoleteExhibitIds = await this.findObsoleteExhibitIds(
-			snapshot.id,
-			snapshotExhibitIds,
-		);
-
-		if (obsoleteExhibitIds.length > 0) {
-			// Delete lightning talks for obsolete exhibits
-			await db
-				.delete(lightningTalks)
-				.where(inArray(lightningTalks.exhibitId, obsoleteExhibitIds));
-
-			// Delete member exhibits for obsolete exhibits
-			await db
-				.delete(memberExhibits)
-				.where(inArray(memberExhibits.exhibitId, obsoleteExhibitIds));
-
-			// Delete obsolete exhibits
-			await db.delete(exhibits).where(inArray(exhibits.id, obsoleteExhibitIds));
-		}
+		await this.deleteObsoleteExhibits(db, snapshot.id, snapshotExhibitIds);
 
 		// 3) Upsert exhibits
 		for (const ex of snapshot.exhibits) {
-			await db
-				.insert(exhibits)
-				.values({
-					id: ex.id,
-					name: ex.name,
-					description: ex.description ?? null,
-					markdownContent: ex.markdownContent ?? null,
-					url: ex.url?.getValue() ?? null,
-					eventId: snapshot.id,
-					updatedAt: new Date(),
-				})
-				.onConflictDoUpdate({
-					target: exhibits.id,
-					set: {
-						name: ex.name,
-						description: ex.description ?? null,
-						markdownContent: ex.markdownContent ?? null,
-						url: ex.url?.getValue() ?? null,
-						updatedAt: new Date(),
-					},
-				});
-
-			// Lightning talk
-			if (ex.lightningTalk) {
-				await db
-					.insert(lightningTalks)
-					.values({
-						exhibitId: ex.id,
-						startTime: ex.lightningTalk.startTime,
-						duration: ex.lightningTalk.durationMinutes.getValue(),
-						slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
-						updatedAt: new Date(),
-					})
-					.onConflictDoUpdate({
-						target: lightningTalks.exhibitId,
-						set: {
-							startTime: ex.lightningTalk.startTime,
-							duration: ex.lightningTalk.durationMinutes.getValue(),
-							slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
-							updatedAt: new Date(),
-						},
-					});
-			} else {
-				// Delete if exists
-				await db
-					.delete(lightningTalks)
-					.where(eq(lightningTalks.exhibitId, ex.id));
-			}
+			await this.upsertExhibit(db, snapshot.id, ex);
 		}
 
 		// 4) Sync member events
-		const eventMemberIds = event.getMemberIds();
-
-		// Delete existing and re-insert
-		await db.delete(memberEvents).where(eq(memberEvents.eventId, snapshot.id));
-
-		for (const memberId of eventMemberIds) {
-			await db
-				.insert(memberEvents)
-				.values({
-					memberId,
-					eventId: snapshot.id,
-					updatedAt: new Date(),
-				})
-				.onConflictDoNothing();
-		}
+		await this.syncMemberEvents(db, snapshot.id, event.getMemberIds());
 
 		// 5) Sync member exhibits
 		for (const exhibitDomain of event.getExhibits()) {
-			const exhibitMemberIds = exhibitDomain.getMemberIds();
-
-			await db
-				.delete(memberExhibits)
-				.where(eq(memberExhibits.exhibitId, exhibitDomain.id));
-
-			for (const memberId of exhibitMemberIds) {
-				await db
-					.insert(memberExhibits)
-					.values({
-						memberId,
-						exhibitId: exhibitDomain.id,
-						updatedAt: new Date(),
-					})
-					.onConflictDoNothing();
-			}
+			await this.syncMemberExhibits(
+				db,
+				exhibitDomain.id,
+				exhibitDomain.getMemberIds(),
+			);
 		}
 	}
 
-	private async findObsoleteExhibitIds(
+	private async deleteObsoleteExhibits(
+		db: DrizzleDb,
 		eventId: string,
 		keptExhibitIds: string[],
-	): Promise<string[]> {
-		const db = getDb();
+	): Promise<void> {
 		const existingExhibits = await db
 			.select({ id: exhibits.id })
 			.from(exhibits)
@@ -226,33 +176,122 @@ export class DrizzleEventRepository implements EventRepository {
 
 		const existingIdSet = new Set(existingExhibits.map((r) => r.id));
 		const keptIdSet = new Set(keptExhibitIds);
+		const obsoleteIds = [...existingIdSet].filter((id) => !keptIdSet.has(id));
 
-		return [...existingIdSet].filter((id) => !keptIdSet.has(id));
+		if (obsoleteIds.length > 0) {
+			await db
+				.delete(lightningTalks)
+				.where(inArray(lightningTalks.exhibitId, obsoleteIds));
+			await db
+				.delete(memberExhibits)
+				.where(inArray(memberExhibits.exhibitId, obsoleteIds));
+			await db.delete(exhibits).where(inArray(exhibits.id, obsoleteIds));
+		}
 	}
+
+	private async upsertExhibit(
+		db: DrizzleDb,
+		eventId: string,
+		ex: ReturnType<Event["toSnapshot"]>["exhibits"][number],
+	): Promise<void> {
+		await db
+			.insert(exhibits)
+			.values({
+				id: ex.id,
+				name: ex.name,
+				description: ex.description ?? null,
+				markdownContent: ex.markdownContent ?? null,
+				url: ex.url?.getValue() ?? null,
+				eventId: eventId,
+				updatedAt: new Date(),
+			})
+			.onConflictDoUpdate({
+				target: exhibits.id,
+				set: {
+					name: ex.name,
+					description: ex.description ?? null,
+					markdownContent: ex.markdownContent ?? null,
+					url: ex.url?.getValue() ?? null,
+					updatedAt: new Date(),
+				},
+			});
+
+		if (ex.lightningTalk) {
+			await db
+				.insert(lightningTalks)
+				.values({
+					exhibitId: ex.id,
+					startTime: ex.lightningTalk.startTime,
+					duration: ex.lightningTalk.durationMinutes.getValue(),
+					slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
+					updatedAt: new Date(),
+				})
+				.onConflictDoUpdate({
+					target: lightningTalks.exhibitId,
+					set: {
+						startTime: ex.lightningTalk.startTime,
+						duration: ex.lightningTalk.durationMinutes.getValue(),
+						slideUrl: ex.lightningTalk.slideUrl?.getValue() ?? null,
+						updatedAt: new Date(),
+					},
+				});
+		} else {
+			await db
+				.delete(lightningTalks)
+				.where(eq(lightningTalks.exhibitId, ex.id));
+		}
+	}
+
+	private async syncMemberEvents(
+		db: DrizzleDb,
+		eventId: string,
+		memberIds: string[],
+	): Promise<void> {
+		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
+
+		for (const memberId of memberIds) {
+			await db
+				.insert(memberEvents)
+				.values({ memberId, eventId, updatedAt: new Date() })
+				.onConflictDoNothing();
+		}
+	}
+
+	private async syncMemberExhibits(
+		db: DrizzleDb,
+		exhibitId: string,
+		memberIds: string[],
+	): Promise<void> {
+		await db
+			.delete(memberExhibits)
+			.where(eq(memberExhibits.exhibitId, exhibitId));
+
+		for (const memberId of memberIds) {
+			await db
+				.insert(memberExhibits)
+				.values({ memberId, exhibitId, updatedAt: new Date() })
+				.onConflictDoNothing();
+		}
+	}
+
+	// ==========================================================================
+	// Query Methods
+	// ==========================================================================
 
 	async findById(id: string): Promise<Event | null> {
 		const db = getDb();
 		const record = await db.query.events.findFirst({
 			where: eq(events.id, id),
-			with: {
-				memberEvents: true,
-				exhibits: {
-					with: {
-						lightningTalk: true,
-						memberExhibits: true,
-					},
-				},
-			},
+			with: eventWithRelationsConfig,
 		});
 
 		if (!record) return null;
-		return this.toDomain(record);
+		return this.toDomain(record as EventWithRelations);
 	}
 
 	async findByParticipantMemberId(memberId: string): Promise<Event[]> {
 		const db = getDb();
 
-		// Find event IDs where the member participates
 		const participations = await db
 			.select({ eventId: memberEvents.eventId })
 			.from(memberEvents)
@@ -263,18 +302,10 @@ export class DrizzleEventRepository implements EventRepository {
 		const eventIds = participations.map((p) => p.eventId);
 		const records = await db.query.events.findMany({
 			where: inArray(events.id, eventIds),
-			with: {
-				memberEvents: true,
-				exhibits: {
-					with: {
-						lightningTalk: true,
-						memberExhibits: true,
-					},
-				},
-			},
+			with: eventWithRelationsConfig,
 		});
 
-		return records.map((r) => this.toDomain(r));
+		return records.map((r) => this.toDomain(r as EventWithRelations));
 	}
 
 	async findByExhibitId(exhibitId: string): Promise<Event | null> {
@@ -287,25 +318,16 @@ export class DrizzleEventRepository implements EventRepository {
 			.limit(1);
 
 		if (exhibit.length === 0) return null;
-
 		return this.findById(exhibit[0].eventId);
 	}
 
 	async findAll(): Promise<Event[]> {
 		const db = getDb();
 		const records = await db.query.events.findMany({
-			with: {
-				memberEvents: true,
-				exhibits: {
-					with: {
-						lightningTalk: true,
-						memberExhibits: true,
-					},
-				},
-			},
+			with: eventWithRelationsConfig,
 		});
 
-		return records.map((r) => this.toDomain(r));
+		return records.map((r) => this.toDomain(r as EventWithRelations));
 	}
 
 	async save(event: Event): Promise<void> {
@@ -315,7 +337,6 @@ export class DrizzleEventRepository implements EventRepository {
 	async delete(eventId: string): Promise<void> {
 		const db = getDb();
 
-		// Find exhibit IDs
 		const exhibitRecords = await db
 			.select({ id: exhibits.id })
 			.from(exhibits)
@@ -323,24 +344,16 @@ export class DrizzleEventRepository implements EventRepository {
 		const exhibitIds = exhibitRecords.map((ex) => ex.id);
 
 		if (exhibitIds.length > 0) {
-			// Delete lightning talks
 			await db
 				.delete(lightningTalks)
 				.where(inArray(lightningTalks.exhibitId, exhibitIds));
-
-			// Delete member exhibits
 			await db
 				.delete(memberExhibits)
 				.where(inArray(memberExhibits.exhibitId, exhibitIds));
 		}
 
-		// Delete member events
 		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
-
-		// Delete exhibits
 		await db.delete(exhibits).where(eq(exhibits.eventId, eventId));
-
-		// Delete event
 		await db.delete(events).where(eq(events.id, eventId));
 	}
 }
