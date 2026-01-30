@@ -4,6 +4,14 @@
 	"description": "ITS core library",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"imports": {
+		"#domain": "./src/domain/index.js",
+		"#domain/*": "./src/domain/*",
+		"#application": "./src/application/index.js",
+		"#application/*": "./src/application/*",
+		"#infrastructure": "./src/infrastructure/index.js",
+		"#infrastructure/*": "./src/infrastructure/*"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/su-its/core.git"

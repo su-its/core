@@ -1,9 +1,9 @@
-import * as eventUsecases from "../application";
-import * as eventParticipationUsecases from "../application";
+import * as eventUsecases from "#application";
+import * as eventParticipationUsecases from "#application";
 import {
 	DrizzleEventRepository,
 	DrizzleMemberRepository,
-} from "../infrastructure";
+} from "#infrastructure";
 
 export type EventUseCases = {
 	createEvent: eventUsecases.CreateEvent;

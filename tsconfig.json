@@ -1,15 +1,24 @@
 {
 	"compilerOptions": {
 		"target": "es2018",
-		"module": "commonjs",
+		"module": "Node16",
 		"declaration": true,
 		"outDir": "./dist",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
-		"rootDir": "./src"
+		"moduleResolution": "node16",
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"paths": {
+			"#domain": ["./src/domain"],
+			"#domain/*": ["./src/domain/*"],
+			"#application": ["./src/application"],
+			"#application/*": ["./src/application/*"],
+			"#infrastructure": ["./src/infrastructure"],
+			"#infrastructure/*": ["./src/infrastructure/*"]
+		}
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]

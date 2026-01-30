@@ -7,8 +7,8 @@ import {
 	GetMemberUseCase,
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
-} from "../application";
-import { DrizzleMemberRepository } from "../infrastructure/";
+} from "#application";
+import { DrizzleMemberRepository } from "#infrastructure";
 
 export type MemberUseCases = {
 	registerMember: RegisterMemberUseCase;

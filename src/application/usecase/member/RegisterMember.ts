@@ -6,9 +6,9 @@ import {
 	Member,
 	type MemberRepository,
 	UniversityEmail,
-} from "../../../domain";
-import { MemberEmailAlreadyExistsException } from "../../exceptions";
-import { IUseCase } from "../base";
+} from "#domain";
+import { MemberEmailAlreadyExistsException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
 
 export interface RegisterMemberInput {
 	name: string;

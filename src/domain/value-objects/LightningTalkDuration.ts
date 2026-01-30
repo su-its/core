@@ -1,4 +1,4 @@
-import { InvalidLightningTalkDurationException } from "../exceptions";
+import { InvalidLightningTalkDurationException } from "#domain/exceptions";
 import { ValueObject } from "./ValueObject";
 
 export class LightningTalkDuration extends ValueObject<number> {
