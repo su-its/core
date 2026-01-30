@@ -7,7 +7,7 @@ import {
 	LightningTalk,
 	LightningTalkDuration,
 	Url,
-} from "../../domain";
+} from "#domain";
 import { type DrizzleDb, getDb } from "./client";
 import {
 	events,

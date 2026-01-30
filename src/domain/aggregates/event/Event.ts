@@ -2,8 +2,8 @@ import {
 	ExhibitAlreadyExistsException,
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
-} from "../../exceptions";
-import type { LightningTalkDuration, Url } from "../../value-objects";
+} from "#domain/exceptions";
+import type { LightningTalkDuration, Url } from "#domain/value-objects";
 import type { Exhibit } from "./Exhibit";
 
 export class Event {
