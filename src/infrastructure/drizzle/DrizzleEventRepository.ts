@@ -1,4 +1,4 @@
-import { type InferSelectModel, eq, inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import {
 	Event,
 	type EventRepository,
@@ -17,41 +17,20 @@ import {
 } from "./schema";
 
 // ============================================================================
-// Type Definitions - Derived from Drizzle schema for type safety
+// Type Definitions - Using $inferSelect for schema-derived types
 // ============================================================================
 
-/** Base table types inferred from schema */
-type EventRecord = InferSelectModel<typeof events>;
-type ExhibitRecord = InferSelectModel<typeof exhibits>;
-type LightningTalkRecord = InferSelectModel<typeof lightningTalks>;
-type MemberEventRecord = InferSelectModel<typeof memberEvents>;
-type MemberExhibitRecord = InferSelectModel<typeof memberExhibits>;
-
-/** Exhibit with related data for queries */
-type ExhibitWithRelations = ExhibitRecord & {
-	lightningTalk: LightningTalkRecord | null;
-	memberExhibits: MemberExhibitRecord[];
+/** Exhibit with related data - matches Drizzle's relational query result */
+type ExhibitWithRelations = typeof exhibits.$inferSelect & {
+	lightningTalk: typeof lightningTalks.$inferSelect | null;
+	memberExhibits: (typeof memberExhibits.$inferSelect)[];
 };
 
-/** Event with all related data for queries */
-type EventWithRelations = EventRecord & {
+/** Event with all related data - matches Drizzle's relational query result */
+type EventWithRelations = typeof events.$inferSelect & {
 	exhibits: ExhibitWithRelations[];
-	memberEvents: MemberEventRecord[];
+	memberEvents: (typeof memberEvents.$inferSelect)[];
 };
-
-/**
- * Relational query configuration for Event with all related data.
- * Used consistently across all find methods to ensure type safety.
- */
-const eventWithRelationsConfig = {
-	memberEvents: true,
-	exhibits: {
-		with: {
-			lightningTalk: true,
-			memberExhibits: true,
-		},
-	},
-} as const;
 
 // ============================================================================
 // Repository Implementation
@@ -282,11 +261,19 @@ export class DrizzleEventRepository implements EventRepository {
 		const db = getDb();
 		const record = await db.query.events.findFirst({
 			where: eq(events.id, id),
-			with: eventWithRelationsConfig,
+			with: {
+				memberEvents: true,
+				exhibits: {
+					with: {
+						lightningTalk: true,
+						memberExhibits: true,
+					},
+				},
+			},
 		});
 
 		if (!record) return null;
-		return this.toDomain(record as EventWithRelations);
+		return this.toDomain(record);
 	}
 
 	async findByParticipantMemberId(memberId: string): Promise<Event[]> {
@@ -302,10 +289,18 @@ export class DrizzleEventRepository implements EventRepository {
 		const eventIds = participations.map((p) => p.eventId);
 		const records = await db.query.events.findMany({
 			where: inArray(events.id, eventIds),
-			with: eventWithRelationsConfig,
+			with: {
+				memberEvents: true,
+				exhibits: {
+					with: {
+						lightningTalk: true,
+						memberExhibits: true,
+					},
+				},
+			},
 		});
 
-		return records.map((r) => this.toDomain(r as EventWithRelations));
+		return records.map((r) => this.toDomain(r));
 	}
 
 	async findByExhibitId(exhibitId: string): Promise<Event | null> {
@@ -324,10 +319,18 @@ export class DrizzleEventRepository implements EventRepository {
 	async findAll(): Promise<Event[]> {
 		const db = getDb();
 		const records = await db.query.events.findMany({
-			with: eventWithRelationsConfig,
+			with: {
+				memberEvents: true,
+				exhibits: {
+					with: {
+						lightningTalk: true,
+						memberExhibits: true,
+					},
+				},
+			},
 		});
 
-		return records.map((r) => this.toDomain(r as EventWithRelations));
+		return records.map((r) => this.toDomain(r));
 	}
 
 	async save(event: Event): Promise<void> {

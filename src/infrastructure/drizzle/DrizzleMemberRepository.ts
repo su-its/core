@@ -1,4 +1,4 @@
-import { type InferSelectModel, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import {
 	Department,
 	DiscordAccount,
@@ -11,35 +11,19 @@ import { getDb } from "./client";
 import { discordAccounts, members } from "./schema";
 
 // ============================================================================
-// Type Definitions - Derived from Drizzle schema for type safety
-// ============================================================================
-
-/** Base table types inferred from schema */
-type MemberRecord = InferSelectModel<typeof members>;
-type DiscordAccountRecord = InferSelectModel<typeof discordAccounts>;
-
-/** Member with related discord accounts for queries */
-type MemberWithRelations = MemberRecord & {
-	discordAccounts: DiscordAccountRecord[];
-};
-
-/**
- * Relational query configuration for Member with discord accounts.
- * Used consistently across all find methods.
- */
-const memberWithRelationsConfig = {
-	discordAccounts: true,
-} as const;
-
-// ============================================================================
 // Repository Implementation
 // ============================================================================
 
 export class DrizzleMemberRepository implements MemberRepository {
 	/**
 	 * Converts a database record to a domain Member entity.
+	 * Accepts the exact type returned by Drizzle's relational query.
 	 */
-	private toDomain(record: MemberWithRelations): Member {
+	private toDomain(
+		record: typeof members.$inferSelect & {
+			discordAccounts: (typeof discordAccounts.$inferSelect)[];
+		},
+	): Member {
 		const member = new Member(
 			record.id,
 			record.name,
@@ -82,44 +66,42 @@ export class DrizzleMemberRepository implements MemberRepository {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.id, id),
-			with: memberWithRelationsConfig,
+			with: { discordAccounts: true },
 		});
 
 		if (!record) return null;
-		return this.toDomain(record as MemberWithRelations);
+		return this.toDomain(record);
 	}
 
 	async findByEmail(email: string): Promise<Member | null> {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.email, email),
-			with: memberWithRelationsConfig,
+			with: { discordAccounts: true },
 		});
 
 		if (!record) return null;
-		return this.toDomain(record as MemberWithRelations);
+		return this.toDomain(record);
 	}
 
 	async findByStudentId(studentId: string): Promise<Member | null> {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.studentId, studentId),
-			with: memberWithRelationsConfig,
+			with: { discordAccounts: true },
 		});
 
 		if (!record) return null;
-		return this.toDomain(record as MemberWithRelations);
+		return this.toDomain(record);
 	}
 
 	async findAll(): Promise<Member[]> {
 		const db = getDb();
 		const records = await db.query.members.findMany({
-			with: memberWithRelationsConfig,
+			with: { discordAccounts: true },
 		});
 
-		return records.map((record) =>
-			this.toDomain(record as MemberWithRelations),
-		);
+		return records.map((record) => this.toDomain(record));
 	}
 
 	// ==========================================================================
