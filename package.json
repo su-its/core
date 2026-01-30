@@ -13,12 +13,12 @@
 	},
 	"files": [
 		"dist",
-		"prisma"
+		"prisma",
+		"generated"
 	],
 	"scripts": {
-		"postinstall": "npx prisma generate",
-		"build": "tsc",
-		"prebuild": "rimraf dist",
+		"build": "prisma generate && node -e \"require('fs').readdirSync('generated/client').filter(f=>f.endsWith('.node')).forEach(f=>require('fs').unlinkSync('generated/client/'+f))\" && tsc",
+		"prebuild": "rimraf dist generated",
 		"prepare": "npm run build",
 		"prisma:generate": "npx prisma generate",
 		"version:patch": "npm version patch && npm run publish:latest",

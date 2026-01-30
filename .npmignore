@@ -32,3 +32,9 @@ tests/
 .vscode/
 .idea/
 *.iml
+
+# Prisma platform-specific binaries
+*.node
+*.dll
+*.so
+*.dylib
