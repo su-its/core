@@ -1,4 +1,2 @@
-export * from "./schema";
-export * from "./client";
-export * from "./DrizzleMemberRepository";
-export * from "./DrizzleEventRepository";
+export { DrizzleMemberRepository } from "./DrizzleMemberRepository";
+export { DrizzleEventRepository } from "./DrizzleEventRepository";

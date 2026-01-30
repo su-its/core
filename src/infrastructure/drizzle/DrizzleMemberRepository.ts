@@ -6,7 +6,7 @@ import {
 	Member,
 	type MemberRepository,
 	UniversityEmail,
-} from "../../domain";
+} from "#domain";
 import { getDb } from "./client";
 import { discordAccounts, members } from "./schema";
 
