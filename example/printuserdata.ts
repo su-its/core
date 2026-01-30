@@ -1,5 +1,4 @@
-import { createMemberUseCases } from "../src/";
-import type { GetMemberByEmailOutput } from "../src/application";
+import { createMemberUseCases } from "@shizuoka-its/core";
 
 const memberUseCases = createMemberUseCases();
 
