@@ -49,8 +49,8 @@ describe("DrizzleEventRepository", () => {
 			const found = await repository.findById(event.id);
 
 			expect(found).not.toBeNull();
-			expect(found!.getExhibits()).toHaveLength(1);
-			expect(found!.getExhibits()[0].getName()).toBe("展示物A");
+			expect(found?.getExhibits()).toHaveLength(1);
+			expect(found?.getExhibits()[0].getName()).toBe("展示物A");
 		});
 
 		it("Exhibitを削除するとDBからも削除される", async () => {
@@ -65,7 +65,7 @@ describe("DrizzleEventRepository", () => {
 
 			const found = await repository.findById(event.id);
 			expect(found).not.toBeNull();
-			expect(found!.getExhibits()).toHaveLength(0);
+			expect(found?.getExhibits()).toHaveLength(0);
 		});
 	});
 
