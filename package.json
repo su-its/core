@@ -20,9 +20,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"scripts": {
 		"build": "tsup",
 		"prepare": "npm run build",

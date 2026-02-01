@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
 	foreignKey,
 	integer,
@@ -8,7 +9,6 @@ import {
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 // ============================================================================
 // Tables (introspected from production database)
@@ -97,7 +97,10 @@ export const lightningTalks = pgTable(
 	"lightning_talks",
 	{
 		exhibitId: text("exhibit_id").primaryKey().notNull(),
-		startTime: timestamp("start_time", { precision: 3, mode: "string" }).notNull(),
+		startTime: timestamp("start_time", {
+			precision: 3,
+			mode: "string",
+		}).notNull(),
 		duration: integer().notNull(),
 		slideUrl: text("slide_url"),
 		createdAt: timestamp({ precision: 3, mode: "string" })
