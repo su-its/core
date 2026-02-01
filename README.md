@@ -76,11 +76,11 @@ DATABASE_URL="postgresql://user:password@localhost:5432/su_its_db?schema=public"
 ```
 4. データベースのセットアップ
 ```bash
-# Prismaクライアントの生成  
-npx prisma generate  
-  
-# マイグレーションの実行（開発環境）  
-npx prisma migrate dev
+# マイグレーションファイルの生成
+npm run db:generate
+
+# マイグレーションの実行
+npm run db:migrate
 ```
 
 ## ビルドとパブリッシュ
@@ -111,21 +111,15 @@ npm run version:major
 ```
 
 ## データベースマイグレーション
-詳細なマイグレーション手順については、マイグレーションガイドを参照してください。
-
-## 基本的なマイグレーションコマンド
 ```bash
-# 開発環境でのマイグレーション  
-npx prisma migrate dev --name your_migration_name  
-  
-# 本番環境でのマイグレーション適用  
-npx prisma migrate deploy  
-  
-# マイグレーション状態の確認  
-npx prisma migrate status  
-  
-# データベースの可視化  
-npx prisma studio
+# マイグレーションファイルの生成
+npm run db:generate
+
+# マイグレーションの実行
+npm run db:migrate
+
+# スキーマを直接DBにプッシュ（開発用）
+npm run db:push
 ```
 
 ## コントリビューター

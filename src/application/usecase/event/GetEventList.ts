@@ -1,5 +1,5 @@
-import type { Event, EventRepository } from "../../../domain";
-import { IUseCase } from "../base";
+import { IUseCase } from "#application/usecase/base";
+import type { Event, EventRepository } from "#domain";
 
 export type GetEventListInput = Record<string, never>;
 
