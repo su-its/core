@@ -44,6 +44,25 @@ describe("DrizzleMemberRepository", () => {
 		});
 	});
 
+	describe("findByStudentId", () => {
+		it("学籍番号でMemberを取得できる", async () => {
+			const member = createMember({ studentId: "99999999" });
+			await repository.save(member);
+
+			const found = await repository.findByStudentId("99999999");
+
+			expect(found).not.toBeNull();
+			expect(found?.id).toBe(member.id);
+			expect(found?.getStudentId()).toBe("99999999");
+		});
+
+		it("存在しない学籍番号はnullを返す", async () => {
+			const found = await repository.findByStudentId("00000000");
+
+			expect(found).toBeNull();
+		});
+	});
+
 	describe("save（更新）", () => {
 		it("既存Memberの名前を更新できる", async () => {
 			const member = createMember({ name: "更新前" });
