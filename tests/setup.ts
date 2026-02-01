@@ -14,7 +14,10 @@ beforeAll(async () => {
 	}
 
 	// 本番DB接続防止ガード
-	if (!connectionString.includes("localhost") && !connectionString.includes("test")) {
+	if (
+		!connectionString.includes("localhost") &&
+		!connectionString.includes("test")
+	) {
 		throw new Error(
 			"本番DBへの接続を防止: DATABASE_URLにlocalhostまたはtestが含まれていません",
 		);

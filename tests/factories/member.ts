@@ -16,7 +16,9 @@ export function createMember(params: MemberFactoryParams = {}): Member {
 	const name = params.name ?? "テスト太郎";
 	const studentId = params.studentId ?? "12345678";
 	const department = Department.fromString(params.department ?? "CS");
-	const email = new UniversityEmail(params.email ?? `test-${id}@shizuoka.ac.jp`);
+	const email = new UniversityEmail(
+		params.email ?? `test-${id}@shizuoka.ac.jp`,
+	);
 
 	return new Member(id, name, studentId, department, email);
 }
