@@ -1,5 +1,5 @@
-import type { Event, EventRepository } from "#domain";
-import { IUseCase } from "#application/usecase/base";
+import type { Event, EventRepository } from "#domain/index.js";
+import { IUseCase } from "#application/usecase/base.js";
 
 export interface GetEventsByMemberInput {
 	memberId: string;

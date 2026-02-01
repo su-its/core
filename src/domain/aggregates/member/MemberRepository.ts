@@ -1,4 +1,4 @@
-import type { Member } from "./Member";
+import type { Member } from "./Member.js";
 
 export interface MemberRepository {
 	findById(id: string): Promise<Member | null>;

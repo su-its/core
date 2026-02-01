@@ -1,2 +1,2 @@
-export { DrizzleMemberRepository } from "./DrizzleMemberRepository";
-export { DrizzleEventRepository } from "./DrizzleEventRepository";
+export { DrizzleMemberRepository } from "./DrizzleMemberRepository.js";
+export { DrizzleEventRepository } from "./DrizzleEventRepository.js";

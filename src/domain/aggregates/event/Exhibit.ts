@@ -1,9 +1,9 @@
 import {
 	LightningTalkExhibitIdMismatchException,
 	LightningTalkNotFoundException,
-} from "#domain/exceptions";
-import type { LightningTalkDuration, Url } from "#domain/value-objects";
-import type { LightningTalk } from "./LightningTalk";
+} from "#domain/exceptions/index.js";
+import type { LightningTalkDuration, Url } from "#domain/value-objects/index.js";
+import type { LightningTalk } from "./LightningTalk.js";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
 	private memberIds: Set<string> = new Set();

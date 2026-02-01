@@ -7,15 +7,15 @@ import {
 	LightningTalk,
 	LightningTalkDuration,
 	Url,
-} from "#domain";
-import { type DrizzleDb, getDb } from "./client";
+} from "#domain/index.js";
+import { type DrizzleDb, getDb } from "./client.js";
 import {
 	events,
 	exhibits,
 	lightningTalks,
 	memberEvents,
 	memberExhibits,
-} from "./schema";
+} from "./schema.js";
 
 // ============================================================================
 // Type Definitions - Using $inferSelect for schema-derived types

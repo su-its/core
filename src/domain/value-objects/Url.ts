@@ -1,8 +1,8 @@
 import {
 	InvalidUrlException,
 	InvalidUrlProtocolException,
-} from "#domain/exceptions";
-import { ValueObject } from "./ValueObject";
+} from "#domain/exceptions/index.js";
+import { ValueObject } from "./ValueObject.js";
 
 export class Url extends ValueObject<string> {
 	protected validate(): void {

@@ -1,3 +1,3 @@
-export * from "./value-objects";
-export * from "./exceptions";
-export * from "./aggregates";
+export * from "./value-objects/index.js";
+export * from "./exceptions/index.js";
+export * from "./aggregates/index.js";
