@@ -1,8 +1,8 @@
 import {
 	LightningTalkExhibitIdMismatchException,
 	LightningTalkNotFoundException,
-} from "../../exceptions";
-import type { LightningTalkDuration, Url } from "../../value-objects";
+} from "#domain/exceptions";
+import type { LightningTalkDuration, Url } from "#domain/value-objects";
 import type { LightningTalk } from "./LightningTalk";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;

@@ -1,7 +1,7 @@
 import {
 	InvalidUrlException,
 	InvalidUrlProtocolException,
-} from "../exceptions";
+} from "#domain/exceptions";
 import { ValueObject } from "./ValueObject";
 
 export class Url extends ValueObject<string> {

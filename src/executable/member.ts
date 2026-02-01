@@ -7,8 +7,8 @@ import {
 	GetMemberUseCase,
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
-} from "../application";
-import { PrismaMemberRepository } from "../infrastructure/";
+} from "#application";
+import { DrizzleMemberRepository } from "#infrastructure";
 
 export type MemberUseCases = {
 	registerMember: RegisterMemberUseCase;
@@ -22,7 +22,7 @@ export type MemberUseCases = {
 };
 
 export function createMemberUseCases(): MemberUseCases {
-	const memberRepo = new PrismaMemberRepository();
+	const memberRepo = new DrizzleMemberRepository();
 
 	return {
 		registerMember: new RegisterMemberUseCase(memberRepo),

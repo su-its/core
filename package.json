@@ -1,9 +1,23 @@
 {
 	"name": "@shizuoka-its/core",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"description": "ITS core library",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"imports": {
+		"#domain": "./src/domain/index.js",
+		"#domain/*": "./src/domain/*",
+		"#application": "./src/application/index.js",
+		"#application/*": "./src/application/*",
+		"#infrastructure": "./src/infrastructure/index.js",
+		"#infrastructure/*": "./src/infrastructure/*"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/su-its/core.git"
@@ -12,15 +26,15 @@
 		"access": "public"
 	},
 	"files": [
-		"dist",
-		"prisma"
+		"dist"
 	],
 	"scripts": {
-		"postinstall": "npx prisma generate",
 		"build": "tsc",
 		"prebuild": "rimraf dist",
 		"prepare": "npm run build",
-		"prisma:generate": "npx prisma generate",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"db:push": "drizzle-kit push",
 		"version:patch": "npm version patch && npm run publish:latest",
 		"version:minor": "npm version minor && npm run publish:latest",
 		"version:major": "npm version major && npm run publish:latest",
@@ -38,13 +52,15 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@types/node": "^22.9.0",
-		"prisma": "^5.22.0",
+		"@types/pg": "^8.16.0",
+		"drizzle-kit": "^0.31.8",
 		"rimraf": "^6.0.1",
 		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.6.3"
 	},
 	"dependencies": {
-		"@prisma/client": "^5.22.0",
+		"drizzle-orm": "^0.45.1",
+		"pg": "^8.17.2",
 		"uuid": "^11.1.0"
 	}
 }

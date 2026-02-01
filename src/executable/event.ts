@@ -1,9 +1,9 @@
-import * as eventUsecases from "../application";
-import * as eventParticipationUsecases from "../application";
+import * as eventUsecases from "#application";
+import * as eventParticipationUsecases from "#application";
 import {
-	PrismaEventRepository,
-	PrismaMemberRepository,
-} from "../infrastructure";
+	DrizzleEventRepository,
+	DrizzleMemberRepository,
+} from "#infrastructure";
 
 export type EventUseCases = {
 	createEvent: eventUsecases.CreateEvent;
@@ -34,8 +34,8 @@ export type EventUseCases = {
  * @beta 将来的にAPIが変更される可能性があります。
  */
 export function createEventUseCases(): EventUseCases {
-	const eventRepo = new PrismaEventRepository();
-	const memberRepo = new PrismaMemberRepository();
+	const eventRepo = new DrizzleEventRepository();
+	const memberRepo = new DrizzleMemberRepository();
 
 	return {
 		createEvent: new eventUsecases.CreateEvent(eventRepo),

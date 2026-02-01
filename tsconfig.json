@@ -1,18 +1,23 @@
 {
 	"compilerOptions": {
 		"target": "es2018",
-		"module": "commonjs",
+		"module": "NodeNext",
 		"declaration": true,
 		"outDir": "./dist",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
+		"moduleResolution": "NodeNext",
 		"rootDir": "./src",
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"#domain": ["./src/domain"],
+			"#domain/*": ["./src/domain/*"],
+			"#application": ["./src/application"],
+			"#application/*": ["./src/application/*"],
+			"#infrastructure": ["./src/infrastructure"],
+			"#infrastructure/*": ["./src/infrastructure/*"]
 		}
 	},
 	"include": ["src"],
