@@ -1,6 +1,6 @@
 {
 	"name": "@shizuoka-its/core",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"description": "ITS core library",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -11,12 +11,12 @@
 		}
 	},
 	"imports": {
-		"#domain": "./src/domain/index.js",
-		"#domain/*": "./src/domain/*",
-		"#application": "./src/application/index.js",
-		"#application/*": "./src/application/*",
-		"#infrastructure": "./src/infrastructure/index.js",
-		"#infrastructure/*": "./src/infrastructure/*"
+		"#domain": "./dist/domain/index.js",
+		"#domain/*": "./dist/domain/*",
+		"#application": "./dist/application/index.js",
+		"#application/*": "./dist/application/*",
+		"#infrastructure": "./dist/infrastructure/index.js",
+		"#infrastructure/*": "./dist/infrastructure/*"
 	},
 	"repository": {
 		"type": "git",
@@ -25,9 +25,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist", "src", "README.md", "package.json"],
 	"scripts": {
 		"build": "tsc",
 		"prebuild": "rimraf dist",
