@@ -1,6 +1,6 @@
 {
 	"name": "@shizuoka-its/core",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"description": "ITS core library",
 	"type": "module",
 	"main": "dist/index.cjs",
@@ -22,7 +22,7 @@
 	},
 	"files": ["dist"],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsup && tsc-alias -p tsconfig.json --outDir dist",
 		"prepare": "npm run build",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check .",
@@ -50,6 +50,7 @@
 		"@types/node": "^22.9.0",
 		"@types/pg": "^8.16.0",
 		"drizzle-kit": "^0.31.8",
+		"tsc-alias": "^1.8.16",
 		"tsup": "^8.5.1",
 		"typescript": "^5.6.3"
 	},
