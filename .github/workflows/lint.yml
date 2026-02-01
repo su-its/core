@@ -14,4 +14,4 @@ jobs:
           node-version: '22.x'
           cache: 'npm'
       - run: npm ci
-      - run: npx biome check .
+      - run: npm run lint:ci
