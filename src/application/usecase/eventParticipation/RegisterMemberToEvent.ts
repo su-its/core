@@ -1,9 +1,9 @@
-import type { Event, EventRepository, MemberRepository } from "#domain";
+import type { Event, EventRepository, MemberRepository } from "#domain/index.js";
 import {
 	EventNotFoundException,
 	MemberNotFoundException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+} from "#application/exceptions/index.js";
+import { IUseCase } from "#application/usecase/base.js";
 
 export interface RegisterMemberToEventInput {
 	memberId: string;

@@ -1,4 +1,4 @@
-import type { Event } from "./Event";
+import type { Event } from "./Event.js";
 
 export interface EventRepository {
 	findById(id: string): Promise<Event | null>;

@@ -1,3 +1,3 @@
-export * from "./Member";
-export * from "./MemberRepository";
-export * from "./DiscordAccount";
+export * from "./Member.js";
+export * from "./MemberRepository.js";
+export * from "./DiscordAccount.js";

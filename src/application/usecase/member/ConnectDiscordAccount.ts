@@ -2,9 +2,9 @@ import {
 	DiscordAccount,
 	type Member,
 	type MemberRepository,
-} from "#domain";
-import { MemberNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+} from "#domain/index.js";
+import { MemberNotFoundException } from "#application/exceptions/index.js";
+import { IUseCase } from "#application/usecase/base.js";
 
 export interface ConnectDiscordAccountInput {
 	memberId: string;

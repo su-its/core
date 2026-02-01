@@ -1,5 +1,5 @@
-import { InvalidDepartmentException } from "#domain/exceptions";
-import { ValueObject } from "./ValueObject";
+import { InvalidDepartmentException } from "#domain/exceptions/index.js";
+import { ValueObject } from "./ValueObject.js";
 
 type AllowedDepartment = "CS" | "BI" | "IA" | "GRADUATE" | "ALUMNI" | "OTHERS";
 

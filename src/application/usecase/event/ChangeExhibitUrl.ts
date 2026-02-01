@@ -1,6 +1,6 @@
-import type { Event, EventRepository, Url } from "#domain";
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+import type { Event, EventRepository, Url } from "#domain/index.js";
+import { EventNotFoundException } from "#application/exceptions/index.js";
+import { IUseCase } from "#application/usecase/base.js";
 
 export interface ChangeExhibitUrlInput {
 	eventId: string;

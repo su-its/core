@@ -2,9 +2,9 @@ import {
 	ExhibitAlreadyExistsException,
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
-} from "#domain/exceptions";
-import type { LightningTalkDuration, Url } from "#domain/value-objects";
-import type { Exhibit } from "./Exhibit";
+} from "#domain/exceptions/index.js";
+import type { LightningTalkDuration, Url } from "#domain/value-objects/index.js";
+import type { Exhibit } from "./Exhibit.js";
 
 export class Event {
 	private exhibits: Exhibit[] = [];

@@ -6,9 +6,9 @@ import {
 	Member,
 	type MemberRepository,
 	UniversityEmail,
-} from "#domain";
-import { getDb } from "./client";
-import { discordAccounts, members } from "./schema";
+} from "#domain/index.js";
+import { getDb } from "./client.js";
+import { discordAccounts, members } from "./schema.js";
 
 // ============================================================================
 // Repository Implementation

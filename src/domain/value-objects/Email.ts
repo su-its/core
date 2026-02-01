@@ -1,5 +1,5 @@
-import { InvalidEmailFormatException } from "#domain/exceptions";
-import { ValueObject } from "./ValueObject";
+import { InvalidEmailFormatException } from "#domain/exceptions/index.js";
+import { ValueObject } from "./ValueObject.js";
 
 export class Email extends ValueObject<string> {
 	protected validate(): void {

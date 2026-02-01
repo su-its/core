@@ -1,9 +1,9 @@
 import {
 	DiscordAccountAlreadyConnectedException,
 	DiscordAccountNotConnectedException,
-} from "#domain/exceptions";
-import type { Department, Email, UniversityEmail } from "#domain/value-objects";
-import type { DiscordAccount } from "./DiscordAccount";
+} from "#domain/exceptions/index.js";
+import type { Department, Email, UniversityEmail } from "#domain/value-objects/index.js";
+import type { DiscordAccount } from "./DiscordAccount.js";
 
 export class Member {
 	private discordAccounts: DiscordAccount[] = [];

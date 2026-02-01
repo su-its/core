@@ -2,9 +2,9 @@ import type {
 	Event,
 	EventRepository,
 	LightningTalkDuration,
-} from "#domain";
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+} from "#domain/index.js";
+import { EventNotFoundException } from "#application/exceptions/index.js";
+import { IUseCase } from "#application/usecase/base.js";
 
 export interface ChangeLightningTalkDurationInput {
 	eventId: string;

@@ -1,4 +1,4 @@
-import type { LightningTalkDuration, Url } from "#domain/value-objects";
+import type { LightningTalkDuration, Url } from "#domain/value-objects/index.js";
 
 export class LightningTalk {
 	constructor(

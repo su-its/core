@@ -1,1 +1,1 @@
-export * from "./drizzle";
+export * from "./drizzle/index.js";
