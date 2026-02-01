@@ -1,10 +1,6 @@
-import type {
-	EventRepository,
-	Member,
-	MemberRepository,
-} from "../../../domain";
-import { ExhibitNotFoundFromExhibitIdException } from "../../exceptions";
-import { IUseCase } from "../base";
+import { ExhibitNotFoundFromExhibitIdException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
+import type { EventRepository, Member, MemberRepository } from "#domain";
 
 export interface GetMembersByExhibitInput {
 	exhibitId: string;

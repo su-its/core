@@ -1,7 +1,7 @@
 import {
 	InvalidUrlException,
 	InvalidUrlProtocolException,
-} from "../exceptions";
+} from "#domain/exceptions";
 import { ValueObject } from "./ValueObject";
 
 export class Url extends ValueObject<string> {
@@ -10,10 +10,7 @@ export class Url extends ValueObject<string> {
 		try {
 			parsed = new URL(this.value);
 		} catch {
-			this.throwIfInvalid(
-				false,
-				new InvalidUrlException(this.value),
-			);
+			this.throwIfInvalid(false, new InvalidUrlException(this.value));
 			return;
 		}
 

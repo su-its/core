@@ -1,10 +1,6 @@
-import type {
-	Event,
-	EventRepository,
-	LightningTalkDuration,
-} from "../../../domain";
-import { EventNotFoundException } from "../../exceptions";
-import { IUseCase } from "../base";
+import { EventNotFoundException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
+import type { Event, EventRepository, LightningTalkDuration } from "#domain";
 
 export interface ChangeLightningTalkDurationInput {
 	eventId: string;

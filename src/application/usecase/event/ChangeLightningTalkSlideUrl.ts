@@ -1,6 +1,6 @@
-import type { Event, EventRepository, Url } from "../../../domain";
-import { EventNotFoundException } from "../../exceptions";
-import { IUseCase } from "../base";
+import { EventNotFoundException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
+import type { Event, EventRepository, Url } from "#domain";
 
 export interface ChangeLightningTalkSlideUrlInput {
 	eventId: string;

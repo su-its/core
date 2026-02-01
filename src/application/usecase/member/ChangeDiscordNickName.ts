@@ -1,9 +1,9 @@
-import type { Member, MemberRepository } from "../../../domain";
 import {
 	DiscordAccountNotConnectedException,
 	MemberNotFoundFromDiscordAccountIdException,
-} from "../../exceptions";
-import { IUseCase } from "../base";
+} from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
+import type { Member, MemberRepository } from "#domain";
 
 export interface ChangeDiscordNickNameInput {
 	discordAccountId: string;

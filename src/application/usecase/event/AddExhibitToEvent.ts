@@ -1,11 +1,6 @@
-import {
-	type Event,
-	type EventRepository,
-	Exhibit,
-	type Url,
-} from "../../../domain";
-import { EventNotFoundException } from "../../exceptions";
-import { IUseCase } from "../base";
+import { EventNotFoundException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
+import { type Event, type EventRepository, Exhibit, type Url } from "#domain";
 
 export interface AddExhibitToEventInput {
 	eventId: string;

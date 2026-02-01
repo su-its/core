@@ -1,4 +1,4 @@
-import { InvalidDepartmentException } from "../exceptions";
+import { InvalidDepartmentException } from "#domain/exceptions";
 import { ValueObject } from "./ValueObject";
 
 type AllowedDepartment = "CS" | "BI" | "IA" | "GRADUATE" | "ALUMNI" | "OTHERS";
