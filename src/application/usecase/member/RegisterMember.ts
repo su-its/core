@@ -1,4 +1,6 @@
 import { v4 as uuid } from "uuid";
+import { MemberEmailAlreadyExistsException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
 import {
 	Department,
 	DiscordAccount,
@@ -7,8 +9,6 @@ import {
 	type MemberRepository,
 	UniversityEmail,
 } from "#domain";
-import { MemberEmailAlreadyExistsException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 
 export interface RegisterMemberInput {
 	name: string;

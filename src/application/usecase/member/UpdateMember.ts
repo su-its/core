@@ -1,3 +1,5 @@
+import { MemberNotFoundException } from "#application/exceptions";
+import { IUseCase } from "#application/usecase/base";
 import {
 	Department,
 	DiscordAccount,
@@ -6,8 +8,6 @@ import {
 	type MemberRepository,
 	UniversityEmail,
 } from "#domain";
-import { MemberNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 
 export interface UpdateMemberInput {
 	memberId: string;

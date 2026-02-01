@@ -10,10 +10,7 @@ export class Url extends ValueObject<string> {
 		try {
 			parsed = new URL(this.value);
 		} catch {
-			this.throwIfInvalid(
-				false,
-				new InvalidUrlException(this.value),
-			);
+			this.throwIfInvalid(false, new InvalidUrlException(this.value));
 			return;
 		}
 
