@@ -2,6 +2,7 @@
 	"name": "@shizuoka-its/core",
 	"version": "2.1.0",
 	"description": "ITS core library",
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
@@ -9,14 +10,6 @@
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
 		}
-	},
-	"imports": {
-		"#domain": "./dist/domain/index.js",
-		"#domain/*": "./dist/domain/*",
-		"#application": "./dist/application/index.js",
-		"#application/*": "./dist/application/*",
-		"#infrastructure": "./dist/infrastructure/index.js",
-		"#infrastructure/*": "./dist/infrastructure/*"
 	},
 	"repository": {
 		"type": "git",
@@ -29,9 +22,9 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc",
-		"prebuild": "rimraf dist",
+		"build": "tsup",
 		"prepare": "npm run build",
+		"typecheck": "tsc --noEmit",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
@@ -54,8 +47,7 @@
 		"@types/node": "^22.9.0",
 		"@types/pg": "^8.16.0",
 		"drizzle-kit": "^0.31.8",
-		"rimraf": "^6.0.1",
-		"tsconfig-paths": "^4.2.0",
+		"tsup": "^8.5.1",
 		"typescript": "^5.6.3"
 	},
 	"dependencies": {

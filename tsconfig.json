@@ -1,15 +1,12 @@
 {
 	"compilerOptions": {
-		"target": "es2018",
-		"module": "NodeNext",
-		"declaration": true,
-		"outDir": "./dist",
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "NodeNext",
-		"rootDir": "./src",
 		"baseUrl": ".",
 		"paths": {
 			"#domain": ["./src/domain"],
