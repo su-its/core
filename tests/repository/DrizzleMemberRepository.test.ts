@@ -29,7 +29,9 @@ describe("DrizzleMemberRepository", () => {
 			const member = createMember({ email: "find-by-email@shizuoka.ac.jp" });
 			await repository.save(member);
 
-			const found = await repository.findByEmail("find-by-email@shizuoka.ac.jp");
+			const found = await repository.findByEmail(
+				"find-by-email@shizuoka.ac.jp",
+			);
 
 			expect(found).not.toBeNull();
 			expect(found?.id).toBe(member.id);
