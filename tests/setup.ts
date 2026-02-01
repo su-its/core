@@ -1,11 +1,11 @@
-import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { afterAll, afterEach, beforeAll } from "vitest";
+import { Pool, type PoolClient } from "pg";
+import { afterAll, afterEach, beforeAll, beforeEach } from "vitest";
+import { resetTestDb, setTestDb } from "../src/infrastructure/drizzle/client";
 import * as schema from "../src/infrastructure/drizzle/schema";
 
 let pool: Pool;
-let db: ReturnType<typeof drizzle>;
+let client: PoolClient;
 
 beforeAll(async () => {
 	const connectionString = process.env.DATABASE_URL;
@@ -24,24 +24,25 @@ beforeAll(async () => {
 	}
 
 	pool = new Pool({ connectionString });
-	db = drizzle(pool, { schema });
+});
+
+beforeEach(async () => {
+	// 各テストでトランザクションを開始
+	client = await pool.connect();
+	await client.query("BEGIN");
+
+	// トランザクション内のDBをリポジトリに使わせる
+	const db = drizzle(client, { schema });
+	setTestDb(db);
 });
 
 afterEach(async () => {
-	// テーブルをtruncate（順序に注意：外部キー制約）
-	await db.execute(sql`TRUNCATE TABLE member_exhibits CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE member_events CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE lightning_talks CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE exhibits CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE discord_accounts CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE events CASCADE`);
-	await db.execute(sql`TRUNCATE TABLE members CASCADE`);
+	// トランザクションをロールバック（変更を破棄）
+	await client.query("ROLLBACK");
+	client.release();
+	resetTestDb();
 });
 
 afterAll(async () => {
 	await pool.end();
 });
-
-export function getTestDb() {
-	return db;
-}
