@@ -1,10 +1,6 @@
-import {
-	DiscordAccount,
-	type Member,
-	type MemberRepository,
-} from "#domain";
 import { MemberNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
+import { DiscordAccount, type Member, type MemberRepository } from "#domain";
 
 export interface ConnectDiscordAccountInput {
 	memberId: string;
