@@ -3,9 +3,9 @@ import {
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
 } from "#domain/exceptions";
+import type { Exhibit } from "./Exhibit";
 import type { LightningTalkDuration } from "./LightningTalkDuration";
 import type { Url } from "./Url";
-import type { Exhibit } from "./Exhibit";
 
 export class Event {
 	private exhibits: Exhibit[] = [];
