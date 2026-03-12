@@ -5,6 +5,7 @@ import {
 	Email,
 	Member,
 	type MemberRepository,
+	StudentId,
 	UniversityEmail,
 } from "#domain";
 import { getDb } from "./client";
@@ -27,7 +28,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 		const member = new Member(
 			record.id,
 			record.name,
-			record.studentId,
+			StudentId.fromString(record.studentId),
 			Department.fromString(record.department),
 			new UniversityEmail(record.email),
 			record.personalEmail ? new Email(record.personalEmail) : undefined,

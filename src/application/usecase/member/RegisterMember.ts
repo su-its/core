@@ -7,6 +7,7 @@ import {
 	Email,
 	Member,
 	type MemberRepository,
+	StudentId,
 	UniversityEmail,
 } from "#domain";
 
@@ -48,7 +49,7 @@ export class RegisterMemberUseCase extends IUseCase<
 		const member = new Member(
 			uuid(),
 			input.name,
-			input.studentId,
+			StudentId.fromString(input.studentId),
 			Department.fromString(input.department),
 			universityEmail,
 			personalEmail,
