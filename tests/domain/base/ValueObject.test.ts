@@ -39,7 +39,7 @@ describe("ValueObject", () => {
 			expect(a.equals(undefined)).toBe(false);
 		});
 
-		it("オブジェクト型でも値が同じならtrueを返す", () => {
+		it("オブジェクト型でもJSON表現が同じならtrueを返す", () => {
 			const a = new ObjectVO({ a: 1, b: "x" });
 			const b = new ObjectVO({ a: 1, b: "x" });
 			expect(a.equals(b)).toBe(true);
