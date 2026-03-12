@@ -15,7 +15,6 @@
  * - `year` — 在学年次
  *
  * @see https://www.shizuoka.ac.jp/subject/
- * @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/
  */
 
 // ── 年次 ──
