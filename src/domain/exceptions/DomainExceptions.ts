@@ -108,7 +108,7 @@ export class ExhibitHasMemberException extends DomainException {
 export class InvalidStudentIdException extends DomainException {
 	constructor(studentId: string) {
 		super(
-			`無効な学籍番号です: ${studentId} (8桁数字 または 3桁数字+1文字+4桁数字)`,
+			`無効な学籍番号です: ${studentId} (8桁数字 または 3桁数字+英大文字1文字+4桁数字)`,
 		);
 		this.name = "InvalidStudentIdException";
 	}

@@ -27,6 +27,8 @@ export class StudentId extends ValueObject<string> {
 		const isValid =
 			StudentId.NUMERIC_ONLY.test(this.value) ||
 			StudentId.ALPHANUMERIC.test(this.value);
-		this.throwIfInvalid(isValid, new InvalidStudentIdException(this.value));
+		if (!isValid) {
+			throw new InvalidStudentIdException(this.value);
+		}
 	}
 }
