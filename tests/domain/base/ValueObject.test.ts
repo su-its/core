@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ValueObject } from "./ValueObject";
+import { ValueObject } from "#domain/base/ValueObject";
 
 class StringVO extends ValueObject<string> {
 	protected validate(): void {
