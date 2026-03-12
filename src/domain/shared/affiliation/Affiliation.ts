@@ -26,6 +26,7 @@ export class ProfessionalAffiliation extends ValueObject<ProfessionalAffiliation
 	protected validate(): void {}
 }
 
+/** 所属 — 学生が大学組織のどこに在籍しているかを表す */
 export type Affiliation =
 	| UndergraduateAffiliation // 学部
 	| MasterAffiliation // 修士
