@@ -6,6 +6,7 @@ import {
 	Email,
 	type Member,
 	type MemberRepository,
+	StudentId,
 	UniversityEmail,
 } from "#domain";
 
@@ -42,7 +43,7 @@ export class UpdateMemberUseCase extends IUseCase<
 			member.setName(input.name);
 		}
 		if (input.studentId) {
-			member.setStudentId(input.studentId);
+			member.setStudentId(StudentId.fromString(input.studentId));
 		}
 		if (input.department) {
 			member.setDepartment(Department.fromString(input.department));

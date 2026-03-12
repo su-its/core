@@ -2,6 +2,7 @@ import {
 	DiscordAccountAlreadyConnectedException,
 	DiscordAccountNotConnectedException,
 } from "#domain/exceptions";
+import type { StudentId } from "#domain/shared/StudentId";
 import type { Department } from "./Departments";
 import type { DiscordAccount } from "./DiscordAccount";
 import type { Email } from "./Email";
@@ -13,7 +14,7 @@ export class Member {
 	constructor(
 		public readonly id: string,
 		private name: string,
-		private studentId: string,
+		private studentId: StudentId,
 		private department: Department,
 		private email: UniversityEmail,
 		private personalEmail?: Email,
@@ -47,7 +48,7 @@ export class Member {
 		this.name = newName;
 	}
 
-	setStudentId(newStudentId: string) {
+	setStudentId(newStudentId: StudentId) {
 		this.studentId = newStudentId;
 	}
 
@@ -99,7 +100,7 @@ export class Member {
 		return {
 			id: this.id,
 			name: this.name,
-			studentId: this.studentId,
+			studentId: this.studentId.getValue(),
 			department: this.department,
 			email: this.email,
 			personalEmail: this.personalEmail,
