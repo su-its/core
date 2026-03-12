@@ -104,14 +104,6 @@ export class ExhibitHasMemberException extends DomainException {
 		this.name = "ExhibitHasMemberException";
 	}
 }
-
-export class InvalidAffiliationException extends DomainException {
-	constructor(detail: string) {
-		super(`無効な所属情報です: ${detail}`);
-		this.name = "InvalidAffiliationException";
-	}
-}
-
 export class InvalidStudentIdException extends DomainException {
 	constructor(studentId: string) {
 		super(
