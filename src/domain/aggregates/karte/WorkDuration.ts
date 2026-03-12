@@ -5,5 +5,9 @@
  * 作業時間が記録されている場合と記録されていない場合を明示的に区別する。
  */
 export type WorkDuration =
-	| { readonly type: "recorded"; /** 作業時間（分） */ readonly minutes: number }
+	| {
+			readonly type: "recorded";
+			/** 作業時間（分） */
+			readonly minutes: number;
+	  }
 	| { readonly type: "notRecorded" };

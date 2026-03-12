@@ -14,6 +14,8 @@ export class Karte {
 		public readonly id: string,
 		/** 記録日時 */
 		private readonly recordedAt: Date,
+		/** 相談日時 */
+		private readonly consultedAt: Date,
 		/** 最終更新日時 */
 		private lastUpdatedAt: Date,
 		/** 相談者 */
@@ -28,6 +30,10 @@ export class Karte {
 
 	getRecordedAt(): Date {
 		return this.recordedAt;
+	}
+
+	getConsultedAt(): Date {
+		return this.consultedAt;
 	}
 
 	getLastUpdatedAt(): Date {
@@ -75,15 +81,26 @@ export class Karte {
 	}
 
 	private snapshotClient(): Record<string, unknown> {
-		const base = {
-			type: this.client.type,
-			name: this.client.name,
-			affiliation: this.client.affiliation.getValue(),
-		};
-		if (this.client.type === "student") {
-			return { ...base, studentId: this.client.studentId.getValue() };
+		const client = this.client;
+		switch (client.type) {
+			case "student":
+				return {
+					type: client.type,
+					name: client.name,
+					studentId: client.studentId.getValue(),
+					affiliation: client.affiliation.getValue(),
+				};
+			case "staff":
+				return {
+					type: client.type,
+					name: client.name,
+				};
+			case "other":
+				return {
+					type: client.type,
+					name: client.name,
+				};
 		}
-		return base;
 	}
 
 	private snapshotCategories(): Array<{ id: string; displayName: string }> {
@@ -97,6 +114,7 @@ export class Karte {
 		return {
 			id: this.id,
 			recordedAt: this.recordedAt,
+			consultedAt: this.consultedAt,
 			lastUpdatedAt: this.lastUpdatedAt,
 			client: this.snapshotClient(),
 			consent: this.consent,
@@ -109,7 +127,6 @@ export class Karte {
 				assignedMemberIds: [...this.response.assignedMemberIds],
 				responseContent: this.response.responseContent,
 				resolution: this.response.resolution,
-				followUpDestination: this.response.followUpDestination,
 				workDuration: this.response.workDuration,
 			},
 		};
