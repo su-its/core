@@ -112,20 +112,6 @@ export class InvalidAffiliationException extends DomainException {
 	}
 }
 
-export class InvalidDepartmentForFacultyException extends DomainException {
-	constructor(faculty: string, department: string) {
-		super(`学部「${faculty}」に学科「${department}」は存在しません`);
-		this.name = "InvalidDepartmentForFacultyException";
-	}
-}
-
-export class InvalidMajorForSchoolException extends DomainException {
-	constructor(school: string, major: string) {
-		super(`研究科「${school}」に専攻「${major}」は存在しません`);
-		this.name = "InvalidMajorForSchoolException";
-	}
-}
-
 export class InvalidStudentIdException extends DomainException {
 	constructor(studentId: string) {
 		super(

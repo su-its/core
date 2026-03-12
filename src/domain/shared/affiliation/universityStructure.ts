@@ -4,6 +4,9 @@
  * 各学部・研究科の階層を型レベルで表現する。
  * 分類子は実際の名称に対応: Faculty(学部), Department(学科), Program(課程),
  * Major(専攻), Course(コース), Subspecialty(専修)
+ *
+ * @see https://www.shizuoka.ac.jp/subject/
+ * @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/
  */
 
 // ── 年次 ──
@@ -15,6 +18,7 @@ export type ProfessionalYear = 1 | 2;
 
 // ── 学部（Undergraduate） ──
 
+/** 人文社会科学部 @see https://www.hss.shizuoka.ac.jp/ */
 export type HumanitiesFacultyValue =
 	| {
 			faculty: "人文社会科学部";
@@ -29,6 +33,7 @@ export type HumanitiesFacultyValue =
 			year: UndergraduateYear;
 	  };
 
+/** 教育学部 @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/ */
 export type EducationFacultyValue =
 	| {
 			faculty: "教育学部";
@@ -73,12 +78,14 @@ export type EducationFacultyValue =
 			year: UndergraduateYear;
 	  };
 
+/** 情報学部 @see https://www.inf.shizuoka.ac.jp/ */
 export type InformaticsFacultyValue = {
 	faculty: "情報学部";
 	department: "情報科学科" | "行動情報学科" | "情報社会学科";
 	year: UndergraduateYear;
 };
 
+/** 理学部 @see https://www.sci.shizuoka.ac.jp/dep_study */
 export type ScienceFacultyValue =
 	| {
 			faculty: "理学部";
@@ -96,6 +103,7 @@ export type ScienceFacultyValue =
 			year: UndergraduateYear;
 	  };
 
+/** 工学部 @see https://www.eng.shizuoka.ac.jp/department/ */
 export type EngineeringFacultyValue =
 	| {
 			faculty: "工学部";
@@ -130,6 +138,7 @@ export type EngineeringFacultyValue =
 			year: UndergraduateYear;
 	  };
 
+/** 農学部 @see https://www.agr.shizuoka.ac.jp/ */
 export type AgricultureFacultyValue =
 	| {
 			faculty: "農学部";
@@ -143,6 +152,7 @@ export type AgricultureFacultyValue =
 			year: UndergraduateYear;
 	  };
 
+/** グローバル共創科学部 @see https://www.gkk.shizuoka.ac.jp/outline/courses/ */
 export type GlobalCoCreationFacultyValue = {
 	faculty: "グローバル共創科学部";
 	department: "グローバル共創科学科";
@@ -153,23 +163,25 @@ export type GlobalCoCreationFacultyValue = {
 	year: UndergraduateYear;
 };
 
+/** 地域創造学環 @see https://www.srd.shizuoka.ac.jp/ */
 export type RegionalDevelopmentValue = {
 	faculty: "地域創造学環";
 	year: UndergraduateYear;
 };
 
 export type UndergraduateAffiliationValue =
-	| HumanitiesFacultyValue
-	| EducationFacultyValue
-	| InformaticsFacultyValue
-	| ScienceFacultyValue
-	| EngineeringFacultyValue
-	| AgricultureFacultyValue
-	| GlobalCoCreationFacultyValue
-	| RegionalDevelopmentValue;
+	| HumanitiesFacultyValue // 人文社会科学部
+	| EducationFacultyValue // 教育学部
+	| InformaticsFacultyValue // 情報学部
+	| ScienceFacultyValue // 理学部
+	| EngineeringFacultyValue // 工学部
+	| AgricultureFacultyValue // 農学部
+	| GlobalCoCreationFacultyValue // グローバル共創科学部
+	| RegionalDevelopmentValue; // 地域創造学環
 
 // ── 修士課程（Master） ──
 
+/** 人文社会科学研究科 @see https://www.hss.shizuoka.ac.jp/ghss/ */
 export type HumanitiesMasterValue =
 	| {
 			school: "人文社会科学研究科";
@@ -190,6 +202,7 @@ export type HumanitiesMasterValue =
 			year: MasterYear;
 	  };
 
+/** 総合科学技術研究科 @see https://www.shizuoka.ac.jp/subject/graduate/stg/ */
 export type IntegratedSciTechMasterValue =
 	| {
 			school: "総合科学技術研究科";
@@ -230,18 +243,20 @@ export type IntegratedSciTechMasterValue =
 			year: MasterYear;
 	  };
 
+/** 山岳流域研究院 @see https://www.igsmw.shizuoka.ac.jp/ */
 export type MountainWatershedValue = {
 	school: "山岳流域研究院";
 	year: MasterYear;
 };
 
 export type MasterAffiliationValue =
-	| HumanitiesMasterValue
-	| IntegratedSciTechMasterValue
-	| MountainWatershedValue;
+	| HumanitiesMasterValue // 人文社会科学研究科
+	| IntegratedSciTechMasterValue // 総合科学技術研究科
+	| MountainWatershedValue; // 山岳流域研究院
 
 // ── 博士課程（Doctoral） ──
 
+/** 創造科学技術大学院 @see https://gsst.shizuoka.ac.jp/ */
 export type CreativeSciTechDoctoralValue = {
 	school: "創造科学技術大学院";
 	major:
@@ -253,12 +268,14 @@ export type CreativeSciTechDoctoralValue = {
 	year: DoctoralYear;
 };
 
+/** 教育学研究科（博士） @see https://subdev.ed.shizuoka.ac.jp/ */
 export type EducationDoctoralValue = {
 	school: "教育学研究科";
 	major: "共同教科開発学専攻";
 	year: DoctoralYear;
 };
 
+/** 光医工学研究科 @see https://www.cmmp.shizuoka.ac.jp/ */
 export type OptoBiomedicalDoctoralValue = {
 	school: "光医工学研究科";
 	major: "光医工学共同専攻";
@@ -266,12 +283,13 @@ export type OptoBiomedicalDoctoralValue = {
 };
 
 export type DoctoralAffiliationValue =
-	| CreativeSciTechDoctoralValue
-	| EducationDoctoralValue
-	| OptoBiomedicalDoctoralValue;
+	| CreativeSciTechDoctoralValue // 創造科学技術大学院
+	| EducationDoctoralValue // 教育学研究科
+	| OptoBiomedicalDoctoralValue; // 光医工学研究科
 
 // ── 専門職学位課程（Professional） ──
 
+/** 教育学研究科（専門職） @see https://dapse2.ed.shizuoka.ac.jp/ */
 export type ProfessionalAffiliationValue = {
 	school: "教育学研究科";
 	major: "教育実践高度化専攻";
