@@ -24,6 +24,8 @@
 	"scripts": {
 		"build": "tsup && tsc-alias -p tsconfig.json --outDir dist",
 		"prepare": "npm run build",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"typecheck": "tsc --noEmit",
 		"lint": "biome check .",
 		"lint:ci": "biome ci .",
@@ -52,7 +54,8 @@
 		"drizzle-kit": "^0.31.8",
 		"tsc-alias": "^1.8.16",
 		"tsup": "^8.5.1",
-		"typescript": "^5.6.3"
+		"typescript": "^5.6.3",
+		"vitest": "^4.0.18"
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.45.1",
