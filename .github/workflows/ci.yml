@@ -2,9 +2,18 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - LICENSE
   pull_request:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - LICENSE
   workflow_call:
+  workflow_dispatch:
 
 permissions:
   contents: read
