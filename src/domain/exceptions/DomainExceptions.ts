@@ -104,6 +104,7 @@ export class ExhibitHasMemberException extends DomainException {
 		this.name = "ExhibitHasMemberException";
 	}
 }
+
 export class InvalidStudentIdException extends DomainException {
 	constructor(studentId: string) {
 		super(
