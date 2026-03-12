@@ -44,9 +44,6 @@
 		"publish:beta": "npm publish --tag beta",
 		"publish:rc": "npm publish --tag rc"
 	},
-	"engines": {
-		"node": ">=22.0.0"
-	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
