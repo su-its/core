@@ -135,7 +135,15 @@ export class Event {
 		this.memberIds.add(memberId);
 	}
 
-	public removeExhibitMemberId(exhibitId: string, memberId: string): void {}
+	public removeExhibitMemberId(exhibitId: string, memberId: string): void {
+		this.getExhibitOrThrow(exhibitId).removeMemberId(memberId);
+		const stillInOtherExhibit = this.exhibits.some((exhibit) =>
+			exhibit.getMemberIds().includes(memberId),
+		);
+		if (!stillInOtherExhibit) {
+			this.memberIds.delete(memberId);
+		}
+	}
 	toSnapshot() {
 		return {
 			id: this.id,
