@@ -2,8 +2,17 @@
  * 静岡大学の組織構造定義
  *
  * 各学部・研究科の階層を型レベルで表現する。
- * 分類子は実際の名称に対応: Faculty(学部), Department(学科), Program(課程),
- * Major(専攻), Course(コース), Subspecialty(専修)
+ *
+ * フィールドとユビキタス言語の対応:
+ * - `faculty` — 学部（学部課程の組織単位）
+ * - `school` — 研究科・大学院（大学院課程の組織単位）
+ * - `department` — 学科
+ * - `program` — 課程（例: 学校教育教員養成課程）
+ * - `major` — 専攻
+ * - `course` — コース（専門分野の細分化）
+ * - `subspecialty` — 専修（コースよりさらに細分化された専門領域）
+ * - `enrollmentType` — 入学区分（昼間コース / 夜間主コース）
+ * - `year` — 在学年次
  *
  * @see https://www.shizuoka.ac.jp/subject/
  * @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/
@@ -21,25 +30,38 @@ export type ProfessionalYear = 1 | 2;
 /** 人文社会科学部 @see https://www.hss.shizuoka.ac.jp/ */
 export type HumanitiesFacultyValue =
 	| {
+			/** 学部 */
 			faculty: "人文社会科学部";
+			/** 入学区分 */
 			enrollmentType: "昼間コース";
+			/** 学科 */
 			department: "社会学科" | "言語文化学科" | "法学科" | "経済学科";
+			/** 在学年次 */
 			year: UndergraduateYear;
 	  }
 	| {
+			/** 学部 */
 			faculty: "人文社会科学部";
+			/** 入学区分 */
 			enrollmentType: "夜間主コース";
+			/** 学科 */
 			department: "法学科" | "経済学科";
+			/** 在学年次 */
 			year: UndergraduateYear;
 	  };
 
 /** 教育学部 @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/ */
 export type EducationFacultyValue =
 	| {
+			/** 学部 */
 			faculty: "教育学部";
+			/** 課程 */
 			program: "学校教育教員養成課程";
+			/** 専攻 */
 			major: "発達教育学専攻";
+			/** 専修 */
 			subspecialty: "教育実践学専修" | "教育心理学専修" | "幼児教育専修";
+			/** 在学年次 */
 			year: UndergraduateYear;
 	  }
 	| {
@@ -80,8 +102,11 @@ export type EducationFacultyValue =
 
 /** 情報学部 @see https://www.inf.shizuoka.ac.jp/ */
 export type InformaticsFacultyValue = {
+	/** 学部 */
 	faculty: "情報学部";
+	/** 学科 */
 	department: "情報科学科" | "行動情報学科" | "情報社会学科";
+	/** 在学年次 */
 	year: UndergraduateYear;
 };
 
@@ -99,6 +124,7 @@ export type ScienceFacultyValue =
 	  }
 	| {
 			faculty: "理学部";
+			/** コース */
 			course: "創造理学コース";
 			year: UndergraduateYear;
 	  };
@@ -184,9 +210,13 @@ export type UndergraduateAffiliationValue =
 /** 人文社会科学研究科 @see https://www.hss.shizuoka.ac.jp/ghss/ */
 export type HumanitiesMasterValue =
 	| {
+			/** 研究科・大学院 */
 			school: "人文社会科学研究科";
+			/** 専攻 */
 			major: "臨床人間科学専攻";
+			/** コース */
 			course: "臨床心理学コース" | "臨床人間科学コース";
+			/** 在学年次 */
 			year: MasterYear;
 	  }
 	| {
