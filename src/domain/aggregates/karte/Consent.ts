@@ -5,6 +5,8 @@
  * カルテは同意なしでも作成できるため、各フィールドはbooleanで表現する。
  */
 export type Consent = {
+	/** 免責同意 */
 	readonly liabilityConsent: boolean;
+	/** 情報公開同意 */
 	readonly disclosureConsent: boolean;
 };

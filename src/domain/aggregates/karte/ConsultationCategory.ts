@@ -2,7 +2,9 @@ import { ValueObject } from "#domain/base/ValueObject";
 import { InvalidConsultationCategoryException } from "#domain/exceptions";
 
 type ConsultationCategoryValue = {
+	/** カテゴリID */
 	readonly id: string;
+	/** 表示名 */
 	readonly displayName: string;
 };
 

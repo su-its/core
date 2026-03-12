@@ -7,7 +7,10 @@ import type { ConsultationCategory } from "./ConsultationCategory";
  * カテゴリは複数選択可能。
  */
 export type Consultation = {
+	/** 相談カテゴリ（複数選択可） */
 	readonly categories: readonly ConsultationCategory[];
+	/** 対象機器 */
 	readonly targetDevice: string;
+	/** トラブル詳細 */
 	readonly troubleDetails: string;
 };

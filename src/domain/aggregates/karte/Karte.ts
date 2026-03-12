@@ -12,11 +12,17 @@ import type { Response } from "./Response";
 export class Karte {
 	constructor(
 		public readonly id: string,
+		/** 記録日時 */
 		private readonly recordedAt: Date,
+		/** 最終更新日時 */
 		private lastUpdatedAt: Date,
+		/** 相談者 */
 		private client: Client,
+		/** 同意事項 */
 		private consent: Consent,
+		/** 相談事 */
 		private consultation: Consultation,
+		/** 対応事 */
 		private response: Response,
 	) {}
 
