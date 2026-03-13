@@ -114,13 +114,6 @@ export class InvalidStudentIdException extends DomainException {
 	}
 }
 
-export class InvalidConsultationCategoryException extends DomainException {
-	constructor(detail: string) {
-		super(`無効な相談カテゴリです: ${detail}`);
-		this.name = "InvalidConsultationCategoryException";
-	}
-}
-
 export class InvalidWorkDurationException extends DomainException {
 	constructor(minutes: number) {
 		super(`無効な作業時間です: ${minutes}分 (正の数値で指定してください)`);

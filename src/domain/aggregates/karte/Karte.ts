@@ -1,6 +1,7 @@
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";
+import type { ConsultationCategory } from "./ConsultationCategory";
 import type { Response } from "./Response";
 
 /**
@@ -103,11 +104,8 @@ export class Karte {
 		}
 	}
 
-	private snapshotCategories(): Array<{ id: string; displayName: string }> {
-		return this.consultation.categories.map((c) => ({
-			id: c.id,
-			displayName: c.displayName,
-		}));
+	private snapshotCategories(): readonly ConsultationCategory[] {
+		return this.consultation.categories;
 	}
 
 	toSnapshot() {
