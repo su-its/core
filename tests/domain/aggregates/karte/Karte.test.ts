@@ -26,7 +26,10 @@ function createProps() {
 		},
 		consultation: {
 			categories: [
-				{ id: "wifi_eduroam" as const, displayName: "eduroamに対する接続方法の相談" },
+				{
+					id: "wifi_eduroam" as const,
+					displayName: "eduroamに対する接続方法の相談",
+				},
 			] as [{ id: "wifi_eduroam"; displayName: string }],
 			targetDevice: "ノートPC",
 			troubleDetails: "eduroamに接続できない",
