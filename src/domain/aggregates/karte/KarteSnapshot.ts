@@ -109,21 +109,9 @@ function snapshotSupportRecord(
 	sr: Karte["supportRecord"],
 ): SupportRecordSnapshot {
 	return {
-		assignedMemberIds: snapshotMemberIds(sr.assignedMemberIds),
+		assignedMemberIds: sr.assignedMemberIds,
 		content: sr.content,
 		resolution: sr.resolution,
 		workDuration: sr.workDuration,
-	};
-}
-
-function snapshotMemberIds(
-	ids: Karte["supportRecord"]["assignedMemberIds"],
-): Recorded<readonly string[]> {
-	if (ids.type === "notRecorded") {
-		return { type: "notRecorded" };
-	}
-	return {
-		type: "recorded",
-		value: ids.value.map((id) => id as string),
 	};
 }

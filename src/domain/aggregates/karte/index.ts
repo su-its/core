@@ -7,7 +7,6 @@ export * from "./Consent";
 export * from "./Consultation";
 export * from "./ConsultationCategory";
 export * from "./FollowUpDestination";
-export * from "./MemberId";
 export * from "./Resolution";
 export * from "./SupportRecord";
 export * from "./WorkDuration";

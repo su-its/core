@@ -5,7 +5,6 @@ import type { Consultation } from "./Consultation";
 import type { ConsultationCategory } from "./ConsultationCategory";
 import type { FollowUpDestination } from "./FollowUpDestination";
 import type { KarteId } from "./KarteId";
-import type { MemberId } from "./MemberId";
 import type { Resolution } from "./Resolution";
 import type { SupportRecord } from "./SupportRecord";
 import type { WorkDuration } from "./WorkDuration";
@@ -27,7 +26,7 @@ type KarteCreationProps = {
 		readonly troubleDetails: string;
 	};
 	readonly supportRecord: {
-		readonly assignedMemberIds: NonEmptyArray<MemberId>;
+		readonly assignedMemberIds: NonEmptyArray<string>;
 		readonly content: string;
 		readonly resolution: CompleteResolution;
 		readonly workDuration: WorkDuration;
@@ -53,7 +52,7 @@ type KarteCorrectionProps = {
 		readonly troubleDetails: string;
 	};
 	readonly supportRecord: {
-		readonly assignedMemberIds: NonEmptyArray<MemberId>;
+		readonly assignedMemberIds: NonEmptyArray<string>;
 		readonly content: string;
 		readonly resolution: CompleteResolution;
 		readonly workDuration: WorkDuration;
