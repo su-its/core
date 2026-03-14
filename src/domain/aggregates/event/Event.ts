@@ -122,7 +122,7 @@ export class Event {
 
 	public removeMemberId(memberId: string): void {
 		for (const exhibit of this.exhibits) {
-			if (exhibit.getMemberIds().includes(memberId)) {
+			if (exhibit.hasMemberId(memberId)) {
 				throw new ExhibitHasMemberException(exhibit.id, memberId);
 			}
 		}
@@ -137,12 +137,6 @@ export class Event {
 
 	public removeExhibitMemberId(exhibitId: string, memberId: string): void {
 		this.getExhibitOrThrow(exhibitId).removeMemberId(memberId);
-		const stillInOtherExhibit = this.exhibits.some((exhibit) =>
-			exhibit.getMemberIds().includes(memberId),
-		);
-		if (!stillInOtherExhibit) {
-			this.memberIds.delete(memberId);
-		}
 	}
 	toSnapshot() {
 		return {

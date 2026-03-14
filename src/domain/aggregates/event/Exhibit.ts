@@ -95,6 +95,10 @@ export class Exhibit {
 		this.memberIds.delete(memberId);
 	}
 
+	public hasMemberId(memberId: string): boolean {
+		return this.memberIds.has(memberId);
+	}
+
 	private getLightningTalkOrThrow(): LightningTalk {
 		if (!this.lightningTalk) {
 			throw new LightningTalkNotFoundException(
