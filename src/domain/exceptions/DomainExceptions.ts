@@ -116,7 +116,7 @@ export class InvalidStudentIdException extends DomainException {
 
 export class InvalidWorkDurationException extends DomainException {
 	constructor(minutes: number) {
-		super(`無効な作業時間です: ${minutes}分 (正の数値で指定してください)`);
+		super(`無効な作業時間です: ${minutes}分 (0以上の整数で指定してください)`);
 		this.name = "InvalidWorkDurationException";
 	}
 }

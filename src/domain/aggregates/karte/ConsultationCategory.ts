@@ -13,7 +13,7 @@ export type ConsultationCategory = {
 /** 定義済みカテゴリID */
 export type ConsultationCategoryId =
 	| "wifi_eduroam"
-	| "wifi_succes"
+	| "wifi_success"
 	| "wifi_smartphone"
 	| "usage_mac"
 	| "usage_fs"
@@ -35,7 +35,7 @@ export type ConsultationCategoryId =
 /** 定義済みカテゴリ一覧 */
 export const CONSULTATION_CATEGORIES: readonly ConsultationCategory[] = [
 	{ id: "wifi_eduroam", displayName: "eduroamに対する接続方法の相談" },
-	{ id: "wifi_succes", displayName: "SUCCESSに対する接続方法の相談" },
+	{ id: "wifi_success", displayName: "SUCCESSに対する接続方法の相談" },
 	{
 		id: "wifi_smartphone",
 		displayName: "スマホからのWiFi接続方法に関する相談",

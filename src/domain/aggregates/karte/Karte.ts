@@ -103,12 +103,12 @@ export class Karte {
 
 	/** 新規カルテの作成 — 全フィールド完全であることを型で保証する */
 	static create(props: KarteCreationProps): Karte {
-		const now = new Date();
+		const now = Date.now();
 		return new Karte(
 			props.id,
-			now,
+			new Date(now),
 			recorded(props.consultedAt),
-			now,
+			new Date(now),
 			recorded(props.client),
 			props.consent,
 			{
