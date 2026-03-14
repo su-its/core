@@ -1,5 +1,6 @@
-import type { Recorded } from "./Recorded";
+import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { ConsultationCategory } from "./ConsultationCategory";
+import type { Recorded } from "./Recorded";
 
 /**
  * 相談事
@@ -9,7 +10,7 @@ import type { ConsultationCategory } from "./ConsultationCategory";
  */
 export type Consultation = {
 	/** 相談カテゴリ（複数選択可） */
-	readonly categories: Recorded<readonly ConsultationCategory[]>;
+	readonly categories: Recorded<NonEmptyArray<ConsultationCategory>>;
 	/** 対象機器 */
 	readonly targetDevice: Recorded<string>;
 	/** トラブル詳細 */
