@@ -14,7 +14,7 @@ type ClientSnapshot =
 			readonly name: string;
 			readonly affiliation: ReturnType<Affiliation["getValue"]>;
 	  }
-	| { readonly type: "faculty"; readonly name: string }
+	| { readonly type: "teacher"; readonly name: string }
 	| { readonly type: "staff"; readonly name: string }
 	| { readonly type: "other"; readonly name: string };
 
@@ -87,7 +87,7 @@ function snapshotClient(client: Karte["client"]): Recorded<ClientSnapshot> {
 					affiliation: c.affiliation.getValue(),
 				},
 			};
-		case "faculty":
+		case "teacher":
 			return {
 				type: "recorded",
 				value: { type: c.type, name: c.name },
