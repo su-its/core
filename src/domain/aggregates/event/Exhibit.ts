@@ -116,6 +116,7 @@ export class Exhibit {
 			markdownContent: this.markdownContent,
 			url: this.url,
 			lightningTalk: this.lightningTalk?.toSnapshot(),
+			memberIds: Array.from(this.memberIds),
 		};
 	}
 }
