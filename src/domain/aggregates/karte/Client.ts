@@ -12,7 +12,14 @@ type StudentClient = {
 	readonly affiliation: Affiliation;
 };
 
-/** 教職員の相談者 */
+/** 教員の相談者 */
+type FacultyClient = {
+	readonly type: "faculty";
+	/** 氏名 */
+	readonly name: string;
+};
+
+/** 職員の相談者 */
 type StaffClient = {
 	readonly type: "staff";
 	/** 氏名 */
@@ -27,4 +34,4 @@ type OtherClient = {
 };
 
 /** 相談者 — PC相談室に相談を持ち込んだ人 */
-export type Client = StudentClient | StaffClient | OtherClient;
+export type Client = StudentClient | FacultyClient | StaffClient | OtherClient;
