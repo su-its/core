@@ -16,5 +16,5 @@ export type SupportRecord = {
 	/** 解決ステータス */
 	readonly resolution: Recorded<Resolution>;
 	/** 作業時間 */
-	readonly workDuration: WorkDuration;
+	readonly workDuration: Recorded<WorkDuration>;
 };

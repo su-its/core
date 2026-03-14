@@ -122,7 +122,7 @@ export class Karte {
 				resolution: recorded(
 					toRecordedResolution(props.supportRecord.resolution),
 				),
-				workDuration: props.supportRecord.workDuration,
+				workDuration: recorded(props.supportRecord.workDuration),
 			},
 		);
 	}
@@ -167,7 +167,7 @@ export class Karte {
 				resolution: recorded(
 					toRecordedResolution(props.supportRecord.resolution),
 				),
-				workDuration: props.supportRecord.workDuration,
+				workDuration: recorded(props.supportRecord.workDuration),
 			},
 		);
 	}
