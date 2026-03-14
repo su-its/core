@@ -95,6 +95,10 @@ export class Exhibit {
 		this.memberIds.delete(memberId);
 	}
 
+	public hasMemberId(memberId: string): boolean {
+		return this.memberIds.has(memberId);
+	}
+
 	private getLightningTalkOrThrow(): LightningTalk {
 		if (!this.lightningTalk) {
 			throw new LightningTalkNotFoundException(
@@ -112,6 +116,7 @@ export class Exhibit {
 			markdownContent: this.markdownContent,
 			url: this.url,
 			lightningTalk: this.lightningTalk?.toSnapshot(),
+			memberIds: Array.from(this.memberIds),
 		};
 	}
 }
