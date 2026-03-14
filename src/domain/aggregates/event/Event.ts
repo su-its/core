@@ -122,7 +122,7 @@ export class Event {
 
 	public removeMemberId(memberId: string): void {
 		for (const exhibit of this.exhibits) {
-			if (exhibit.getMemberIds().includes(memberId)) {
+			if (exhibit.hasMemberId(memberId)) {
 				throw new ExhibitHasMemberException(exhibit.id, memberId);
 			}
 		}
@@ -135,7 +135,12 @@ export class Event {
 		this.memberIds.add(memberId);
 	}
 
-	public removeExhibitMemberId(exhibitId: string, memberId: string): void {}
+	// NOTE: 展示からの削除のみ行い、Event.memberIdsは操作しない。
+	// 「展示に所属していないがイベント参加者」という状態が有効なため、
+	// イベント参加者からの削除はremoveMemberId()で明示的に行う。
+	public removeExhibitMemberId(exhibitId: string, memberId: string): void {
+		this.getExhibitOrThrow(exhibitId).removeMemberId(memberId);
+	}
 	toSnapshot() {
 		return {
 			id: this.id,
