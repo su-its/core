@@ -5,7 +5,7 @@ export * from "./Client";
 export * from "./Consent";
 export * from "./Consultation";
 export * from "./ConsultationCategory";
-export * from "./FollowUpDestination";
+export * from "./FollowUp";
 export * from "./Resolution";
 export * from "./SupportRecord";
 export * from "./WorkDuration";

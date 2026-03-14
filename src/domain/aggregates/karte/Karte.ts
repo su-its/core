@@ -1,48 +1,30 @@
-import { type NonEmptyArray, type Recorded, recorded } from "#domain/base";
+import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
+import { type Recorded, recorded } from "./Recorded";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";
 import type { ConsultationCategory } from "./ConsultationCategory";
-import type { FollowUpDestination } from "./FollowUpDestination";
+import type { FollowUp } from "./FollowUp";
 import type { KarteId } from "./KarteId";
 import type { Resolution } from "./Resolution";
 import type { SupportRecord } from "./SupportRecord";
 import type { WorkDuration } from "./WorkDuration";
 
-/**
- * 新規カルテ作成時の入力型
- *
- * 全フィールドが完全に揃った状態を要求する。
- * Recorded型は使わず、生の値を受け取る。
- */
-type KarteCreationProps = {
-	readonly id: KarteId;
-	readonly consultedAt: Date;
-	readonly client: Client;
-	readonly consent: Consent;
-	readonly consultation: {
-		readonly categories: NonEmptyArray<ConsultationCategory>;
-		readonly targetDevice: string;
-		readonly troubleDetails: string;
-	};
-	readonly supportRecord: {
-		readonly assignedMemberIds: NonEmptyArray<string>;
-		readonly content: string;
-		readonly resolution: CompleteResolution;
-		readonly workDuration: WorkDuration;
-	};
-};
-
-/** 新規作成時の解決ステータス — 後処理先は必須 */
+/** 新規作成時の解決ステータス — 後処理は必須 */
 type CompleteResolution =
 	| { readonly type: "resolved" }
 	| {
 			readonly type: "unresolved";
-			readonly followUpDestination: FollowUpDestination;
+			readonly followUp: FollowUp;
 	  };
 
-/** 訂正時の入力型 — 作成時と同じく完全な生の値を要求する */
-type KarteCorrectionProps = {
+/**
+ * カルテの内容を表す入力型
+ *
+ * create/correctの共通部分。全フィールドが完全に揃った状態を要求する。
+ * Recorded型は使わず、生の値を受け取る。
+ */
+type KarteContentProps = {
 	readonly consultedAt: Date;
 	readonly client: Client;
 	readonly consent: Consent;
@@ -58,6 +40,9 @@ type KarteCorrectionProps = {
 		readonly workDuration: WorkDuration;
 	};
 };
+
+/** 新規カルテ作成時の入力型 */
+type KarteCreationProps = KarteContentProps & { readonly id: KarteId };
 
 /** 永続化データからの復元時の入力型 */
 type KarteReconstructProps = {
@@ -111,19 +96,8 @@ export class Karte {
 			new Date(now),
 			recorded(props.client),
 			props.consent,
-			{
-				categories: recorded(props.consultation.categories),
-				targetDevice: recorded(props.consultation.targetDevice),
-				troubleDetails: props.consultation.troubleDetails,
-			},
-			{
-				assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
-				content: props.supportRecord.content,
-				resolution: recorded(
-					toRecordedResolution(props.supportRecord.resolution),
-				),
-				workDuration: recorded(props.supportRecord.workDuration),
-			},
+			toConsultation(props),
+			toSupportRecord(props),
 		);
 	}
 
@@ -148,7 +122,7 @@ export class Karte {
 	 * recordedAt（元の記録日時）は保持し、lastUpdatedAt を現在時刻に更新する。
 	 * 完全な生の値を受け取り、不変条件は型で保証する。
 	 */
-	correct(props: KarteCorrectionProps): Karte {
+	correct(props: KarteContentProps): Karte {
 		return new Karte(
 			this.id,
 			this.recordedAt,
@@ -156,21 +130,31 @@ export class Karte {
 			new Date(),
 			recorded(props.client),
 			props.consent,
-			{
-				categories: recorded(props.consultation.categories),
-				targetDevice: recorded(props.consultation.targetDevice),
-				troubleDetails: props.consultation.troubleDetails,
-			},
-			{
-				assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
-				content: props.supportRecord.content,
-				resolution: recorded(
-					toRecordedResolution(props.supportRecord.resolution),
-				),
-				workDuration: recorded(props.supportRecord.workDuration),
-			},
+			toConsultation(props),
+			toSupportRecord(props),
 		);
 	}
+}
+
+/** 生の入力から Consultation（Recorded付き）を構築する */
+function toConsultation(props: KarteContentProps): Consultation {
+	return {
+		categories: recorded(props.consultation.categories),
+		targetDevice: recorded(props.consultation.targetDevice),
+		troubleDetails: props.consultation.troubleDetails,
+	};
+}
+
+/** 生の入力から SupportRecord（Recorded付き）を構築する */
+function toSupportRecord(props: KarteContentProps): SupportRecord {
+	return {
+		assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
+		content: props.supportRecord.content,
+		resolution: recorded(
+			toRecordedResolution(props.supportRecord.resolution),
+		),
+		workDuration: recorded(props.supportRecord.workDuration),
+	};
 }
 
 function toRecordedResolution(complete: CompleteResolution): Resolution {
@@ -179,6 +163,6 @@ function toRecordedResolution(complete: CompleteResolution): Resolution {
 	}
 	return {
 		type: "unresolved",
-		followUpDestination: recorded(complete.followUpDestination),
+		followUp: recorded(complete.followUp),
 	};
 }

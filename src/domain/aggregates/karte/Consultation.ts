@@ -1,4 +1,4 @@
-import type { Recorded } from "#domain/base";
+import type { Recorded } from "./Recorded";
 import type { ConsultationCategory } from "./ConsultationCategory";
 
 /**

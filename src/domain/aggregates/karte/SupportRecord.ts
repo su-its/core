@@ -1,4 +1,5 @@
-import type { Recorded } from "#domain/base";
+import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
+import type { Recorded } from "./Recorded";
 import type { Resolution } from "./Resolution";
 import type { WorkDuration } from "./WorkDuration";
 
@@ -10,7 +11,7 @@ import type { WorkDuration } from "./WorkDuration";
  */
 export type SupportRecord = {
 	/** 担当メンバーID一覧 */
-	readonly assignedMemberIds: Recorded<readonly string[]>;
+	readonly assignedMemberIds: Recorded<NonEmptyArray<string>>;
 	/** 対応内容 */
 	readonly content: string;
 	/** 解決ステータス */
