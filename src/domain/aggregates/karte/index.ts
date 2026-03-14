@@ -1,7 +1,6 @@
 export * from "./Karte";
 export * from "./KarteId";
 export * from "./KarteRepository";
-export * from "./KarteSnapshot";
 export * from "./Client";
 export * from "./Consent";
 export * from "./Consultation";
