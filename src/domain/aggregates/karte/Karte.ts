@@ -1,11 +1,11 @@
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import { type Recorded, recorded } from "./Recorded";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";
 import type { ConsultationCategory } from "./ConsultationCategory";
 import type { FollowUp } from "./FollowUp";
 import type { KarteId } from "./KarteId";
+import { type Recorded, recorded } from "./Recorded";
 import type { Resolution } from "./Resolution";
 import type { SupportRecord } from "./SupportRecord";
 import type { WorkDuration } from "./WorkDuration";
@@ -150,9 +150,7 @@ function toSupportRecord(props: KarteContentProps): SupportRecord {
 	return {
 		assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
 		content: props.supportRecord.content,
-		resolution: recorded(
-			toRecordedResolution(props.supportRecord.resolution),
-		),
+		resolution: recorded(toRecordedResolution(props.supportRecord.resolution)),
 		workDuration: recorded(props.supportRecord.workDuration),
 	};
 }
