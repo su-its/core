@@ -107,7 +107,7 @@ describe("Karte", () => {
 			});
 
 			expect(corrected.id).toBe(original.id);
-			expect(corrected.recordedAt).toBe(original.recordedAt);
+			expect(corrected.recordedAt).toEqual(original.recordedAt);
 		});
 
 		it("lastUpdatedAtが新しい時刻に更新される", () => {
