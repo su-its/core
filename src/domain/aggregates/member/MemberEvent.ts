@@ -52,8 +52,8 @@ export class MemberReregistered implements DomainEvent {
 }
 
 /** 年次確認未返答による未確認状態への移行 */
-export class MemberSuspended implements DomainEvent {
-	readonly eventName = "MemberSuspended" as const;
+export class MemberUnconfirmed implements DomainEvent {
+	readonly eventName = "MemberUnconfirmed" as const;
 	constructor(
 		readonly email: UniversityEmail,
 		readonly occurredAt: Date,
@@ -161,7 +161,7 @@ export type MemberDomainEvent =
 	| MemberRegistered
 	| MemberRemoved
 	| MemberReregistered
-	| MemberSuspended
+	| MemberUnconfirmed
 	| MemberConfirmed
 	| InternallyAdvanced
 	| FacultyTransferred

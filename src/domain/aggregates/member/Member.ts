@@ -17,7 +17,7 @@ import {
 	MemberRegistered,
 	MemberRemoved,
 	MemberReregistered,
-	MemberSuspended,
+	MemberUnconfirmed,
 	NameChanged,
 	PersonalEmailChanged,
 	StudentIdChanged,
@@ -91,7 +91,7 @@ export class ActiveMember {
 	unconfirm(): UnconfirmedMember {
 		return new UnconfirmedMember(this.email, this.name, this.personalEmail, [
 			...this.domainEvents,
-			new MemberSuspended(this.email, new Date()),
+			new MemberUnconfirmed(this.email, new Date()),
 		]);
 	}
 

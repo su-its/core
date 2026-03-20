@@ -136,7 +136,7 @@ describe("ActiveMember", () => {
 			expect(unconfirmed.name).toBe("テスト太郎");
 		});
 
-		it("MemberSuspendedイベントが発行される", () => {
+		it("MemberUnconfirmedイベントが発行される", () => {
 			const active = ActiveMember.reconstruct({
 				email: createEmail(),
 				name: "テスト太郎",
@@ -148,7 +148,7 @@ describe("ActiveMember", () => {
 			const events = unconfirmed.pullDomainEvents();
 
 			expect(events).toHaveLength(1);
-			expect(events[0].eventName).toBe("MemberSuspended");
+			expect(events[0].eventName).toBe("MemberUnconfirmed");
 		});
 	});
 
@@ -547,7 +547,7 @@ describe("状態遷移のライフサイクル", () => {
 		const events = confirmed.pullDomainEvents();
 		expect(events).toHaveLength(3);
 		expect(events[0].eventName).toBe("MemberRegistered");
-		expect(events[1].eventName).toBe("MemberSuspended");
+		expect(events[1].eventName).toBe("MemberUnconfirmed");
 		expect(events[2].eventName).toBe("MemberConfirmed");
 	});
 });

@@ -12,20 +12,7 @@ export class ExternalServiceLinked implements DomainEvent {
 	) {}
 }
 
-/** 外部サービスの紐付けを解除した */
-export class ExternalServiceUnlinked implements DomainEvent {
-	readonly eventName = "ExternalServiceUnlinked" as const;
-	constructor(
-		readonly personEmail: UniversityEmail,
-		readonly serviceName: string,
-		readonly userId: string,
-		readonly occurredAt: Date,
-	) {}
-}
-
-export type ExternalServiceLinkDomainEvent =
-	| ExternalServiceLinked
-	| ExternalServiceUnlinked;
+export type ExternalServiceLinkDomainEvent = ExternalServiceLinked;
 
 /**
  * 外部サービス連携 — 外部サービスとのアカウント紐付けを表す
