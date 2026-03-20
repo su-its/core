@@ -11,33 +11,11 @@ export class InvalidEmailFormatException extends DomainException {
 		this.name = "InvalidEmailFormatException";
 	}
 }
-export class DiscordAccountAlreadyConnectedException extends DomainException {
-	constructor() {
-		super("同じDiscordアカウントがすでにユーザーに紐づいています");
-		this.name = "DiscordAccountAlreadyConnectedException";
-	}
-}
-
-export class DiscordAccountNotConnectedException extends DomainException {
-	constructor() {
-		super("指定されたDiscordアカウントがユーザーに紐づいていません");
-		this.name = "DiscordAccountNotConnectedException";
-	}
-}
 
 export class InvalidUniversityEmailException extends DomainException {
 	constructor(email: string) {
 		super(`無効な大学のメールアドレスです: ${email} (大学ドメインが必要です)`);
 		this.name = "InvalidUniversityEmailException";
-	}
-}
-
-export class InvalidDepartmentException extends DomainException {
-	constructor(department: string) {
-		super(
-			`無効な学部識別子です: ${department} (有効値: CS, BI, IA, GRADUATE, ALUMNI, OTHERS)`,
-		);
-		this.name = "InvalidDepartmentException";
 	}
 }
 
@@ -118,5 +96,12 @@ export class InvalidWorkDurationException extends DomainException {
 	constructor(minutes: number) {
 		super(`無効な作業時間です: ${minutes}分 (0以上の整数で指定してください)`);
 		this.name = "InvalidWorkDurationException";
+	}
+}
+
+export class InvalidAffiliationOperationException extends DomainException {
+	constructor(message: string) {
+		super(message);
+		this.name = "InvalidAffiliationOperationException";
 	}
 }
