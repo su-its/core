@@ -1,3 +1,4 @@
+import { KarteNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import type { Karte } from "#domain/aggregates/karte/Karte";
 import type { KarteId } from "#domain/aggregates/karte/KarteId";
@@ -19,7 +20,7 @@ export class GetKarteUseCase extends IUseCase<GetKarteInput, GetKarteOutput> {
 	async execute(input: GetKarteInput): Promise<GetKarteOutput> {
 		const karte = await this.karteRepository.findById(input.karteId);
 		if (!karte) {
-			throw new Error(`カルテが見つかりません: ${input.karteId}`);
+			throw new KarteNotFoundException(input.karteId);
 		}
 		return { karte };
 	}

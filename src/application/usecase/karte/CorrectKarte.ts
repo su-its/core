@@ -1,3 +1,4 @@
+import { KarteNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import type { Client } from "#domain/aggregates/karte/Client";
 import type { Consent } from "#domain/aggregates/karte/Consent";
@@ -47,7 +48,7 @@ export class CorrectKarteUseCase extends IUseCase<
 	async execute(input: CorrectKarteInput): Promise<CorrectKarteOutput> {
 		const existing = await this.karteRepository.findById(input.karteId);
 		if (!existing) {
-			throw new Error(`カルテが見つかりません: ${input.karteId}`);
+			throw new KarteNotFoundException(input.karteId);
 		}
 
 		const corrected = existing.correct(input);
