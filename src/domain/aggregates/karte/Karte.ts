@@ -68,14 +68,19 @@ type KarteReconstructProps = {
  * 新規作成時は create() により全フィールドの完全性を保証する。
  */
 export class Karte {
+	/**
+	 * Dateはミュータブルなため、privateで保持しgetterで防御的コピーを返す。
+	 * readonlyは再代入を防ぐが、Date.setTime()等の破壊的メソッドは防げない。
+	 */
+	private readonly _recordedAt: Date;
+	private readonly _lastUpdatedAt: Date;
+
 	private constructor(
 		public readonly id: KarteId,
-		/** 記録日時 */
-		public readonly recordedAt: Date,
+		recordedAt: Date,
 		/** 相談日時 */
 		public readonly consultedAt: Recorded<Date>,
-		/** 最終更新日時 */
-		public readonly lastUpdatedAt: Date,
+		lastUpdatedAt: Date,
 		/** 相談者 */
 		public readonly client: Recorded<Client>,
 		/** 同意事項 */
@@ -84,7 +89,20 @@ export class Karte {
 		public readonly consultation: Consultation,
 		/** 対応記録 */
 		public readonly supportRecord: SupportRecord,
-	) {}
+	) {
+		this._recordedAt = recordedAt;
+		this._lastUpdatedAt = lastUpdatedAt;
+	}
+
+	/** 記録日時 */
+	get recordedAt(): Date {
+		return new Date(this._recordedAt);
+	}
+
+	/** 最終更新日時 */
+	get lastUpdatedAt(): Date {
+		return new Date(this._lastUpdatedAt);
+	}
 
 	/** 新規カルテの作成 — 全フィールド完全であることを型で保証する */
 	static create(props: KarteCreationProps): Karte {
