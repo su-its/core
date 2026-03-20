@@ -1,12 +1,15 @@
 import type { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import type { DomainEvent } from "#domain/base/DomainEvent";
 
+/** 対応する外部サービス */
+export type ServiceName = "discord";
+
 /** 外部サービスを紐付けた */
 export class ExternalServiceLinked implements DomainEvent {
 	readonly eventName = "ExternalServiceLinked" as const;
 	constructor(
 		readonly personEmail: UniversityEmail,
-		readonly serviceName: string,
+		readonly serviceName: ServiceName,
 		readonly userId: string,
 		readonly occurredAt: Date,
 	) {}
@@ -22,14 +25,14 @@ export type ExternalServiceLinkDomainEvent = ExternalServiceLinked;
  */
 export class ExternalServiceLink {
 	constructor(
-		readonly serviceName: string,
+		readonly serviceName: ServiceName,
 		readonly userId: string,
 		readonly personEmail: UniversityEmail,
 		private readonly domainEvents: readonly ExternalServiceLinkDomainEvent[] = [],
 	) {}
 
 	static link(
-		serviceName: string,
+		serviceName: ServiceName,
 		userId: string,
 		personEmail: UniversityEmail,
 	): ExternalServiceLink {
@@ -39,7 +42,7 @@ export class ExternalServiceLink {
 	}
 
 	static reconstruct(
-		serviceName: string,
+		serviceName: ServiceName,
 		userId: string,
 		personEmail: UniversityEmail,
 	): ExternalServiceLink {
