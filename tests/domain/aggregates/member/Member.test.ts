@@ -5,6 +5,7 @@ import {
 	FormerMember,
 	UnconfirmedMember,
 } from "#domain/aggregates/member/Member";
+import { memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
 import { StudentId } from "#domain/shared/StudentId";
@@ -51,8 +52,11 @@ function createDoctoralAffiliation() {
 	});
 }
 
+const TEST_ID = memberId("test-member-id");
+
 function registerMember() {
 	return ActiveMember.register({
+		id: TEST_ID,
 		email: createEmail(),
 		name: "テスト太郎",
 		personalEmail: createPersonalEmail(),
@@ -84,6 +88,7 @@ describe("ActiveMember", () => {
 	describe("reconstruct", () => {
 		it("永続化からの復元ではイベントが発行されない", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -107,6 +112,7 @@ describe("ActiveMember", () => {
 
 		it("MemberRemovedイベントが発行される", () => {
 			const active = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -124,6 +130,7 @@ describe("ActiveMember", () => {
 	describe("unconfirm", () => {
 		it("室員を未確認状態にできる", () => {
 			const active = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -138,6 +145,7 @@ describe("ActiveMember", () => {
 
 		it("MemberUnconfirmedイベントが発行される", () => {
 			const active = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -155,6 +163,7 @@ describe("ActiveMember", () => {
 	describe("changeName", () => {
 		it("名前を変更した新しいインスタンスが返される", () => {
 			const original = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
 				personalEmail: createPersonalEmail(),
@@ -171,6 +180,7 @@ describe("ActiveMember", () => {
 	describe("changeStudentId", () => {
 		it("学籍番号を変更できる", () => {
 			const original = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -188,6 +198,7 @@ describe("ActiveMember", () => {
 	describe("advanceInternally", () => {
 		it("学部生から修士に内部進学できる", () => {
 			const undergrad = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -207,6 +218,7 @@ describe("ActiveMember", () => {
 
 		it("修士から博士に内部進学できる", () => {
 			const masterMember = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -224,6 +236,7 @@ describe("ActiveMember", () => {
 
 		it("学部生が博士に進学しようとするとエラー", () => {
 			const undergrad = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -241,6 +254,7 @@ describe("ActiveMember", () => {
 
 		it("博士からの進学はエラー", () => {
 			const doctoralMember = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -260,6 +274,7 @@ describe("ActiveMember", () => {
 	describe("transferFaculty", () => {
 		it("学部生は転学部できる", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -279,6 +294,7 @@ describe("ActiveMember", () => {
 
 		it("大学院生は転学部できない", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -301,6 +317,7 @@ describe("ActiveMember", () => {
 	describe("transferDepartment", () => {
 		it("同一学部内で転学科できる", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -319,6 +336,7 @@ describe("ActiveMember", () => {
 
 		it("別学部への転学科はエラー", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -341,6 +359,7 @@ describe("ActiveMember", () => {
 	describe("transferMajor", () => {
 		it("同一研究科内で転専攻できる", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -360,6 +379,7 @@ describe("ActiveMember", () => {
 
 		it("学部生は転専攻できない", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -374,6 +394,7 @@ describe("ActiveMember", () => {
 
 		it("別研究科への転専攻はエラー", () => {
 			const member = ActiveMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -398,6 +419,7 @@ describe("UnconfirmedMember", () => {
 	describe("confirm", () => {
 		it("確認されると室員に復帰する", () => {
 			const unconfirmed = UnconfirmedMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -413,6 +435,7 @@ describe("UnconfirmedMember", () => {
 
 		it("MemberConfirmedイベントが発行される", () => {
 			const unconfirmed = UnconfirmedMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -431,6 +454,7 @@ describe("UnconfirmedMember", () => {
 	describe("remove", () => {
 		it("未確認メンバーを除籍できる", () => {
 			const unconfirmed = UnconfirmedMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -444,6 +468,7 @@ describe("UnconfirmedMember", () => {
 	describe("changeName", () => {
 		it("名前を変更できる", () => {
 			const unconfirmed = UnconfirmedMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
 				personalEmail: createPersonalEmail(),
@@ -460,6 +485,7 @@ describe("FormerMember", () => {
 	describe("reregister", () => {
 		it("元室員を再登録すると室員になる", () => {
 			const former = FormerMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -476,6 +502,7 @@ describe("FormerMember", () => {
 
 		it("MemberReregisteredイベントが発行される", () => {
 			const former = FormerMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
 				personalEmail: createPersonalEmail(),
@@ -494,6 +521,7 @@ describe("FormerMember", () => {
 	describe("changeName", () => {
 		it("元室員の名前を変更できる", () => {
 			const former = FormerMember.reconstruct({
+				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
 				personalEmail: createPersonalEmail(),
@@ -509,6 +537,7 @@ describe("FormerMember", () => {
 describe("状態遷移のライフサイクル", () => {
 	it("登録→除籍→再登録のフローでイベントが正しく蓄積される", () => {
 		const active = ActiveMember.register({
+			id: TEST_ID,
 			email: createEmail(),
 			name: "テスト太郎",
 			personalEmail: createPersonalEmail(),
@@ -531,6 +560,7 @@ describe("状態遷移のライフサイクル", () => {
 
 	it("登録→未確認→確認のフローでイベントが正しく蓄積される", () => {
 		const active = ActiveMember.register({
+			id: TEST_ID,
 			email: createEmail(),
 			name: "テスト太郎",
 			personalEmail: createPersonalEmail(),

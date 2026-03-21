@@ -23,6 +23,7 @@ import {
 	StudentIdChanged,
 } from "./MemberEvent";
 import type { MemberDomainEvent, RemovalReason } from "./MemberEvent";
+import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
 // ── ActiveMember（室員） ──
@@ -31,6 +32,7 @@ export class ActiveMember {
 	readonly status = "active" as const;
 
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
 		readonly personalEmail: Email,
@@ -40,6 +42,7 @@ export class ActiveMember {
 	) {}
 
 	static register(props: {
+		id: MemberId;
 		email: UniversityEmail;
 		name: string;
 		personalEmail: Email;
@@ -47,6 +50,7 @@ export class ActiveMember {
 		affiliation: Affiliation;
 	}): ActiveMember {
 		return new ActiveMember(
+			props.id,
 			props.email,
 			props.name,
 			props.personalEmail,
@@ -54,6 +58,7 @@ export class ActiveMember {
 			props.affiliation,
 			[
 				new MemberRegistered(
+					props.id,
 					props.email,
 					props.name,
 					props.personalEmail,
@@ -66,6 +71,7 @@ export class ActiveMember {
 	}
 
 	static reconstruct(props: {
+		id: MemberId;
 		email: UniversityEmail;
 		name: string;
 		personalEmail: Email;
@@ -73,6 +79,7 @@ export class ActiveMember {
 		affiliation: Affiliation;
 	}): ActiveMember {
 		return new ActiveMember(
+			props.id,
 			props.email,
 			props.name,
 			props.personalEmail,
@@ -82,21 +89,34 @@ export class ActiveMember {
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(this.email, this.name, this.personalEmail, [
-			...this.domainEvents,
-			new MemberRemoved(this.email, reason, new Date()),
-		]);
+		return new FormerMember(
+			this.id,
+			this.email,
+			this.name,
+			this.personalEmail,
+			[
+				...this.domainEvents,
+				new MemberRemoved(this.id, this.email, reason, new Date()),
+			],
+		);
 	}
 
 	unconfirm(): UnconfirmedMember {
-		return new UnconfirmedMember(this.email, this.name, this.personalEmail, [
-			...this.domainEvents,
-			new MemberUnconfirmed(this.email, new Date()),
-		]);
+		return new UnconfirmedMember(
+			this.id,
+			this.email,
+			this.name,
+			this.personalEmail,
+			[
+				...this.domainEvents,
+				new MemberUnconfirmed(this.id, this.email, new Date()),
+			],
+		);
 	}
 
 	changeName(newName: string): ActiveMember {
 		return new ActiveMember(
+			this.id,
 			this.email,
 			newName,
 			this.personalEmail,
@@ -104,13 +124,14 @@ export class ActiveMember {
 			this.affiliation,
 			[
 				...this.domainEvents,
-				new NameChanged(this.email, this.name, newName, new Date()),
+				new NameChanged(this.id, this.email, this.name, newName, new Date()),
 			],
 		);
 	}
 
 	changePersonalEmail(newEmail: Email): ActiveMember {
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			newEmail,
@@ -119,6 +140,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new PersonalEmailChanged(
+					this.id,
 					this.email,
 					this.personalEmail,
 					newEmail,
@@ -130,6 +152,7 @@ export class ActiveMember {
 
 	changeStudentId(newStudentId: StudentId): ActiveMember {
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -138,6 +161,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new StudentIdChanged(
+					this.id,
 					this.email,
 					this.studentId,
 					newStudentId,
@@ -154,6 +178,7 @@ export class ActiveMember {
 		this.validateAdvancement(newAffiliation);
 
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -162,6 +187,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new InternallyAdvanced(
+					this.id,
 					this.email,
 					this.affiliation,
 					newAffiliation,
@@ -181,6 +207,7 @@ export class ActiveMember {
 		}
 
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -189,6 +216,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new FacultyTransferred(
+					this.id,
 					this.email,
 					this.affiliation,
 					newAffiliation,
@@ -214,6 +242,7 @@ export class ActiveMember {
 		}
 
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -222,6 +251,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new DepartmentTransferred(
+					this.id,
 					this.email,
 					this.affiliation,
 					newAffiliation,
@@ -253,6 +283,7 @@ export class ActiveMember {
 		}
 
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -261,6 +292,7 @@ export class ActiveMember {
 			[
 				...this.domainEvents,
 				new MajorTransferred(
+					this.id,
 					this.email,
 					currentGraduate,
 					newAffiliation,
@@ -322,6 +354,7 @@ export class UnconfirmedMember {
 	readonly status = "unconfirmed" as const;
 
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
 		readonly personalEmail: Email,
@@ -329,15 +362,22 @@ export class UnconfirmedMember {
 	) {}
 
 	static reconstruct(props: {
+		id: MemberId;
 		email: UniversityEmail;
 		name: string;
 		personalEmail: Email;
 	}): UnconfirmedMember {
-		return new UnconfirmedMember(props.email, props.name, props.personalEmail);
+		return new UnconfirmedMember(
+			props.id,
+			props.email,
+			props.name,
+			props.personalEmail,
+		);
 	}
 
 	confirm(studentId: StudentId, affiliation: Affiliation): ActiveMember {
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -345,29 +385,48 @@ export class UnconfirmedMember {
 			affiliation,
 			[
 				...this.domainEvents,
-				new MemberConfirmed(this.email, studentId, affiliation, new Date()),
+				new MemberConfirmed(
+					this.id,
+					this.email,
+					studentId,
+					affiliation,
+					new Date(),
+				),
 			],
 		);
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(this.email, this.name, this.personalEmail, [
-			...this.domainEvents,
-			new MemberRemoved(this.email, reason, new Date()),
-		]);
+		return new FormerMember(
+			this.id,
+			this.email,
+			this.name,
+			this.personalEmail,
+			[
+				...this.domainEvents,
+				new MemberRemoved(this.id, this.email, reason, new Date()),
+			],
+		);
 	}
 
 	changeName(newName: string): UnconfirmedMember {
-		return new UnconfirmedMember(this.email, newName, this.personalEmail, [
-			...this.domainEvents,
-			new NameChanged(this.email, this.name, newName, new Date()),
-		]);
+		return new UnconfirmedMember(
+			this.id,
+			this.email,
+			newName,
+			this.personalEmail,
+			[
+				...this.domainEvents,
+				new NameChanged(this.id, this.email, this.name, newName, new Date()),
+			],
+		);
 	}
 
 	changePersonalEmail(newEmail: Email): UnconfirmedMember {
-		return new UnconfirmedMember(this.email, this.name, newEmail, [
+		return new UnconfirmedMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
 			new PersonalEmailChanged(
+				this.id,
 				this.email,
 				this.personalEmail,
 				newEmail,
@@ -387,6 +446,7 @@ export class FormerMember {
 	readonly status = "former" as const;
 
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
 		readonly personalEmail: Email,
@@ -394,15 +454,22 @@ export class FormerMember {
 	) {}
 
 	static reconstruct(props: {
+		id: MemberId;
 		email: UniversityEmail;
 		name: string;
 		personalEmail: Email;
 	}): FormerMember {
-		return new FormerMember(props.email, props.name, props.personalEmail);
+		return new FormerMember(
+			props.id,
+			props.email,
+			props.name,
+			props.personalEmail,
+		);
 	}
 
 	reregister(studentId: StudentId, affiliation: Affiliation): ActiveMember {
 		return new ActiveMember(
+			this.id,
 			this.email,
 			this.name,
 			this.personalEmail,
@@ -410,22 +477,29 @@ export class FormerMember {
 			affiliation,
 			[
 				...this.domainEvents,
-				new MemberReregistered(this.email, studentId, affiliation, new Date()),
+				new MemberReregistered(
+					this.id,
+					this.email,
+					studentId,
+					affiliation,
+					new Date(),
+				),
 			],
 		);
 	}
 
 	changeName(newName: string): FormerMember {
-		return new FormerMember(this.email, newName, this.personalEmail, [
+		return new FormerMember(this.id, this.email, newName, this.personalEmail, [
 			...this.domainEvents,
-			new NameChanged(this.email, this.name, newName, new Date()),
+			new NameChanged(this.id, this.email, this.name, newName, new Date()),
 		]);
 	}
 
 	changePersonalEmail(newEmail: Email): FormerMember {
-		return new FormerMember(this.email, this.name, newEmail, [
+		return new FormerMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
 			new PersonalEmailChanged(
+				this.id,
 				this.email,
 				this.personalEmail,
 				newEmail,

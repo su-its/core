@@ -8,6 +8,7 @@ import type {
 	UndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
 import type { Email } from "./Email";
+import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
 /** 除籍理由 */
@@ -21,6 +22,7 @@ export type RemovalReason =
 export class MemberRegistered implements DomainEvent {
 	readonly eventName = "MemberRegistered" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
 		readonly personalEmail: Email,
@@ -34,6 +36,7 @@ export class MemberRegistered implements DomainEvent {
 export class MemberRemoved implements DomainEvent {
 	readonly eventName = "MemberRemoved" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly reason: RemovalReason,
 		readonly occurredAt: Date,
@@ -44,6 +47,7 @@ export class MemberRemoved implements DomainEvent {
 export class MemberReregistered implements DomainEvent {
 	readonly eventName = "MemberReregistered" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly studentId: StudentId,
 		readonly affiliation: Affiliation,
@@ -55,6 +59,7 @@ export class MemberReregistered implements DomainEvent {
 export class MemberUnconfirmed implements DomainEvent {
 	readonly eventName = "MemberUnconfirmed" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly occurredAt: Date,
 	) {}
@@ -64,6 +69,7 @@ export class MemberUnconfirmed implements DomainEvent {
 export class MemberConfirmed implements DomainEvent {
 	readonly eventName = "MemberConfirmed" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly studentId: StudentId,
 		readonly affiliation: Affiliation,
@@ -75,6 +81,7 @@ export class MemberConfirmed implements DomainEvent {
 export class InternallyAdvanced implements DomainEvent {
 	readonly eventName = "InternallyAdvanced" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousAffiliation: Affiliation,
 		readonly newAffiliation: MasterAffiliation | DoctoralAffiliation,
@@ -88,6 +95,7 @@ export class InternallyAdvanced implements DomainEvent {
 export class FacultyTransferred implements DomainEvent {
 	readonly eventName = "FacultyTransferred" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousAffiliation: UndergraduateAffiliation,
 		readonly newAffiliation: UndergraduateAffiliation,
@@ -99,6 +107,7 @@ export class FacultyTransferred implements DomainEvent {
 export class DepartmentTransferred implements DomainEvent {
 	readonly eventName = "DepartmentTransferred" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousAffiliation: UndergraduateAffiliation,
 		readonly newAffiliation: UndergraduateAffiliation,
@@ -110,6 +119,7 @@ export class DepartmentTransferred implements DomainEvent {
 export class MajorTransferred implements DomainEvent {
 	readonly eventName = "MajorTransferred" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousAffiliation:
 			| MasterAffiliation
@@ -127,6 +137,7 @@ export class MajorTransferred implements DomainEvent {
 export class StudentIdChanged implements DomainEvent {
 	readonly eventName = "StudentIdChanged" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousStudentId: StudentId,
 		readonly newStudentId: StudentId,
@@ -138,6 +149,7 @@ export class StudentIdChanged implements DomainEvent {
 export class NameChanged implements DomainEvent {
 	readonly eventName = "NameChanged" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousName: string,
 		readonly newName: string,
@@ -149,6 +161,7 @@ export class NameChanged implements DomainEvent {
 export class PersonalEmailChanged implements DomainEvent {
 	readonly eventName = "PersonalEmailChanged" as const;
 	constructor(
+		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousPersonalEmail: Email,
 		readonly newPersonalEmail: Email,
