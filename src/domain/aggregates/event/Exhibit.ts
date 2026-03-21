@@ -11,6 +11,7 @@ export class Exhibit {
 	private lightningTalk?: LightningTalk;
 	private memberIds: Set<MemberId> = new Set();
 
+	// NOTE: LightningTalkのExhibitコンストラクタ(TypeScriptは2つのコンストラクタを持てないため)
 	static createWithLightningTalk(
 		id: ExhibitId,
 		name: string,

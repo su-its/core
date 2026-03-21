@@ -244,19 +244,19 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async syncMemberEvents(
 		db: DrizzleDb,
-		evtId: EventId,
+		eventId: EventId,
 		memberIds: MemberId[],
 	): Promise<void> {
-		await db.delete(memberEvents).where(eq(memberEvents.eventId, evtId));
+		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
 
 		const now = new Date().toISOString();
-		for (const mId of memberIds) {
+		for (const memberId of memberIds) {
 			await db
 				.insert(memberEvents)
 				.values({
 					id: randomUUID(),
-					memberId: mId,
-					eventId: evtId,
+					memberId,
+					eventId,
 					updatedAt: now,
 				})
 				.onConflictDoNothing();
@@ -265,19 +265,21 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async syncMemberExhibits(
 		db: DrizzleDb,
-		exhId: ExhibitId,
+		exhibitId: ExhibitId,
 		memberIds: MemberId[],
 	): Promise<void> {
-		await db.delete(memberExhibits).where(eq(memberExhibits.exhibitId, exhId));
+		await db
+			.delete(memberExhibits)
+			.where(eq(memberExhibits.exhibitId, exhibitId));
 
 		const now = new Date().toISOString();
-		for (const mId of memberIds) {
+		for (const memberId of memberIds) {
 			await db
 				.insert(memberExhibits)
 				.values({
 					id: randomUUID(),
-					memberId: mId,
-					exhibitId: exhId,
+					memberId,
+					exhibitId,
 					updatedAt: now,
 				})
 				.onConflictDoNothing();
@@ -307,13 +309,13 @@ export class DrizzleEventRepository implements EventRepository {
 		return this.toDomain(record);
 	}
 
-	async findByParticipantMemberId(mId: MemberId): Promise<Event[]> {
+	async findByParticipantMemberId(memberId: MemberId): Promise<Event[]> {
 		const db = getDb();
 
 		const participations = await db
 			.select({ eventId: memberEvents.eventId })
 			.from(memberEvents)
-			.where(eq(memberEvents.memberId, mId));
+			.where(eq(memberEvents.memberId, memberId));
 
 		if (participations.length === 0) return [];
 
@@ -334,13 +336,13 @@ export class DrizzleEventRepository implements EventRepository {
 		return records.map((r) => this.toDomain(r));
 	}
 
-	async findByExhibitId(exhId: ExhibitId): Promise<Event | null> {
+	async findByExhibitId(exhibitId: ExhibitId): Promise<Event | null> {
 		const db = getDb();
 
 		const exhibit = await db
 			.select({ eventId: exhibits.eventId })
 			.from(exhibits)
-			.where(eq(exhibits.id, exhId))
+			.where(eq(exhibits.id, exhibitId))
 			.limit(1);
 
 		if (exhibit.length === 0) return null;
@@ -368,26 +370,26 @@ export class DrizzleEventRepository implements EventRepository {
 		await this.persistEvent(event);
 	}
 
-	async delete(evtId: EventId): Promise<void> {
+	async delete(eventId: EventId): Promise<void> {
 		const db = getDb();
 
 		const exhibitRecords = await db
 			.select({ id: exhibits.id })
 			.from(exhibits)
-			.where(eq(exhibits.eventId, evtId));
-		const exhIds = exhibitRecords.map((ex) => ex.id);
+			.where(eq(exhibits.eventId, eventId));
+		const exhibitIds = exhibitRecords.map((ex) => ex.id);
 
-		if (exhIds.length > 0) {
+		if (exhibitIds.length > 0) {
 			await db
 				.delete(lightningTalks)
-				.where(inArray(lightningTalks.exhibitId, exhIds));
+				.where(inArray(lightningTalks.exhibitId, exhibitIds));
 			await db
 				.delete(memberExhibits)
-				.where(inArray(memberExhibits.exhibitId, exhIds));
+				.where(inArray(memberExhibits.exhibitId, exhibitIds));
 		}
 
-		await db.delete(memberEvents).where(eq(memberEvents.eventId, evtId));
-		await db.delete(exhibits).where(eq(exhibits.eventId, evtId));
-		await db.delete(events).where(eq(events.id, evtId));
+		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
+		await db.delete(exhibits).where(eq(exhibits.eventId, eventId));
+		await db.delete(events).where(eq(events.id, eventId));
 	}
 }
