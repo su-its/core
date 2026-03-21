@@ -4,9 +4,11 @@ import {
 	DiscordAccount,
 	Email,
 	Member,
+	type MemberId,
 	type MemberRepository,
 	StudentId,
 	UniversityEmail,
+	memberId,
 } from "#domain";
 import { getDb } from "./client";
 import { discordAccounts, members } from "./schema";
@@ -26,7 +28,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 		},
 	): Member {
 		const member = new Member(
-			record.id,
+			memberId(record.id),
 			record.name,
 			StudentId.fromString(record.studentId),
 			Department.fromString(record.department),
@@ -39,7 +41,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 				new DiscordAccount(
 					discordAccount.discordId,
 					discordAccount.nickName,
-					discordAccount.memberId,
+					memberId(discordAccount.memberId),
 				),
 			);
 		}
@@ -60,10 +62,10 @@ export class DrizzleMemberRepository implements MemberRepository {
 		});
 
 		if (!discordAccount) return null;
-		return this.findById(discordAccount.memberId);
+		return this.findById(memberId(discordAccount.memberId));
 	}
 
-	async findById(id: string): Promise<Member | null> {
+	async findById(id: MemberId): Promise<Member | null> {
 		const db = getDb();
 		const record = await db.query.members.findFirst({
 			where: eq(members.id, id),
@@ -158,12 +160,12 @@ export class DrizzleMemberRepository implements MemberRepository {
 		}
 	}
 
-	async delete(memberId: string): Promise<void> {
+	async delete(id: MemberId): Promise<void> {
 		const db = getDb();
 
 		await db
 			.delete(discordAccounts)
-			.where(eq(discordAccounts.memberId, memberId));
-		await db.delete(members).where(eq(members.id, memberId));
+			.where(eq(discordAccounts.memberId, id));
+		await db.delete(members).where(eq(members.id, id));
 	}
 }

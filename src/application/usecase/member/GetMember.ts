@@ -1,8 +1,8 @@
 import { IUseCase } from "#application/usecase/base";
-import type { Member, MemberRepository } from "#domain";
+import type { Member, MemberId, MemberRepository } from "#domain";
 
 export interface GetMemberInput {
-	id: string;
+	id: MemberId;
 }
 
 export interface GetMemberOutput {

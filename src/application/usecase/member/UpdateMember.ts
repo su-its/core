@@ -5,13 +5,14 @@ import {
 	DiscordAccount,
 	Email,
 	type Member,
+	type MemberId,
 	type MemberRepository,
 	StudentId,
 	UniversityEmail,
 } from "#domain";
 
 export interface UpdateMemberInput {
-	memberId: string;
+	memberId: MemberId;
 	name?: string;
 	studentId?: string;
 	department?: string;

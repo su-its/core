@@ -9,6 +9,7 @@ import {
 	type MemberRepository,
 	StudentId,
 	UniversityEmail,
+	memberId,
 } from "#domain";
 
 export interface RegisterMemberInput {
@@ -47,7 +48,7 @@ export class RegisterMemberUseCase extends IUseCase<
 			: undefined;
 
 		const member = new Member(
-			uuid(),
+			memberId(uuid()),
 			input.name,
 			StudentId.fromString(input.studentId),
 			Department.fromString(input.department),

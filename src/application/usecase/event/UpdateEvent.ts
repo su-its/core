@@ -1,9 +1,9 @@
 import { EventNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository } from "#domain";
+import type { Event, EventId, EventRepository } from "#domain";
 
 export interface UpdateEventInput {
-	eventId: string;
+	eventId: EventId;
 	name?: string;
 	date?: Date;
 }

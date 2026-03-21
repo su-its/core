@@ -1,11 +1,18 @@
 import { EventNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import { type Event, type EventRepository, Exhibit, type Url } from "#domain";
+import {
+	type Event,
+	type EventId,
+	type EventRepository,
+	Exhibit,
+	type ExhibitId,
+	type Url,
+} from "#domain";
 
 export interface AddExhibitToEventInput {
-	eventId: string;
+	eventId: EventId;
 	exhibit: {
-		id: string;
+		id: ExhibitId;
 		name: string;
 		description?: string;
 		markdownContent?: string;

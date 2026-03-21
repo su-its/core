@@ -1,10 +1,16 @@
 import { EventNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository, MemberRepository } from "#domain";
+import type {
+	Event,
+	EventRepository,
+	ExhibitId,
+	MemberId,
+	MemberRepository,
+} from "#domain";
 
 export interface RemoveMemberFromExhibitInput {
-	memberId: string;
-	exhibitId: string;
+	memberId: MemberId;
+	exhibitId: ExhibitId;
 }
 
 export interface RemoveMemberFromExhibitOutput {
