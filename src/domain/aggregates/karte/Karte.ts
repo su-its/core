@@ -1,5 +1,5 @@
-import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { MemberId } from "#domain/aggregates/member/MemberId";
+import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";

@@ -48,7 +48,11 @@ export class DrizzleEventRepository implements EventRepository {
 	 * Converts a database record to a domain Event entity.
 	 */
 	private toDomain(record: EventWithRelations): Event {
-		const event = new Event(eventId(record.id), record.name, new Date(record.date));
+		const event = new Event(
+			eventId(record.id),
+			record.name,
+			new Date(record.date),
+		);
 
 		// Load event member IDs
 		for (const memberEvent of record.memberEvents) {
@@ -264,9 +268,7 @@ export class DrizzleEventRepository implements EventRepository {
 		exhId: ExhibitId,
 		memberIds: MemberId[],
 	): Promise<void> {
-		await db
-			.delete(memberExhibits)
-			.where(eq(memberExhibits.exhibitId, exhId));
+		await db.delete(memberExhibits).where(eq(memberExhibits.exhibitId, exhId));
 
 		const now = new Date().toISOString();
 		for (const mId of memberIds) {

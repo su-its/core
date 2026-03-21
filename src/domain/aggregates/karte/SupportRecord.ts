@@ -1,5 +1,5 @@
-import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { MemberId } from "#domain/aggregates/member/MemberId";
+import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { Recorded } from "./Recorded";
 import type { Resolution } from "./Resolution";
 import type { WorkDuration } from "./WorkDuration";

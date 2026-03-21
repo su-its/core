@@ -1,9 +1,9 @@
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import {
 	ExhibitAlreadyExistsException,
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
 } from "#domain/exceptions";
-import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { EventId } from "./EventId";
 import type { Exhibit } from "./Exhibit";
 import type { ExhibitId } from "./ExhibitId";

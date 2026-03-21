@@ -163,9 +163,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 	async delete(id: MemberId): Promise<void> {
 		const db = getDb();
 
-		await db
-			.delete(discordAccounts)
-			.where(eq(discordAccounts.memberId, id));
+		await db.delete(discordAccounts).where(eq(discordAccounts.memberId, id));
 		await db.delete(members).where(eq(members.id, id));
 	}
 }
