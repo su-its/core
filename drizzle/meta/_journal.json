@@ -1,13 +1,20 @@
 {
-	"version": "7",
-	"dialect": "postgresql",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "7",
-			"when": 1769799891283,
-			"tag": "0000_mushy_magma",
-			"breakpoints": true
-		}
-	]
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1769799891283,
+      "tag": "0000_mushy_magma",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774176765119,
+      "tag": "0001_small_korath",
+      "breakpoints": true
+    }
+  ]
 }

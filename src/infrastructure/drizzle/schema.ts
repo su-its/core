@@ -3,12 +3,40 @@ import { sql } from "drizzle-orm";
 import {
 	foreignKey,
 	integer,
+	jsonb,
+	pgEnum,
 	pgTable,
 	text,
 	timestamp,
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
+import type {
+	DoctoralAffiliationValue,
+	MasterAffiliationValue,
+	ProfessionalAffiliationValue,
+	UndergraduateAffiliationValue,
+} from "#domain/shared/affiliation/universityStructure";
+
+// ============================================================================
+// Serialization Types
+// ============================================================================
+
+export type SerializedAffiliation =
+	| { type: "undergraduate"; value: UndergraduateAffiliationValue }
+	| { type: "master"; value: MasterAffiliationValue }
+	| { type: "doctoral"; value: DoctoralAffiliationValue }
+	| { type: "professional"; value: ProfessionalAffiliationValue };
+
+// ============================================================================
+// Enums
+// ============================================================================
+
+export const memberStatus = pgEnum("member_status", [
+	"active",
+	"unconfirmed",
+	"former",
+]);
 
 // ============================================================================
 // Tables (introspected from production database)
@@ -23,6 +51,8 @@ export const members = pgTable(
 		department: text().notNull(),
 		email: text().notNull(),
 		personalEmail: text("personal_email"),
+		status: memberStatus().notNull().default("active"),
+		affiliation: jsonb().$type<SerializedAffiliation>(),
 		createdAt: timestamp({ precision: 3, mode: "string" })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
