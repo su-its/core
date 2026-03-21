@@ -1,18 +1,21 @@
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import {
 	ExhibitAlreadyExistsException,
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
 } from "#domain/exceptions";
+import type { EventId } from "./EventId";
 import type { Exhibit } from "./Exhibit";
+import type { ExhibitId } from "./ExhibitId";
 import type { LightningTalkDuration } from "./LightningTalkDuration";
 import type { Url } from "./Url";
 
 export class Event {
 	private exhibits: Exhibit[] = [];
-	private memberIds: Set<string> = new Set();
+	private memberIds: Set<MemberId> = new Set();
 
 	constructor(
-		public readonly id: string,
+		public readonly id: EventId,
 		private name: string,
 		// TODO: 期間を指定したい
 		private date: Date,
@@ -30,7 +33,7 @@ export class Event {
 		return this.exhibits;
 	}
 
-	public getMemberIds(): string[] {
+	public getMemberIds(): MemberId[] {
 		return Array.from(this.memberIds);
 	}
 
@@ -56,35 +59,35 @@ export class Event {
 		this.exhibits.push(exhibit);
 	}
 
-	public removeExhibit(exhibitId: string): void {
+	public removeExhibit(exhibitId: ExhibitId): void {
 		this.getExhibitOrThrow(exhibitId);
 		this.exhibits = this.exhibits.filter((x) => x.id !== exhibitId);
 	}
 
-	public changeExhibitName(exhibitId: string, newName: string): void {
+	public changeExhibitName(exhibitId: ExhibitId, newName: string): void {
 		this.getExhibitOrThrow(exhibitId).changeName(newName);
 	}
 
 	public changeExhibitDescription(
-		exhibitId: string,
+		exhibitId: ExhibitId,
 		newDescription: string,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeDescription(newDescription);
 	}
 
 	public changeExhibitMarkdownContent(
-		exhibitId: string,
+		exhibitId: ExhibitId,
 		newMarkdownContent: string,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeMarkdownContent(newMarkdownContent);
 	}
 
-	public changeExhibitUrl(exhibitId: string, newUrl: Url): void {
+	public changeExhibitUrl(exhibitId: ExhibitId, newUrl: Url): void {
 		this.getExhibitOrThrow(exhibitId).changeUrl(newUrl);
 	}
 
 	public changeExhibitLightningTalkStartTime(
-		exhibitId: string,
+		exhibitId: ExhibitId,
 		newStartTime: Date,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkStartTime(
@@ -93,20 +96,20 @@ export class Event {
 	}
 
 	public changeExhibitLightningTalkDuration(
-		exhibitId: string,
+		exhibitId: ExhibitId,
 		newDuration: LightningTalkDuration,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkDuration(newDuration);
 	}
 
 	public changeExhibitLightningTalkSlideUrl(
-		exhibitId: string,
+		exhibitId: ExhibitId,
 		newSlideUrl: Url,
 	): void {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkSlideUrl(newSlideUrl);
 	}
 
-	private getExhibitOrThrow(exhibitId: string): Exhibit {
+	private getExhibitOrThrow(exhibitId: ExhibitId): Exhibit {
 		const exhibit = this.exhibits.find((x) => x.id === exhibitId);
 		if (!exhibit) {
 			throw new ExhibitNotFoundException(
@@ -116,11 +119,11 @@ export class Event {
 		return exhibit;
 	}
 
-	public addMemberId(memberId: string): void {
+	public addMemberId(memberId: MemberId): void {
 		this.memberIds.add(memberId);
 	}
 
-	public removeMemberId(memberId: string): void {
+	public removeMemberId(memberId: MemberId): void {
 		for (const exhibit of this.exhibits) {
 			if (exhibit.hasMemberId(memberId)) {
 				throw new ExhibitHasMemberException(exhibit.id, memberId);
@@ -129,7 +132,7 @@ export class Event {
 		this.memberIds.delete(memberId);
 	}
 
-	public addExhibitMemberId(exhibitId: string, memberId: string): void {
+	public addExhibitMemberId(exhibitId: ExhibitId, memberId: MemberId): void {
 		this.getExhibitOrThrow(exhibitId).addMemberId(memberId);
 		// NOTE: Exhibitに登録するタイミングでEventのmemberIdsにも登録する必要がある
 		this.memberIds.add(memberId);
@@ -138,7 +141,7 @@ export class Event {
 	// NOTE: 展示からの削除のみ行い、Event.memberIdsは操作しない。
 	// 「展示に所属していないがイベント参加者」という状態が有効なため、
 	// イベント参加者からの削除はremoveMemberId()で明示的に行う。
-	public removeExhibitMemberId(exhibitId: string, memberId: string): void {
+	public removeExhibitMemberId(exhibitId: ExhibitId, memberId: MemberId): void {
 		this.getExhibitOrThrow(exhibitId).removeMemberId(memberId);
 	}
 	toSnapshot() {
