@@ -7,6 +7,7 @@ import { Karte } from "#domain/aggregates/karte/Karte";
 import type { KarteId } from "#domain/aggregates/karte/KarteId";
 import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
 import type { WorkDuration } from "#domain/aggregates/karte/WorkDuration";
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 
 /** 新規カルテ作成時の解決ステータス */
@@ -25,7 +26,7 @@ export type CreateKarteInput = {
 		readonly troubleDetails: string;
 	};
 	readonly supportRecord: {
-		readonly assignedMemberIds: NonEmptyArray<string>;
+		readonly assignedMemberIds: NonEmptyArray<MemberId>;
 		readonly content: string;
 		readonly resolution: CreateResolution;
 		readonly workDuration: WorkDuration;
