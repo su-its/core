@@ -1,8 +1,10 @@
+import type { MemberId } from "./MemberId";
+
 export class DiscordAccount {
 	constructor(
 		readonly id: string, // Discord ID
 		private nickName: string,
-		private memberId: string,
+		private memberId: MemberId,
 	) {}
 
 	getNickName() {

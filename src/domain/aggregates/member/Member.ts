@@ -6,13 +6,14 @@ import type { StudentId } from "#domain/shared/StudentId";
 import type { Department } from "./Departments";
 import type { DiscordAccount } from "./DiscordAccount";
 import type { Email } from "./Email";
+import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
 export class Member {
 	private discordAccounts: DiscordAccount[] = [];
 
 	constructor(
-		public readonly id: string,
+		public readonly id: MemberId,
 		private name: string,
 		private studentId: StudentId,
 		private department: Department,

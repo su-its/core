@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { Karte } from "#domain/aggregates/karte/Karte";
 import { karteId } from "#domain/aggregates/karte/KarteId";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
+import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { StudentId } from "#domain/shared/StudentId";
 import { UndergraduateAffiliation } from "#domain/shared/affiliation/Affiliation";
 
@@ -35,7 +36,7 @@ function createProps() {
 			troubleDetails: "eduroamに接続できない",
 		},
 		supportRecord: {
-			assignedMemberIds: ["member-1"] as [string],
+			assignedMemberIds: [memberId("member-1")] as [MemberId],
 			content: "プロファイルを再設定して解決",
 			resolution: { type: "resolved" as const },
 			workDuration: workDuration(30),

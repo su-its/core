@@ -1,10 +1,10 @@
 import { EventNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository, Url } from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId, Url } from "#domain";
 
 export interface ChangeExhibitUrlInput {
-	eventId: string;
-	exhibitId: string;
+	eventId: EventId;
+	exhibitId: ExhibitId;
 	newUrl: Url;
 }
 

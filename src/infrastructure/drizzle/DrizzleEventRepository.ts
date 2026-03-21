@@ -2,11 +2,17 @@ import { randomUUID } from "node:crypto";
 import { eq, inArray } from "drizzle-orm";
 import {
 	Event,
+	type EventId,
 	type EventRepository,
 	Exhibit,
+	type ExhibitId,
 	LightningTalk,
 	LightningTalkDuration,
+	type MemberId,
 	Url,
+	eventId,
+	exhibitId,
+	memberId,
 } from "#domain";
 import { type DrizzleDb, getDb } from "./client";
 import {
@@ -42,11 +48,15 @@ export class DrizzleEventRepository implements EventRepository {
 	 * Converts a database record to a domain Event entity.
 	 */
 	private toDomain(record: EventWithRelations): Event {
-		const event = new Event(record.id, record.name, new Date(record.date));
+		const event = new Event(
+			eventId(record.id),
+			record.name,
+			new Date(record.date),
+		);
 
 		// Load event member IDs
 		for (const memberEvent of record.memberEvents) {
-			event.addMemberId(memberEvent.memberId);
+			event.addMemberId(memberId(memberEvent.memberId));
 		}
 
 		// Load exhibits
@@ -55,7 +65,7 @@ export class DrizzleEventRepository implements EventRepository {
 
 			// Load exhibit member IDs
 			for (const memberExhibit of exhibitRecord.memberExhibits) {
-				exhibit.addMemberId(memberExhibit.memberId);
+				exhibit.addMemberId(memberId(memberExhibit.memberId));
 			}
 
 			event.addExhibit(exhibit);
@@ -71,14 +81,14 @@ export class DrizzleEventRepository implements EventRepository {
 		if (record.lightningTalk) {
 			const lt = record.lightningTalk;
 			const lightningTalk = new LightningTalk(
-				lt.exhibitId,
+				exhibitId(lt.exhibitId),
 				new Date(lt.startTime),
 				new LightningTalkDuration(lt.duration),
 				lt.slideUrl ? new Url(lt.slideUrl) : undefined,
 			);
 
 			return Exhibit.createWithLightningTalk(
-				record.id,
+				exhibitId(record.id),
 				record.name,
 				lightningTalk,
 				record.description ?? undefined,
@@ -88,7 +98,7 @@ export class DrizzleEventRepository implements EventRepository {
 		}
 
 		return new Exhibit(
-			record.id,
+			exhibitId(record.id),
 			record.name,
 			record.description ?? undefined,
 			record.markdownContent ?? undefined,
@@ -151,15 +161,15 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async deleteObsoleteExhibits(
 		db: DrizzleDb,
-		eventId: string,
-		keptExhibitIds: string[],
+		eventId: EventId,
+		keptExhibitIds: ExhibitId[],
 	): Promise<void> {
 		const existingExhibits = await db
 			.select({ id: exhibits.id })
 			.from(exhibits)
 			.where(eq(exhibits.eventId, eventId));
 
-		const existingIdSet = new Set(existingExhibits.map((r) => r.id));
+		const existingIdSet = new Set(existingExhibits.map((r) => exhibitId(r.id)));
 		const keptIdSet = new Set(keptExhibitIds);
 		const obsoleteIds = [...existingIdSet].filter((id) => !keptIdSet.has(id));
 
@@ -176,7 +186,7 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async upsertExhibit(
 		db: DrizzleDb,
-		eventId: string,
+		eventId: EventId,
 		ex: ReturnType<Event["toSnapshot"]>["exhibits"][number],
 	): Promise<void> {
 		const now = new Date().toISOString();
@@ -234,8 +244,8 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async syncMemberEvents(
 		db: DrizzleDb,
-		eventId: string,
-		memberIds: string[],
+		eventId: EventId,
+		memberIds: MemberId[],
 	): Promise<void> {
 		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));
 
@@ -255,8 +265,8 @@ export class DrizzleEventRepository implements EventRepository {
 
 	private async syncMemberExhibits(
 		db: DrizzleDb,
-		exhibitId: string,
-		memberIds: string[],
+		exhibitId: ExhibitId,
+		memberIds: MemberId[],
 	): Promise<void> {
 		await db
 			.delete(memberExhibits)
@@ -280,7 +290,7 @@ export class DrizzleEventRepository implements EventRepository {
 	// Query Methods
 	// ==========================================================================
 
-	async findById(id: string): Promise<Event | null> {
+	async findById(id: EventId): Promise<Event | null> {
 		const db = getDb();
 		const record = await db.query.events.findFirst({
 			where: eq(events.id, id),
@@ -299,7 +309,7 @@ export class DrizzleEventRepository implements EventRepository {
 		return this.toDomain(record);
 	}
 
-	async findByParticipantMemberId(memberId: string): Promise<Event[]> {
+	async findByParticipantMemberId(memberId: MemberId): Promise<Event[]> {
 		const db = getDb();
 
 		const participations = await db
@@ -326,7 +336,7 @@ export class DrizzleEventRepository implements EventRepository {
 		return records.map((r) => this.toDomain(r));
 	}
 
-	async findByExhibitId(exhibitId: string): Promise<Event | null> {
+	async findByExhibitId(exhibitId: ExhibitId): Promise<Event | null> {
 		const db = getDb();
 
 		const exhibit = await db
@@ -336,7 +346,7 @@ export class DrizzleEventRepository implements EventRepository {
 			.limit(1);
 
 		if (exhibit.length === 0) return null;
-		return this.findById(exhibit[0].eventId);
+		return this.findById(eventId(exhibit[0].eventId));
 	}
 
 	async findAll(): Promise<Event[]> {
@@ -360,7 +370,7 @@ export class DrizzleEventRepository implements EventRepository {
 		await this.persistEvent(event);
 	}
 
-	async delete(eventId: string): Promise<void> {
+	async delete(eventId: EventId): Promise<void> {
 		const db = getDb();
 
 		const exhibitRecords = await db

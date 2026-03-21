@@ -1,3 +1,4 @@
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
@@ -34,7 +35,7 @@ type KarteContentProps = {
 		readonly troubleDetails: string;
 	};
 	readonly supportRecord: {
-		readonly assignedMemberIds: NonEmptyArray<string>;
+		readonly assignedMemberIds: NonEmptyArray<MemberId>;
 		readonly content: string;
 		readonly resolution: CompleteResolution;
 		readonly workDuration: WorkDuration;
