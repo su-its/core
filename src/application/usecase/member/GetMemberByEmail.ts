@@ -1,8 +1,8 @@
 import { IUseCase } from "#application/usecase/base";
-import type { Member, MemberRepository } from "#domain";
+import type { Member, MemberRepository, UniversityEmail } from "#domain";
 
 export interface GetMemberByEmailInput {
-	email: string;
+	email: UniversityEmail;
 }
 
 export interface GetMemberByEmailOutput {
@@ -18,7 +18,7 @@ export class GetMemberByEmailUseCase extends IUseCase<
 	}
 
 	async execute(input: GetMemberByEmailInput): Promise<GetMemberByEmailOutput> {
-		const member = await this.memberRepo.findByEmail(input.email);
+		const member = await this.memberRepo.findByEmail(input.email.getValue());
 		return { member };
 	}
 }

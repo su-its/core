@@ -1,25 +1,14 @@
 import { MemberNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import {
-	Department,
-	DiscordAccount,
-	Email,
-	type Member,
-	type MemberId,
-	type MemberRepository,
-	StudentId,
-	UniversityEmail,
-} from "#domain";
+import type { Email, Member, MemberId, MemberRepository } from "#domain";
+import type { Recorded } from "#domain/shared/Recorded";
+import type { StudentId } from "#domain/shared/StudentId";
 
 export interface UpdateMemberInput {
 	memberId: MemberId;
 	name?: string;
-	studentId?: string;
-	department?: string;
-	email?: string;
-	personalEmail?: string;
-	discordAccountId?: string;
-	discordNickName?: string;
+	studentId?: StudentId;
+	personalEmail?: Recorded<Email>;
 }
 
 export interface UpdateMemberOutput {
@@ -40,33 +29,26 @@ export class UpdateMemberUseCase extends IUseCase<
 			throw new MemberNotFoundException(input.memberId);
 		}
 
-		if (input.name) {
-			member.setName(input.name);
-		}
-		if (input.studentId) {
-			member.setStudentId(StudentId.fromString(input.studentId));
-		}
-		if (input.department) {
-			member.setDepartment(Department.fromString(input.department));
-		}
-		if (input.email) {
-			member.setEmail(new UniversityEmail(input.email));
-		}
-		if (input.personalEmail) {
-			member.setPersonalEmail(new Email(input.personalEmail));
+		if (member.status !== "active") {
+			throw new Error("室員のみ更新可能です");
 		}
 
-		if (input.discordAccountId && input.discordNickName) {
-			const discordAccount = new DiscordAccount(
-				input.discordAccountId,
-				input.discordNickName,
-				member.id,
+		let updated: Member = member;
+
+		if (input.name !== undefined) {
+			updated = updated.changeName(input.name);
+		}
+		if (input.studentId !== undefined) {
+			updated = (updated as import("#domain").ActiveMember).changeStudentId(
+				input.studentId,
 			);
-			member.addDiscordAccount(discordAccount);
+		}
+		if (input.personalEmail !== undefined) {
+			updated = updated.changePersonalEmail(input.personalEmail);
 		}
 
-		await this.memberRepo.save(member);
+		await this.memberRepo.save(updated);
 
-		return { member };
+		return { member: updated };
 	}
 }
