@@ -9,6 +9,7 @@ import {
 import { Email } from "#domain/aggregates/member/Email";
 import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
+import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import {
 	type Affiliation,
@@ -64,9 +65,9 @@ function toDomain(row: MemberRow): Member {
 	const id = memberId(row.id);
 	const email = new UniversityEmail(row.email);
 	const name = row.name;
-	const personalEmail = row.personalEmail
-		? new Email(row.personalEmail)
-		: new Email(row.email);
+	const personalEmail: Recorded<Email> = row.personalEmail
+		? recorded(new Email(row.personalEmail))
+		: notRecorded();
 
 	switch (row.status) {
 		case "active": {
@@ -102,7 +103,10 @@ function toInsertValues(member: Member): MemberInsert {
 		id: member.id as string,
 		name: member.name,
 		email: member.email.getValue(),
-		personalEmail: member.personalEmail.getValue(),
+		personalEmail:
+			member.personalEmail.type === "recorded"
+				? member.personalEmail.value.getValue()
+				: null,
 		status: member.status,
 		updatedAt: new Date().toISOString(),
 	};
