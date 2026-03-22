@@ -56,7 +56,7 @@ export class DiscordAccount {
 		);
 	}
 
-	pullDomainEvents(): readonly DiscordAccountDomainEvent[] {
+	getDomainEvents(): readonly DiscordAccountDomainEvent[] {
 		return [...this.domainEvents];
 	}
 }

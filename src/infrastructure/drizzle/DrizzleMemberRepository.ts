@@ -41,6 +41,10 @@ function deserializeAffiliation(json: SerializedAffiliation): Affiliation {
 			return new DoctoralAffiliation(json.value);
 		case "professional":
 			return new ProfessionalAffiliation(json.value);
+		default: {
+			const _: never = json;
+			throw new Error(`不明なaffiliation type: ${JSON.stringify(_)}`);
+		}
 	}
 }
 
@@ -65,9 +69,10 @@ function toDomain(row: MemberRow): Member {
 	const id = memberId(row.id);
 	const email = new UniversityEmail(row.email);
 	const name = row.name;
-	const personalEmail: Recorded<Email> = row.personalEmail
-		? recorded(new Email(row.personalEmail))
-		: notRecorded();
+	const personalEmail: Recorded<Email> =
+		row.personalEmail !== null
+			? recorded(new Email(row.personalEmail))
+			: notRecorded();
 
 	switch (row.status) {
 		case "active": {

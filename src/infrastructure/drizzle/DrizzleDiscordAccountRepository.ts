@@ -54,7 +54,6 @@ export class DrizzleDiscordAccountRepository
 				target: discordAccounts.discordId,
 				set: {
 					nickName: account.nickName,
-					memberId: account.memberId as string,
 					updatedAt: now,
 				},
 			});

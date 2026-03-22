@@ -68,6 +68,15 @@ export class DiscordAccountNotFoundException extends ApplicationException {
 	}
 }
 
+export class DiscordAccountAlreadyLinkedException extends ApplicationException {
+	constructor(discordAccountId: string, existingMemberId: string) {
+		super(
+			`Discordアカウント ${discordAccountId} は既にメンバー ${existingMemberId} に紐付いています`,
+		);
+		this.name = "DiscordAccountAlreadyLinkedException";
+	}
+}
+
 export class MemberNotActiveException extends ApplicationException {
 	constructor(memberId: string, currentStatus: string) {
 		super(

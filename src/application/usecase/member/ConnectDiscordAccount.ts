@@ -1,4 +1,7 @@
-import { MemberNotFoundException } from "#application/exceptions";
+import {
+	DiscordAccountAlreadyLinkedException,
+	MemberNotFoundException,
+} from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import {
 	DiscordAccount,
@@ -35,6 +38,16 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
 			throw new MemberNotFoundException(input.memberId);
+		}
+
+		const existing = await this.discordRepo.findByDiscordId(
+			input.discordAccountId,
+		);
+		if (existing && existing.memberId !== input.memberId) {
+			throw new DiscordAccountAlreadyLinkedException(
+				input.discordAccountId,
+				existing.memberId,
+			);
 		}
 
 		const discordAccount = DiscordAccount.link(

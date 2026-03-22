@@ -314,7 +314,7 @@ export class ActiveMember {
 		);
 	}
 
-	pullDomainEvents(): readonly MemberDomainEvent[] {
+	getDomainEvents(): readonly MemberDomainEvent[] {
 		return [...this.domainEvents];
 	}
 
@@ -461,7 +461,7 @@ export class UnconfirmedMember {
 		]);
 	}
 
-	pullDomainEvents(): readonly MemberDomainEvent[] {
+	getDomainEvents(): readonly MemberDomainEvent[] {
 		return [...this.domainEvents];
 	}
 }
@@ -534,7 +534,7 @@ export class FormerMember {
 		]);
 	}
 
-	pullDomainEvents(): readonly MemberDomainEvent[] {
+	getDomainEvents(): readonly MemberDomainEvent[] {
 		return [...this.domainEvents];
 	}
 }

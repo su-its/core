@@ -79,7 +79,7 @@ describe("ActiveMember", () => {
 
 		it("MemberRegisteredイベントが発行される", () => {
 			const member = registerMember();
-			const events = member.pullDomainEvents();
+			const events = member.getDomainEvents();
 
 			expect(events).toHaveLength(1);
 			expect(events[0].eventName).toBe("MemberRegistered");
@@ -97,7 +97,7 @@ describe("ActiveMember", () => {
 				affiliation: createUndergraduateAffiliation(),
 			});
 
-			expect(member.pullDomainEvents()).toHaveLength(0);
+			expect(member.getDomainEvents()).toHaveLength(0);
 		});
 	});
 
@@ -121,7 +121,7 @@ describe("ActiveMember", () => {
 				affiliation: createUndergraduateAffiliation(),
 			});
 			const former = active.remove("voluntaryLeave");
-			const events = former.pullDomainEvents();
+			const events = former.getDomainEvents();
 
 			expect(events).toHaveLength(1);
 			expect(events[0].eventName).toBe("MemberRemoved");
@@ -154,7 +154,7 @@ describe("ActiveMember", () => {
 				affiliation: createUndergraduateAffiliation(),
 			});
 			const unconfirmed = active.unconfirm();
-			const events = unconfirmed.pullDomainEvents();
+			const events = unconfirmed.getDomainEvents();
 
 			expect(events).toHaveLength(1);
 			expect(events[0].eventName).toBe("MemberUnconfirmed");
@@ -445,7 +445,7 @@ describe("UnconfirmedMember", () => {
 				createStudentId(),
 				createUndergraduateAffiliation(),
 			);
-			const events = active.pullDomainEvents();
+			const events = active.getDomainEvents();
 
 			expect(events).toHaveLength(1);
 			expect(events[0].eventName).toBe("MemberConfirmed");
@@ -512,7 +512,7 @@ describe("FormerMember", () => {
 				createStudentId(),
 				createMasterAffiliation(),
 			);
-			const events = active.pullDomainEvents();
+			const events = active.getDomainEvents();
 
 			expect(events).toHaveLength(1);
 			expect(events[0].eventName).toBe("MemberReregistered");
@@ -552,7 +552,7 @@ describe("状態遷移のライフサイクル", () => {
 			createMasterAffiliation(),
 		);
 
-		const events = reregistered.pullDomainEvents();
+		const events = reregistered.getDomainEvents();
 		expect(events).toHaveLength(3);
 		expect(events[0].eventName).toBe("MemberRegistered");
 		expect(events[1].eventName).toBe("MemberRemoved");
@@ -575,7 +575,7 @@ describe("状態遷移のライフサイクル", () => {
 			createMasterAffiliation(),
 		);
 
-		const events = confirmed.pullDomainEvents();
+		const events = confirmed.getDomainEvents();
 		expect(events).toHaveLength(3);
 		expect(events[0].eventName).toBe("MemberRegistered");
 		expect(events[1].eventName).toBe("MemberUnconfirmed");

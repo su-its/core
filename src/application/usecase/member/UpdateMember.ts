@@ -36,15 +36,13 @@ export class UpdateMemberUseCase extends IUseCase<
 			throw new MemberNotActiveException(input.memberId, member.status);
 		}
 
-		let updated: Member = member;
+		let updated = member;
 
 		if (input.name !== undefined) {
 			updated = updated.changeName(input.name);
 		}
 		if (input.studentId !== undefined) {
-			updated = (updated as import("#domain").ActiveMember).changeStudentId(
-				input.studentId,
-			);
+			updated = updated.changeStudentId(input.studentId);
 		}
 		if (input.personalEmail !== undefined) {
 			updated = updated.changePersonalEmail(input.personalEmail);
