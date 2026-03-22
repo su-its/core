@@ -47,16 +47,15 @@ export const members = pgTable(
 	{
 		id: text().primaryKey().notNull(),
 		name: text().notNull(),
-		studentId: text("student_id").notNull(),
-		department: text().notNull(),
+		studentId: varchar("student_id", { length: 8 }),
 		email: text().notNull(),
 		personalEmail: text("personal_email"),
 		status: memberStatus().notNull().default("active"),
 		affiliation: jsonb().$type<SerializedAffiliation>(),
-		createdAt: timestamp({ precision: 3, mode: "string" })
+		createdAt: timestamp({ mode: "string" })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+		updatedAt: timestamp({ mode: "string" }).notNull(),
 	},
 	(table) => [
 		uniqueIndex("members_email_key").using(

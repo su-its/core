@@ -109,20 +109,16 @@ function toInsertValues(member: Member): MemberInsert {
 
 	switch (member.status) {
 		case "active":
-			// TODO: Phase 3（Contract）で department 列を削除する
 			return {
 				...base,
 				studentId: member.studentId.getValue(),
-				department: "",
 				affiliation: serializeAffiliation(member.affiliation),
 			};
 		case "unconfirmed":
 		case "former":
-			// TODO: Phase 3（Contract）で student_id を nullable にした後、null を設定する
 			return {
 				...base,
-				studentId: "",
-				department: "",
+				studentId: null,
 				affiliation: null,
 			};
 	}
