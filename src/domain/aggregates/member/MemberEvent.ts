@@ -1,4 +1,5 @@
 import type { DomainEvent } from "#domain/base/DomainEvent";
+import type { Recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
 import type {
 	Affiliation,
@@ -25,7 +26,7 @@ export class MemberRegistered implements DomainEvent {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
-		readonly personalEmail: Email,
+		readonly personalEmail: Recorded<Email>,
 		readonly studentId: StudentId,
 		readonly affiliation: Affiliation,
 		readonly occurredAt: Date,
@@ -163,8 +164,8 @@ export class PersonalEmailChanged implements DomainEvent {
 	constructor(
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
-		readonly previousPersonalEmail: Email,
-		readonly newPersonalEmail: Email,
+		readonly previousPersonalEmail: Recorded<Email>,
+		readonly newPersonalEmail: Recorded<Email>,
 		readonly occurredAt: Date,
 	) {}
 }

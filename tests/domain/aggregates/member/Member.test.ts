@@ -8,6 +8,7 @@ import {
 import { memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
+import { notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import {
 	DoctoralAffiliation,
@@ -59,7 +60,7 @@ function registerMember() {
 		id: TEST_ID,
 		email: createEmail(),
 		name: "テスト太郎",
-		personalEmail: createPersonalEmail(),
+		personalEmail: notRecorded(),
 		studentId: createStudentId(),
 		affiliation: createUndergraduateAffiliation(),
 	});
@@ -91,7 +92,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -115,7 +116,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -133,7 +134,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -148,7 +149,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -166,7 +167,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -183,7 +184,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: StudentId.fromString("70312031"),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -201,7 +202,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -221,7 +222,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
@@ -239,7 +240,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -257,7 +258,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createDoctoralAffiliation(),
 			});
@@ -277,7 +278,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -297,7 +298,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
@@ -320,7 +321,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -339,7 +340,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -362,7 +363,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
@@ -382,7 +383,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
@@ -397,7 +398,7 @@ describe("ActiveMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
@@ -422,7 +423,7 @@ describe("UnconfirmedMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const active = unconfirmed.confirm(
 				createStudentId(),
@@ -438,7 +439,7 @@ describe("UnconfirmedMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const active = unconfirmed.confirm(
 				createStudentId(),
@@ -457,7 +458,7 @@ describe("UnconfirmedMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const former = unconfirmed.remove("noResponse");
 
@@ -471,7 +472,7 @@ describe("UnconfirmedMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const updated = unconfirmed.changeName("変更後");
 
@@ -488,7 +489,7 @@ describe("FormerMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const active = former.reregister(
 				createStudentId(),
@@ -505,7 +506,7 @@ describe("FormerMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "テスト太郎",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const active = former.reregister(
 				createStudentId(),
@@ -524,7 +525,7 @@ describe("FormerMember", () => {
 				id: TEST_ID,
 				email: createEmail(),
 				name: "変更前",
-				personalEmail: createPersonalEmail(),
+				personalEmail: notRecorded(),
 			});
 			const updated = former.changeName("変更後");
 
@@ -540,7 +541,7 @@ describe("状態遷移のライフサイクル", () => {
 			id: TEST_ID,
 			email: createEmail(),
 			name: "テスト太郎",
-			personalEmail: createPersonalEmail(),
+			personalEmail: notRecorded(),
 			studentId: createStudentId(),
 			affiliation: createUndergraduateAffiliation(),
 		});
@@ -563,7 +564,7 @@ describe("状態遷移のライフサイクル", () => {
 			id: TEST_ID,
 			email: createEmail(),
 			name: "テスト太郎",
-			personalEmail: createPersonalEmail(),
+			personalEmail: notRecorded(),
 			studentId: createStudentId(),
 			affiliation: createUndergraduateAffiliation(),
 		});

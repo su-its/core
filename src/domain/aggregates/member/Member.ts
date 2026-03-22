@@ -1,4 +1,6 @@
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
+import type { Recorded } from "#domain/shared/Recorded";
+import { notRecorded, recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 import {
@@ -35,7 +37,7 @@ export class ActiveMember {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
-		readonly personalEmail: Email,
+		readonly personalEmail: Recorded<Email>,
 		readonly studentId: StudentId,
 		readonly affiliation: Affiliation,
 		private readonly domainEvents: readonly MemberDomainEvent[] = [],
@@ -45,7 +47,7 @@ export class ActiveMember {
 		id: MemberId;
 		email: UniversityEmail;
 		name: string;
-		personalEmail: Email;
+		personalEmail: Recorded<Email>;
 		studentId: StudentId;
 		affiliation: Affiliation;
 	}): ActiveMember {
@@ -74,7 +76,7 @@ export class ActiveMember {
 		id: MemberId;
 		email: UniversityEmail;
 		name: string;
-		personalEmail: Email;
+		personalEmail: Recorded<Email>;
 		studentId: StudentId;
 		affiliation: Affiliation;
 	}): ActiveMember {
@@ -129,7 +131,7 @@ export class ActiveMember {
 		);
 	}
 
-	changePersonalEmail(newEmail: Email): ActiveMember {
+	changePersonalEmail(newEmail: Recorded<Email>): ActiveMember {
 		return new ActiveMember(
 			this.id,
 			this.email,
@@ -357,7 +359,7 @@ export class UnconfirmedMember {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
-		readonly personalEmail: Email,
+		readonly personalEmail: Recorded<Email>,
 		private readonly domainEvents: readonly MemberDomainEvent[] = [],
 	) {}
 
@@ -365,7 +367,7 @@ export class UnconfirmedMember {
 		id: MemberId;
 		email: UniversityEmail;
 		name: string;
-		personalEmail: Email;
+		personalEmail: Recorded<Email>;
 	}): UnconfirmedMember {
 		return new UnconfirmedMember(
 			props.id,
@@ -422,7 +424,7 @@ export class UnconfirmedMember {
 		);
 	}
 
-	changePersonalEmail(newEmail: Email): UnconfirmedMember {
+	changePersonalEmail(newEmail: Recorded<Email>): UnconfirmedMember {
 		return new UnconfirmedMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
 			new PersonalEmailChanged(
@@ -449,7 +451,7 @@ export class FormerMember {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly name: string,
-		readonly personalEmail: Email,
+		readonly personalEmail: Recorded<Email>,
 		private readonly domainEvents: readonly MemberDomainEvent[] = [],
 	) {}
 
@@ -457,7 +459,7 @@ export class FormerMember {
 		id: MemberId;
 		email: UniversityEmail;
 		name: string;
-		personalEmail: Email;
+		personalEmail: Recorded<Email>;
 	}): FormerMember {
 		return new FormerMember(
 			props.id,
@@ -495,7 +497,7 @@ export class FormerMember {
 		]);
 	}
 
-	changePersonalEmail(newEmail: Email): FormerMember {
+	changePersonalEmail(newEmail: Recorded<Email>): FormerMember {
 		return new FormerMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
 			new PersonalEmailChanged(
