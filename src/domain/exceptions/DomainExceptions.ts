@@ -100,8 +100,14 @@ export class InvalidWorkDurationException extends DomainException {
 }
 
 export class InvalidAffiliationOperationException extends DomainException {
-	constructor(message: string) {
-		super(message);
+	constructor(
+		readonly operation: string,
+		readonly currentAffiliationType: string,
+		readonly reason: string,
+	) {
+		super(
+			`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`,
+		);
 		this.name = "InvalidAffiliationOperationException";
 	}
 }

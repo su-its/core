@@ -1,4 +1,7 @@
-import { MemberNotFoundException } from "#application/exceptions";
+import {
+	MemberNotActiveException,
+	MemberNotFoundException,
+} from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import type { Email, Member, MemberId, MemberRepository } from "#domain";
 import type { Recorded } from "#domain/shared/Recorded";
@@ -30,7 +33,7 @@ export class UpdateMemberUseCase extends IUseCase<
 		}
 
 		if (member.status !== "active") {
-			throw new Error("室員のみ更新可能です");
+			throw new MemberNotActiveException(input.memberId, member.status);
 		}
 
 		let updated: Member = member;

@@ -60,3 +60,19 @@ export class DiscordAccountNotConnectedException extends ApplicationException {
 		this.name = "DiscordAccountNotConnectedException";
 	}
 }
+
+export class DiscordAccountNotFoundException extends ApplicationException {
+	constructor(discordAccountId: string) {
+		super(`Discordアカウントが見つかりません: ${discordAccountId}`);
+		this.name = "DiscordAccountNotFoundException";
+	}
+}
+
+export class MemberNotActiveException extends ApplicationException {
+	constructor(memberId: string, currentStatus: string) {
+		super(
+			`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`,
+		);
+		this.name = "MemberNotActiveException";
+	}
+}

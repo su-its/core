@@ -1,3 +1,4 @@
+import { DiscordAccountNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import type {
 	DiscordAccount,
@@ -29,9 +30,7 @@ export class ChangeDiscordNickNameUseCase extends IUseCase<
 			input.discordAccountId,
 		);
 		if (!account) {
-			throw new Error(
-				`Discordアカウントが見つかりません: ${input.discordAccountId}`,
-			);
+			throw new DiscordAccountNotFoundException(input.discordAccountId);
 		}
 
 		const updated = account.changeNickName(input.discordNickName);
