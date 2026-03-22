@@ -142,10 +142,10 @@ export class DrizzleMemberRepository implements MemberRepository {
 		return toDomain(row);
 	}
 
-	async findByEmail(email: string): Promise<Member | null> {
+	async findByEmail(email: UniversityEmail): Promise<Member | null> {
 		const db = getDb();
 		const row = await db.query.members.findFirst({
-			where: eq(members.email, email),
+			where: eq(members.email, email.getValue()),
 		});
 		if (!row) return null;
 		return toDomain(row);

@@ -34,9 +34,7 @@ export class RegisterMemberUseCase extends IUseCase<
 	}
 
 	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
-		const existingMember = await this.memberRepo.findByEmail(
-			input.email.getValue(),
-		);
+		const existingMember = await this.memberRepo.findByEmail(input.email);
 		if (existingMember) {
 			throw new MemberEmailAlreadyExistsException(input.email.getValue());
 		}

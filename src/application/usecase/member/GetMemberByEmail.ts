@@ -18,7 +18,7 @@ export class GetMemberByEmailUseCase extends IUseCase<
 	}
 
 	async execute(input: GetMemberByEmailInput): Promise<GetMemberByEmailOutput> {
-		const member = await this.memberRepo.findByEmail(input.email.getValue());
+		const member = await this.memberRepo.findByEmail(input.email);
 		return { member };
 	}
 }
