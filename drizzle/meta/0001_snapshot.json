@@ -1,5 +1,5 @@
 {
-  "id": "9d88777b-7ff5-4bc0-9e35-1c0fb202e304",
+  "id": "6ee0ec84-eec9-452f-ab00-a04e557a9d62",
   "prevId": "7655ab7d-9419-4f96-9097-4e57b180d3b5",
   "version": "7",
   "dialect": "postgresql",
@@ -454,15 +454,9 @@
         },
         "student_id": {
           "name": "student_id",
-          "type": "text",
+          "type": "varchar(8)",
           "primaryKey": false,
-          "notNull": true
-        },
-        "department": {
-          "name": "department",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "email": {
           "name": "email",
@@ -492,14 +486,14 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp(3)",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp(3)",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         }
