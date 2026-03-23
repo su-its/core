@@ -20,7 +20,7 @@ export default defineConfig({
 		},
 	},
 	fmt: {
-		ignorePatterns: ["dist/**", "drizzle/**"],
+		ignorePatterns: ["dist/**", "drizzle/**", "package.json"],
 		useTabs: true,
 	},
 	pack: {
