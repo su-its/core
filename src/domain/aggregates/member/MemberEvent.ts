@@ -12,8 +12,8 @@ import type { Email } from "./Email";
 import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
-/** 除籍理由 */
-export type RemovalReason =
+/** 登録抹消理由 */
+export type DeregistrationReason =
 	| "graduation"
 	| "externalAdvancement"
 	| "noResponse"
@@ -33,13 +33,13 @@ export class MemberRegistered implements DomainEvent {
 	) {}
 }
 
-/** 除籍 */
-export class MemberRemoved implements DomainEvent {
-	readonly eventName = "MemberRemoved" as const;
+/** 室員登録抹消 */
+export class MemberDeregistered implements DomainEvent {
+	readonly eventName = "MemberDeregistered" as const;
 	constructor(
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
-		readonly reason: RemovalReason,
+		readonly reason: DeregistrationReason,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -173,7 +173,7 @@ export class PersonalEmailChanged implements DomainEvent {
 /** Member集約で発生しうるすべてのドメインイベント */
 export type MemberDomainEvent =
 	| MemberRegistered
-	| MemberRemoved
+	| MemberDeregistered
 	| MemberReregistered
 	| MemberUnconfirmed
 	| MemberConfirmed

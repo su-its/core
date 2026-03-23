@@ -52,8 +52,8 @@ export function serializeMemberEventPayload(
 				studentId: event.studentId.getValue(),
 				affiliation: serializeAffiliation(event.affiliation),
 			};
-		case "MemberRemoved":
-			return { eventName: "MemberRemoved", reason: event.reason };
+		case "MemberDeregistered":
+			return { eventName: "MemberDeregistered", reason: event.reason };
 		case "MemberReregistered":
 			return {
 				eventName: "MemberReregistered",

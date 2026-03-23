@@ -101,17 +101,17 @@ describe("ActiveMember", () => {
 		});
 	});
 
-	describe("remove", () => {
-		it("室員を除籍すると元室員になる", () => {
+	describe("deregister", () => {
+		it("室員を登録抹消すると元室員になる", () => {
 			const active = registerMember();
-			const former = active.remove("graduation");
+			const former = active.deregister("graduation");
 
 			expect(former.status).toBe("former");
 			expect(former.email.getValue()).toBe("test@shizuoka.ac.jp");
 			expect(former.name).toBe("テスト太郎");
 		});
 
-		it("MemberRemovedイベントが発行される", () => {
+		it("MemberDeregisteredイベントが発行される", () => {
 			const active = ActiveMember.reconstruct({
 				id: TEST_ID,
 				email: createEmail(),
@@ -120,11 +120,11 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
-			const former = active.remove("voluntaryLeave");
+			const former = active.deregister("voluntaryLeave");
 			const events = former.getDomainEvents();
 
 			expect(events).toHaveLength(1);
-			expect(events[0].eventName).toBe("MemberRemoved");
+			expect(events[0].eventName).toBe("MemberDeregistered");
 		});
 	});
 
@@ -460,7 +460,7 @@ describe("UnconfirmedMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const former = unconfirmed.remove("noResponse");
+			const former = unconfirmed.deregister("noResponse");
 
 			expect(former.status).toBe("former");
 		});
@@ -546,7 +546,7 @@ describe("状態遷移のライフサイクル", () => {
 			affiliation: createUndergraduateAffiliation(),
 		});
 
-		const former = active.remove("graduation");
+		const former = active.deregister("graduation");
 		const reregistered = former.reregister(
 			StudentId.fromString("725A0099"),
 			createMasterAffiliation(),
@@ -555,7 +555,7 @@ describe("状態遷移のライフサイクル", () => {
 		const events = reregistered.getDomainEvents();
 		expect(events).toHaveLength(3);
 		expect(events[0].eventName).toBe("MemberRegistered");
-		expect(events[1].eventName).toBe("MemberRemoved");
+		expect(events[1].eventName).toBe("MemberDeregistered");
 		expect(events[2].eventName).toBe("MemberReregistered");
 	});
 

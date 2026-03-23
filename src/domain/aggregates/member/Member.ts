@@ -17,14 +17,14 @@ import {
 	MajorTransferred,
 	MemberConfirmed,
 	MemberRegistered,
-	MemberRemoved,
+	MemberDeregistered,
 	MemberReregistered,
 	MemberUnconfirmed,
 	NameChanged,
 	PersonalEmailChanged,
 	StudentIdChanged,
 } from "./MemberEvent";
-import type { MemberDomainEvent, RemovalReason } from "./MemberEvent";
+import type { MemberDomainEvent, DeregistrationReason } from "./MemberEvent";
 import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
@@ -90,7 +90,7 @@ export class ActiveMember {
 		);
 	}
 
-	remove(reason: RemovalReason): FormerMember {
+	deregister(reason: DeregistrationReason): FormerMember {
 		return new FormerMember(
 			this.id,
 			this.email,
@@ -98,7 +98,7 @@ export class ActiveMember {
 			this.personalEmail,
 			[
 				...this.domainEvents,
-				new MemberRemoved(this.id, this.email, reason, new Date()),
+				new MemberDeregistered(this.id, this.email, reason, new Date()),
 			],
 		);
 	}
@@ -422,7 +422,7 @@ export class UnconfirmedMember {
 		);
 	}
 
-	remove(reason: RemovalReason): FormerMember {
+	deregister(reason: DeregistrationReason): FormerMember {
 		return new FormerMember(
 			this.id,
 			this.email,
@@ -430,7 +430,7 @@ export class UnconfirmedMember {
 			this.personalEmail,
 			[
 				...this.domainEvents,
-				new MemberRemoved(this.id, this.email, reason, new Date()),
+				new MemberDeregistered(this.id, this.email, reason, new Date()),
 			],
 		);
 	}
