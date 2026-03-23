@@ -1,10 +1,7 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite-plus";
 
 export default defineConfig({
-	test: {
-		include: ["tests/**/*.test.ts"],
-	},
 	resolve: {
 		alias: {
 			"#domain": fileURLToPath(new URL("./src/domain", import.meta.url)),
@@ -15,5 +12,24 @@ export default defineConfig({
 				new URL("./src/infrastructure", import.meta.url),
 			),
 		},
+	},
+	test: {
+		include: ["tests/**/*.test.ts"],
+	},
+	lint: {
+		ignorePatterns: ["dist/**", "drizzle/**"],
+		options: {
+			typeAware: true,
+			typeCheck: true,
+		},
+	},
+	fmt: {
+		ignorePatterns: ["dist/**", "drizzle/**"],
+	},
+	pack: {
+		entry: ["src/index.ts"],
+		format: ["esm", "cjs"],
+		dts: true,
+		sourcemap: true,
 	},
 });

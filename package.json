@@ -22,14 +22,15 @@
 	},
 	"files": ["dist"],
 	"scripts": {
-		"build": "tsup && tsc-alias -p tsconfig.json --outDir dist",
+		"build": "vp pack",
 		"prepare": "npm run build",
-		"test": "vitest run",
-		"test:watch": "vitest",
+		"test": "vp test",
+		"test:watch": "vp test watch",
 		"typecheck": "tsc --noEmit",
-		"lint": "biome check .",
-		"lint:ci": "biome ci .",
-		"format": "biome format . --write",
+		"check": "vp check",
+		"lint": "vp lint",
+		"lint:ci": "vp lint",
+		"format": "vp fmt",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
@@ -48,14 +49,11 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
 		"@types/node": "^22.9.0",
 		"@types/pg": "^8.16.0",
 		"drizzle-kit": "^0.31.8",
-		"tsc-alias": "^1.8.16",
-		"tsup": "^8.5.1",
 		"typescript": "^5.6.3",
-		"vitest": "^4.0.18"
+		"vite-plus": "^0.1.13"
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.45.1",

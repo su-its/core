@@ -26,7 +26,8 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm run build
+      - uses: voidzero-dev/setup-vp@v1
+      - run: vp pack
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
