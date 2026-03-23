@@ -1,27 +1,34 @@
-import { MemberNotFoundException } from "#application/exceptions";
+import {
+	DiscordAccountAlreadyLinkedException,
+	MemberNotFoundException,
+} from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import {
 	DiscordAccount,
-	type Member,
+	type DiscordAccountRepository,
+	type DiscordId,
 	type MemberId,
 	type MemberRepository,
 } from "#domain";
 
 export interface ConnectDiscordAccountInput {
 	memberId: MemberId;
-	discordAccountId: string;
-	discordNickName?: string;
+	discordAccountId: DiscordId;
+	discordNickName: string;
 }
 
 export interface ConnectDiscordAccountOutput {
-	member: Member;
+	discordAccount: DiscordAccount;
 }
 
 export class ConnectDiscordAccountUseCase extends IUseCase<
 	ConnectDiscordAccountInput,
 	ConnectDiscordAccountOutput
 > {
-	constructor(private readonly memberRepo: MemberRepository) {
+	constructor(
+		private readonly memberRepo: MemberRepository,
+		private readonly discordRepo: DiscordAccountRepository,
+	) {
 		super();
 	}
 
@@ -33,16 +40,24 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 			throw new MemberNotFoundException(input.memberId);
 		}
 
-		const discordAccount = new DiscordAccount(
+		const existing = await this.discordRepo.findByDiscordId(
 			input.discordAccountId,
-			input.discordNickName ?? "",
-			member.id,
+		);
+		if (existing && existing.memberId !== input.memberId) {
+			throw new DiscordAccountAlreadyLinkedException(
+				input.discordAccountId,
+				existing.memberId,
+			);
+		}
+
+		const discordAccount = DiscordAccount.link(
+			input.discordAccountId,
+			input.memberId,
+			input.discordNickName,
 		);
 
-		member.addDiscordAccount(discordAccount);
+		await this.discordRepo.save(discordAccount);
 
-		await this.memberRepo.save(member);
-
-		return { member };
+		return { discordAccount };
 	}
 }
