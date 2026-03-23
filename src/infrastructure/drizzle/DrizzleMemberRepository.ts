@@ -11,15 +11,9 @@ import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
-import {
-	type Affiliation,
-	DoctoralAffiliation,
-	MasterAffiliation,
-	ProfessionalAffiliation,
-	UndergraduateAffiliation,
-} from "#domain/shared/affiliation/Affiliation";
+import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 import { getDb } from "./client";
-import { type SerializedAffiliation, members } from "./schema";
+import { members } from "./schema";
 
 // ============================================================================
 // Type Definitions
@@ -30,40 +24,6 @@ type MemberRow = typeof members.$inferSelect;
 // ============================================================================
 // Domain ↔ DB Mapping
 // ============================================================================
-
-function deserializeAffiliation(json: SerializedAffiliation): Affiliation {
-	switch (json.type) {
-		case "undergraduate":
-			return new UndergraduateAffiliation(json.value);
-		case "master":
-			return new MasterAffiliation(json.value);
-		case "doctoral":
-			return new DoctoralAffiliation(json.value);
-		case "professional":
-			return new ProfessionalAffiliation(json.value);
-		default: {
-			const _: never = json;
-			throw new Error(`不明なaffiliation type: ${JSON.stringify(_)}`);
-		}
-	}
-}
-
-function serializeAffiliation(affiliation: Affiliation): SerializedAffiliation {
-	if (affiliation instanceof UndergraduateAffiliation) {
-		return { type: "undergraduate", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof MasterAffiliation) {
-		return { type: "master", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof DoctoralAffiliation) {
-		return { type: "doctoral", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof ProfessionalAffiliation) {
-		return { type: "professional", value: affiliation.getValue() };
-	}
-	const _: never = affiliation;
-	throw new Error(`Unknown affiliation type: ${_}`);
-}
 
 function toDomain(row: MemberRow): Member {
 	const id = memberId(row.id);
@@ -87,7 +47,7 @@ function toDomain(row: MemberRow): Member {
 				name,
 				personalEmail,
 				studentId: StudentId.fromString(row.studentId),
-				affiliation: deserializeAffiliation(row.affiliation),
+				affiliation: row.affiliation as Affiliation,
 			});
 		}
 		case "unconfirmed":
@@ -121,7 +81,7 @@ function toInsertValues(member: Member): MemberInsert {
 			return {
 				...base,
 				studentId: member.studentId.getValue(),
-				affiliation: serializeAffiliation(member.affiliation),
+				affiliation: member.affiliation,
 			};
 		case "unconfirmed":
 		case "former":
