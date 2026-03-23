@@ -29,7 +29,7 @@ export type SerializedMemberEventPayload =
 			studentId: string;
 			affiliation: Affiliation;
 	  }
-	| { eventName: "MemberRemoved"; reason: string }
+	| { eventName: "MemberDeregistered"; reason: string }
 	| {
 			eventName: "MemberReregistered";
 			studentId: string;

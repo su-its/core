@@ -61,15 +61,15 @@ describe("serializeMemberEventPayload", () => {
 		expect(payload.newName).toBe("新しい名前");
 	});
 
-	it("MemberRemovedイベントをシリアライズできる", () => {
-		const member = createActiveMember().remove("graduation");
+	it("MemberDeregisteredイベントをシリアライズできる", () => {
+		const member = createActiveMember().deregister("graduation");
 		const events = member.getDomainEvents();
-		const removedEvent = events.find((e) => e.eventName === "MemberRemoved");
-		if (!removedEvent) throw new Error("MemberRemoved event not found");
+		const event = events.find((e) => e.eventName === "MemberDeregistered");
+		if (!event) throw new Error("MemberDeregistered event not found");
 
-		const payload = serializeMemberEventPayload(removedEvent);
-		expect(payload.eventName).toBe("MemberRemoved");
-		if (payload.eventName !== "MemberRemoved") throw new Error();
+		const payload = serializeMemberEventPayload(event);
+		expect(payload.eventName).toBe("MemberDeregistered");
+		if (payload.eventName !== "MemberDeregistered") throw new Error();
 		expect(payload.reason).toBe("graduation");
 	});
 
@@ -193,7 +193,7 @@ describe("serializeMemberEventPayload", () => {
 	});
 
 	it("MemberReregisteredイベントをシリアライズできる", () => {
-		const former = createActiveMember().remove("graduation");
+		const former = createActiveMember().deregister("graduation");
 		const reregistered = former.reregister(testStudentId, testAffiliation);
 		const events = reregistered.getDomainEvents();
 		const event = events.find((e) => e.eventName === "MemberReregistered");
