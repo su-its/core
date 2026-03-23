@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["dist", "drizzle"]
+		"ignore": ["dist", "drizzle", "scripts"]
 	},
 	"formatter": {
 		"enabled": true,
