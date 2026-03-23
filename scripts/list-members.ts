@@ -5,11 +5,11 @@
  *   DATABASE_URL="postgresql://..." npx tsx scripts/list-members.ts
  */
 
-import {
-	type ActiveMember,
-	type FormerMember,
-	type Member,
-	type UnconfirmedMember,
+import type {
+	ActiveMember,
+	FormerMember,
+	Member,
+	UnconfirmedMember,
 } from "#domain/aggregates/member";
 import {
 	DoctoralAffiliation,
@@ -64,9 +64,15 @@ async function main() {
 
 	console.log(`全メンバー: ${members.length}件\n`);
 
-	const active = members.filter((m): m is ActiveMember => m.status === "active");
-	const unconfirmed = members.filter((m): m is UnconfirmedMember => m.status === "unconfirmed");
-	const former = members.filter((m): m is FormerMember => m.status === "former");
+	const active = members.filter(
+		(m): m is ActiveMember => m.status === "active",
+	);
+	const unconfirmed = members.filter(
+		(m): m is UnconfirmedMember => m.status === "unconfirmed",
+	);
+	const former = members.filter(
+		(m): m is FormerMember => m.status === "former",
+	);
 
 	console.log(`=== 室員 (active): ${active.length}件 ===`);
 	for (const m of active) {

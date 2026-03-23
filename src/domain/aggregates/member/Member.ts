@@ -1,13 +1,13 @@
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
 import type { Recorded } from "#domain/shared/Recorded";
-import { notRecorded, recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
-import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 import {
-	DoctoralAffiliation,
-	MasterAffiliation,
-	ProfessionalAffiliation,
-	UndergraduateAffiliation,
+	type Affiliation,
+	type DoctoralAffiliation,
+	type MasterAffiliation,
+	type ProfessionalAffiliation,
+	type UndergraduateAffiliation,
+	affiliationTypeNames,
 } from "#domain/shared/affiliation/Affiliation";
 import type { Email } from "./Email";
 import {
@@ -202,10 +202,10 @@ export class ActiveMember {
 	}
 
 	transferFaculty(newAffiliation: UndergraduateAffiliation): ActiveMember {
-		if (!(this.affiliation instanceof UndergraduateAffiliation)) {
+		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学部",
-				this.affiliationTypeName(),
+				affiliationTypeNames[this.affiliation.type],
 				"学部生のみ可能です",
 			);
 		}
@@ -231,21 +231,19 @@ export class ActiveMember {
 	}
 
 	transferDepartment(newAffiliation: UndergraduateAffiliation): ActiveMember {
-		if (!(this.affiliation instanceof UndergraduateAffiliation)) {
+		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学科",
-				this.affiliationTypeName(),
+				affiliationTypeNames[this.affiliation.type],
 				"学部生のみ可能です",
 			);
 		}
 
-		if (
-			this.affiliation.getValue().faculty !== newAffiliation.getValue().faculty
-		) {
+		if (this.affiliation.value.faculty !== newAffiliation.value.faculty) {
 			throw new InvalidAffiliationOperationException(
 				"転学科",
-				this.affiliationTypeName(),
-				`同一学部内でのみ可能です（現在: ${this.affiliation.getValue().faculty}）`,
+				affiliationTypeNames[this.affiliation.type],
+				`同一学部内でのみ可能です（現在: ${this.affiliation.value.faculty}）`,
 			);
 		}
 
@@ -275,22 +273,19 @@ export class ActiveMember {
 			| DoctoralAffiliation
 			| ProfessionalAffiliation,
 	): ActiveMember {
-		const currentGraduate = this.asGraduateAffiliation();
-		if (!currentGraduate) {
+		if (this.affiliation.type === "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転専攻",
-				this.affiliationTypeName(),
+				affiliationTypeNames[this.affiliation.type],
 				"大学院生のみ可能です",
 			);
 		}
 
-		if (
-			currentGraduate.getValue().school !== newAffiliation.getValue().school
-		) {
+		if (this.affiliation.value.school !== newAffiliation.value.school) {
 			throw new InvalidAffiliationOperationException(
 				"転専攻",
-				this.affiliationTypeName(),
-				`同一研究科内でのみ可能です（現在: ${currentGraduate.getValue().school}）`,
+				affiliationTypeNames[this.affiliation.type],
+				`同一研究科内でのみ可能です（現在: ${this.affiliation.value.school}）`,
 			);
 		}
 
@@ -306,7 +301,7 @@ export class ActiveMember {
 				new MajorTransferred(
 					this.id,
 					this.email,
-					currentGraduate,
+					this.affiliation,
 					newAffiliation,
 					new Date(),
 				),
@@ -321,22 +316,22 @@ export class ActiveMember {
 	private validateAdvancement(
 		newAffiliation: MasterAffiliation | DoctoralAffiliation,
 	): void {
-		if (this.affiliation instanceof UndergraduateAffiliation) {
-			if (!(newAffiliation instanceof MasterAffiliation)) {
+		if (this.affiliation.type === "undergraduate") {
+			if (newAffiliation.type !== "master") {
 				throw new InvalidAffiliationOperationException(
 					"内部進学",
-					this.affiliationTypeName(),
+					affiliationTypeNames[this.affiliation.type],
 					"学部生からは修士課程のみ可能です",
 				);
 			}
 			return;
 		}
 
-		if (this.affiliation instanceof MasterAffiliation) {
-			if (!(newAffiliation instanceof DoctoralAffiliation)) {
+		if (this.affiliation.type === "master") {
+			if (newAffiliation.type !== "doctoral") {
 				throw new InvalidAffiliationOperationException(
 					"内部進学",
-					this.affiliationTypeName(),
+					affiliationTypeNames[this.affiliation.type],
 					"修士からは博士課程のみ可能です",
 				);
 			}
@@ -345,32 +340,9 @@ export class ActiveMember {
 
 		throw new InvalidAffiliationOperationException(
 			"内部進学",
-			this.affiliationTypeName(),
+			affiliationTypeNames[this.affiliation.type],
 			"この課程からの内部進学はできません",
 		);
-	}
-
-	private asGraduateAffiliation():
-		| MasterAffiliation
-		| DoctoralAffiliation
-		| ProfessionalAffiliation
-		| null {
-		if (
-			this.affiliation instanceof MasterAffiliation ||
-			this.affiliation instanceof DoctoralAffiliation ||
-			this.affiliation instanceof ProfessionalAffiliation
-		) {
-			return this.affiliation;
-		}
-		return null;
-	}
-
-	private affiliationTypeName(): string {
-		if (this.affiliation instanceof UndergraduateAffiliation) return "学部";
-		if (this.affiliation instanceof MasterAffiliation) return "修士";
-		if (this.affiliation instanceof DoctoralAffiliation) return "博士";
-		if (this.affiliation instanceof ProfessionalAffiliation) return "専門職";
-		return "不明";
 	}
 }
 

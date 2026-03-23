@@ -4,7 +4,11 @@ import { karteId } from "#domain/aggregates/karte/KarteId";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { StudentId } from "#domain/shared/StudentId";
-import { UndergraduateAffiliation } from "#domain/shared/affiliation/Affiliation";
+import type { UndergraduateAffiliation } from "#domain/shared/affiliation/Affiliation";
+const testAffiliation: UndergraduateAffiliation = {
+	type: "undergraduate",
+	value: { faculty: "情報学部", department: "情報科学科", year: 3 },
+};
 
 /** テスト用のKarteCreationPropsを生成する */
 function createProps() {
@@ -15,11 +19,7 @@ function createProps() {
 			type: "student" as const,
 			studentId: StudentId.fromString("70312031"),
 			name: "テスト太郎",
-			affiliation: new UndergraduateAffiliation({
-				faculty: "情報学部",
-				department: "情報科学科",
-				year: 3,
-			}),
+			affiliation: testAffiliation,
 		},
 		consent: {
 			liabilityConsent: true,

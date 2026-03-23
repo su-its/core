@@ -232,7 +232,12 @@ function migrateRow(row: MemberRow): {
 	}
 
 	if (mapping.status === "former") {
-		return { status: "former", affiliation: null, skipped: false, deleted: false };
+		return {
+			status: "former",
+			affiliation: null,
+			skipped: false,
+			deleted: false,
+		};
 	}
 
 	const enrollmentYear = extractEnrollmentYear(row.email);
@@ -257,7 +262,12 @@ function migrateRow(row: MemberRow): {
 		};
 	}
 
-	return { status: mapping.status, affiliation, skipped: false, deleted: false };
+	return {
+		status: mapping.status,
+		affiliation,
+		skipped: false,
+		deleted: false,
+	};
 }
 
 // ============================================================================

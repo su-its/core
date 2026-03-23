@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { Email } from "#domain/aggregates/member/Email";
 import {
 	ActiveMember,
 	FormerMember,
@@ -10,7 +9,7 @@ import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
 import { notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
-import {
+import type {
 	DoctoralAffiliation,
 	MasterAffiliation,
 	UndergraduateAffiliation,
@@ -20,37 +19,34 @@ function createEmail() {
 	return new UniversityEmail("test@shizuoka.ac.jp");
 }
 
-function createPersonalEmail() {
-	return new Email("test@example.com");
-}
-
 function createStudentId() {
 	return StudentId.fromString("725A0001");
 }
 
-function createUndergraduateAffiliation() {
-	return new UndergraduateAffiliation({
-		faculty: "情報学部",
-		department: "情報科学科",
-		year: 3,
-	});
+function createUndergraduateAffiliation(): UndergraduateAffiliation {
+	return {
+		type: "undergraduate",
+		value: { faculty: "情報学部", department: "情報科学科", year: 3 },
+	};
 }
 
-function createMasterAffiliation() {
-	return new MasterAffiliation({
-		school: "総合科学技術研究科",
-		major: "情報学専攻",
-		course: "基盤情報学コース",
-		year: 1,
-	});
+function createMasterAffiliation(): MasterAffiliation {
+	return {
+		type: "master",
+		value: {
+			school: "総合科学技術研究科",
+			major: "情報学専攻",
+			course: "基盤情報学コース",
+			year: 1,
+		},
+	};
 }
 
-function createDoctoralAffiliation() {
-	return new DoctoralAffiliation({
-		school: "創造科学技術大学院",
-		major: "情報科学専攻",
-		year: 1,
-	});
+function createDoctoralAffiliation(): DoctoralAffiliation {
+	return {
+		type: "doctoral",
+		value: { school: "創造科学技術大学院", major: "情報科学専攻", year: 1 },
+	};
 }
 
 const TEST_ID = memberId("test-member-id");
@@ -213,7 +209,7 @@ describe("ActiveMember", () => {
 			);
 
 			expect(master.status).toBe("active");
-			expect(master.affiliation).toBeInstanceOf(MasterAffiliation);
+			expect(master.affiliation.type).toBe("master");
 			expect(master.studentId.getValue()).toBe("725A0099");
 		});
 
@@ -232,7 +228,7 @@ describe("ActiveMember", () => {
 				newStudentId,
 			);
 
-			expect(doctoral.affiliation).toBeInstanceOf(DoctoralAffiliation);
+			expect(doctoral.affiliation.type).toBe("doctoral");
 		});
 
 		it("学部生が博士に進学しようとするとエラー", () => {
@@ -282,15 +278,18 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
-			const newAffiliation = new UndergraduateAffiliation({
-				faculty: "工学部",
-				department: "機械工学科",
-				course: "宇宙・環境コース",
-				year: 3,
-			});
+			const newAffiliation: UndergraduateAffiliation = {
+				type: "undergraduate",
+				value: {
+					faculty: "工学部",
+					department: "機械工学科",
+					course: "宇宙・環境コース",
+					year: 3,
+				},
+			};
 			const transferred = member.transferFaculty(newAffiliation);
 
-			expect(transferred.affiliation).toBeInstanceOf(UndergraduateAffiliation);
+			expect(transferred.affiliation.type).toBe("undergraduate");
 		});
 
 		it("大学院生は転学部できない", () => {
@@ -302,12 +301,15 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
-			const newAffiliation = new UndergraduateAffiliation({
-				faculty: "工学部",
-				department: "機械工学科",
-				course: "宇宙・環境コース",
-				year: 3,
-			});
+			const newAffiliation: UndergraduateAffiliation = {
+				type: "undergraduate",
+				value: {
+					faculty: "工学部",
+					department: "機械工学科",
+					course: "宇宙・環境コース",
+					year: 3,
+				},
+			};
 
 			expect(() => member.transferFaculty(newAffiliation)).toThrow(
 				InvalidAffiliationOperationException,
@@ -325,14 +327,13 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
-			const newAffiliation = new UndergraduateAffiliation({
-				faculty: "情報学部",
-				department: "行動情報学科",
-				year: 3,
-			});
+			const newAffiliation: UndergraduateAffiliation = {
+				type: "undergraduate",
+				value: { faculty: "情報学部", department: "行動情報学科", year: 3 },
+			};
 			const transferred = member.transferDepartment(newAffiliation);
 
-			expect(transferred.affiliation).toBeInstanceOf(UndergraduateAffiliation);
+			expect(transferred.affiliation.type).toBe("undergraduate");
 		});
 
 		it("別学部への転学科はエラー", () => {
@@ -344,12 +345,15 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createUndergraduateAffiliation(),
 			});
-			const newAffiliation = new UndergraduateAffiliation({
-				faculty: "工学部",
-				department: "機械工学科",
-				course: "宇宙・環境コース",
-				year: 3,
-			});
+			const newAffiliation: UndergraduateAffiliation = {
+				type: "undergraduate",
+				value: {
+					faculty: "工学部",
+					department: "機械工学科",
+					course: "宇宙・環境コース",
+					year: 3,
+				},
+			};
 
 			expect(() => member.transferDepartment(newAffiliation)).toThrow(
 				InvalidAffiliationOperationException,
@@ -367,15 +371,18 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
-			const newAffiliation = new MasterAffiliation({
-				school: "総合科学技術研究科",
-				major: "工学専攻",
-				course: "機械工学コース",
-				year: 1,
-			});
+			const newAffiliation: MasterAffiliation = {
+				type: "master",
+				value: {
+					school: "総合科学技術研究科",
+					major: "工学専攻",
+					course: "機械工学コース",
+					year: 1,
+				},
+			};
 			const transferred = member.transferMajor(newAffiliation);
 
-			expect(transferred.affiliation).toBeInstanceOf(MasterAffiliation);
+			expect(transferred.affiliation.type).toBe("master");
 		});
 
 		it("学部生は転専攻できない", () => {
@@ -402,12 +409,15 @@ describe("ActiveMember", () => {
 				studentId: createStudentId(),
 				affiliation: createMasterAffiliation(),
 			});
-			const newAffiliation = new MasterAffiliation({
-				school: "人文社会科学研究科",
-				major: "経済専攻",
-				course: "国際経営コース",
-				year: 1,
-			});
+			const newAffiliation: MasterAffiliation = {
+				type: "master",
+				value: {
+					school: "人文社会科学研究科",
+					major: "経済専攻",
+					course: "国際経営コース",
+					year: 1,
+				},
+			};
 
 			expect(() => member.transferMajor(newAffiliation)).toThrow(
 				InvalidAffiliationOperationException,
@@ -498,7 +508,7 @@ describe("FormerMember", () => {
 
 			expect(active.status).toBe("active");
 			expect(active.studentId.getValue()).toBe("725A0001");
-			expect(active.affiliation).toBeInstanceOf(MasterAffiliation);
+			expect(active.affiliation.type).toBe("master");
 		});
 
 		it("MemberReregisteredイベントが発行される", () => {
