@@ -8,10 +8,7 @@ import {
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "#application";
-import {
-	DrizzleDiscordAccountRepository,
-	DrizzleMemberRepository,
-} from "#infrastructure";
+import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
 
 export type MemberUseCases = {
 	registerMember: RegisterMemberUseCase;
@@ -33,15 +30,9 @@ export function createMemberUseCases(): MemberUseCases {
 		updateMember: new UpdateMemberUseCase(memberRepo),
 		getMember: new GetMemberUseCase(memberRepo),
 		getMemberByEmail: new GetMemberByEmailUseCase(memberRepo),
-		getMemberByDiscordId: new GetMemberByDiscordIdUseCase(
-			discordRepo,
-			memberRepo,
-		),
+		getMemberByDiscordId: new GetMemberByDiscordIdUseCase(discordRepo, memberRepo),
 		getMemberList: new GetMemberListUseCase(memberRepo),
 		changeDiscordNickName: new ChangeDiscordNickNameUseCase(discordRepo),
-		connectDiscordAccount: new ConnectDiscordAccountUseCase(
-			memberRepo,
-			discordRepo,
-		),
+		connectDiscordAccount: new ConnectDiscordAccountUseCase(memberRepo, discordRepo),
 	};
 }

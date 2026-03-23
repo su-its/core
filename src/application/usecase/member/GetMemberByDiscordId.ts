@@ -1,10 +1,5 @@
 import { IUseCase } from "#application/usecase/base";
-import type {
-	DiscordAccountRepository,
-	DiscordId,
-	Member,
-	MemberRepository,
-} from "#domain";
+import type { DiscordAccountRepository, DiscordId, Member, MemberRepository } from "#domain";
 
 export interface GetMemberByDiscordIdInput {
 	discordId: DiscordId;
@@ -25,9 +20,7 @@ export class GetMemberByDiscordIdUseCase extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: GetMemberByDiscordIdInput,
-	): Promise<GetMemberByDiscordIdOutput> {
+	async execute(input: GetMemberByDiscordIdInput): Promise<GetMemberByDiscordIdOutput> {
 		const account = await this.discordRepo.findByDiscordId(input.discordId);
 		if (!account) {
 			return { member: null };

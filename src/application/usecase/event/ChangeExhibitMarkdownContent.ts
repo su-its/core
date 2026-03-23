@@ -30,10 +30,7 @@ export class ChangeExhibitMarkdownContent extends IUseCase<
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
-		event.changeExhibitMarkdownContent(
-			input.exhibitId,
-			input.newMarkdownContent,
-		);
+		event.changeExhibitMarkdownContent(input.exhibitId, input.newMarkdownContent);
 		await this.eventRepository.save(event);
 		return { event };
 	}

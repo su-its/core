@@ -1,12 +1,6 @@
 import { EventNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import type {
-	Event,
-	EventId,
-	EventRepository,
-	ExhibitId,
-	LightningTalkDuration,
-} from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId, LightningTalkDuration } from "#domain";
 
 export interface ChangeLightningTalkDurationInput {
 	eventId: EventId;
@@ -36,10 +30,7 @@ export class ChangeLightningTalkDuration extends IUseCase<
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
-		event.changeExhibitLightningTalkDuration(
-			input.exhibitId,
-			input.newDuration,
-		);
+		event.changeExhibitLightningTalkDuration(input.exhibitId, input.newDuration);
 		await this.eventRepository.save(event);
 		return { event };
 	}

@@ -1,7 +1,4 @@
-import {
-	MemberNotActiveException,
-	MemberNotFoundException,
-} from "#application/exceptions";
+import { MemberNotActiveException, MemberNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import type { Email, Member, MemberId, MemberRepository } from "#domain";
 import type { Recorded } from "#domain/shared/Recorded";
@@ -18,10 +15,7 @@ export interface UpdateMemberOutput {
 	member: Member;
 }
 
-export class UpdateMemberUseCase extends IUseCase<
-	UpdateMemberInput,
-	UpdateMemberOutput
-> {
+export class UpdateMemberUseCase extends IUseCase<UpdateMemberInput, UpdateMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

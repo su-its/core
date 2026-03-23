@@ -11,16 +11,10 @@ import { discordAccounts } from "./schema";
 type DiscordAccountRow = typeof discordAccounts.$inferSelect;
 
 function toDomain(row: DiscordAccountRow): DiscordAccount {
-	return DiscordAccount.reconstruct(
-		discordId(row.discordId),
-		memberId(row.memberId),
-		row.nickName,
-	);
+	return DiscordAccount.reconstruct(discordId(row.discordId), memberId(row.memberId), row.nickName);
 }
 
-export class DrizzleDiscordAccountRepository
-	implements DiscordAccountRepository
-{
+export class DrizzleDiscordAccountRepository implements DiscordAccountRepository {
 	async findByDiscordId(id: DiscordId): Promise<DiscordAccount | null> {
 		const db = getDb();
 		const row = await db.query.discordAccounts.findFirst({
@@ -61,8 +55,6 @@ export class DrizzleDiscordAccountRepository
 
 	async delete(id: DiscordId): Promise<void> {
 		const db = getDb();
-		await db
-			.delete(discordAccounts)
-			.where(eq(discordAccounts.discordId, id as string));
+		await db.delete(discordAccounts).where(eq(discordAccounts.discordId, id as string));
 	}
 }

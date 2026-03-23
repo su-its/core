@@ -116,9 +116,7 @@ describe("Karte", () => {
 			const beforeCorrect = Date.now();
 			const corrected = original.correct(createProps());
 
-			expect(corrected.lastUpdatedAt.getTime()).toBeGreaterThanOrEqual(
-				beforeCorrect,
-			);
+			expect(corrected.lastUpdatedAt.getTime()).toBeGreaterThanOrEqual(beforeCorrect);
 		});
 
 		it("内容が新しい値で置き換わる", () => {
@@ -131,9 +129,7 @@ describe("Karte", () => {
 				},
 			});
 
-			expect(corrected.consultation.troubleDetails).toBe(
-				"訂正: 実はVPN接続の問題だった",
-			);
+			expect(corrected.consultation.troubleDetails).toBe("訂正: 実はVPN接続の問題だった");
 		});
 
 		it("未解決の場合にfollowUpがRecordedでラップされる", () => {

@@ -15,17 +15,12 @@ export interface ChangeExhibitNameOutput {
 /**
  * 展示名変更ユースケース
  */
-export class ChangeExhibitName extends IUseCase<
-	ChangeExhibitNameInput,
-	ChangeExhibitNameOutput
-> {
+export class ChangeExhibitName extends IUseCase<ChangeExhibitNameInput, ChangeExhibitNameOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}
 
-	async execute(
-		input: ChangeExhibitNameInput,
-	): Promise<ChangeExhibitNameOutput> {
+	async execute(input: ChangeExhibitNameInput): Promise<ChangeExhibitNameOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

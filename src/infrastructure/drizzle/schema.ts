@@ -17,11 +17,7 @@ import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 // Enums
 // ============================================================================
 
-export const memberStatus = pgEnum("member_status", [
-	"active",
-	"unconfirmed",
-	"former",
-]);
+export const memberStatus = pgEnum("member_status", ["active", "unconfirmed", "former"]);
 
 // ============================================================================
 // Tables (introspected from production database)
@@ -43,10 +39,7 @@ export const members = pgTable(
 		updatedAt: timestamp({ mode: "string" }).notNull(),
 	},
 	(table) => [
-		uniqueIndex("members_email_key").using(
-			"btree",
-			table.email.asc().nullsLast().op("text_ops"),
-		),
+		uniqueIndex("members_email_key").using("btree", table.email.asc().nullsLast().op("text_ops")),
 	],
 );
 
@@ -211,9 +204,7 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 		withTimezone: true,
 		mode: "string",
 	}),
-	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
-		.defaultNow()
-		.notNull(),
+	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
 });
 
@@ -227,15 +218,12 @@ export const membersRelations = relations(members, ({ many }) => ({
 	memberExhibits: many(memberExhibits),
 }));
 
-export const discordAccountsRelations = relations(
-	discordAccounts,
-	({ one }) => ({
-		member: one(members, {
-			fields: [discordAccounts.memberId],
-			references: [members.id],
-		}),
+export const discordAccountsRelations = relations(discordAccounts, ({ one }) => ({
+	member: one(members, {
+		fields: [discordAccounts.memberId],
+		references: [members.id],
 	}),
-);
+}));
 
 export const eventsRelations = relations(events, ({ many }) => ({
 	memberEvents: many(memberEvents),

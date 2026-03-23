@@ -1,15 +1,6 @@
-import {
-	EventNotFoundException,
-	MemberNotFoundException,
-} from "#application/exceptions";
+import { EventNotFoundException, MemberNotFoundException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
-import type {
-	Event,
-	EventId,
-	EventRepository,
-	MemberId,
-	MemberRepository,
-} from "#domain";
+import type { Event, EventId, EventRepository, MemberId, MemberRepository } from "#domain";
 
 export interface RegisterMemberToEventInput {
 	memberId: MemberId;
@@ -31,9 +22,7 @@ export class RegisterMemberToEvent extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: RegisterMemberToEventInput,
-	): Promise<RegisterMemberToEventOutput> {
+	async execute(input: RegisterMemberToEventInput): Promise<RegisterMemberToEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

@@ -27,17 +27,12 @@ export interface AddExhibitToEventOutput {
 /**
  * イベントに展示を追加するユースケース
  */
-export class AddExhibitToEvent extends IUseCase<
-	AddExhibitToEventInput,
-	AddExhibitToEventOutput
-> {
+export class AddExhibitToEvent extends IUseCase<AddExhibitToEventInput, AddExhibitToEventOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}
 
-	async execute(
-		input: AddExhibitToEventInput,
-	): Promise<AddExhibitToEventOutput> {
+	async execute(input: AddExhibitToEventInput): Promise<AddExhibitToEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

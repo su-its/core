@@ -9,20 +9,13 @@ export interface GetEventsByMemberOutput {
 	events: Event[];
 }
 
-export class GetEventsByMember extends IUseCase<
-	GetEventsByMemberInput,
-	GetEventsByMemberOutput
-> {
+export class GetEventsByMember extends IUseCase<GetEventsByMemberInput, GetEventsByMemberOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}
 
-	async execute(
-		input: GetEventsByMemberInput,
-	): Promise<GetEventsByMemberOutput> {
-		const events = await this.eventRepository.findByParticipantMemberId(
-			input.memberId,
-		);
+	async execute(input: GetEventsByMemberInput): Promise<GetEventsByMemberOutput> {
+		const events = await this.eventRepository.findByParticipantMemberId(input.memberId);
 		return { events };
 	}
 }

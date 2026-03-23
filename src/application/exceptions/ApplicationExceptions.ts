@@ -79,9 +79,7 @@ export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 
 export class MemberNotActiveException extends ApplicationException {
 	constructor(memberId: string, currentStatus: string) {
-		super(
-			`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`,
-		);
+		super(`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`);
 		this.name = "MemberNotActiveException";
 	}
 }

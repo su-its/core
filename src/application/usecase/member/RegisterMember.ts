@@ -25,10 +25,7 @@ export interface RegisterMemberOutput {
 	member: Member;
 }
 
-export class RegisterMemberUseCase extends IUseCase<
-	RegisterMemberInput,
-	RegisterMemberOutput
-> {
+export class RegisterMemberUseCase extends IUseCase<RegisterMemberInput, RegisterMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

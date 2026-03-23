@@ -113,12 +113,7 @@ export type InformaticsFacultyValue = {
 export type ScienceFacultyValue =
 	| {
 			faculty: "理学部";
-			department:
-				| "数学科"
-				| "物理学科"
-				| "化学科"
-				| "生物科学科"
-				| "地球科学科";
+			department: "数学科" | "物理学科" | "化学科" | "生物科学科" | "地球科学科";
 			year: UndergraduateYear;
 	  }
 	| {
@@ -133,10 +128,7 @@ export type EngineeringFacultyValue =
 	| {
 			faculty: "工学部";
 			department: "機械工学科";
-			course:
-				| "宇宙・環境コース"
-				| "知能・材料コース"
-				| "電気機械システムコース";
+			course: "宇宙・環境コース" | "知能・材料コース" | "電気機械システムコース";
 			year: UndergraduateYear;
 	  }
 	| {
@@ -181,10 +173,7 @@ export type AgricultureFacultyValue =
 export type GlobalCoCreationFacultyValue = {
 	faculty: "グローバル共創科学部";
 	department: "グローバル共創科学科";
-	course:
-		| "国際地域共生学コース"
-		| "生命圏循環共生学コース"
-		| "総合人間科学コース";
+	course: "国際地域共生学コース" | "生命圏循環共生学コース" | "総合人間科学コース";
 	year: UndergraduateYear;
 };
 
@@ -242,12 +231,7 @@ export type IntegratedSciTechMasterValue =
 	| {
 			school: "総合科学技術研究科";
 			major: "理学専攻";
-			course:
-				| "数学コース"
-				| "物理学コース"
-				| "化学コース"
-				| "生物科学コース"
-				| "地球科学コース";
+			course: "数学コース" | "物理学コース" | "化学コース" | "生物科学コース" | "地球科学コース";
 			year: MasterYear;
 	  }
 	| {
@@ -265,10 +249,7 @@ export type IntegratedSciTechMasterValue =
 	| {
 			school: "総合科学技術研究科";
 			major: "農学専攻";
-			course:
-				| "生物資源科学コース"
-				| "応用生命科学コース"
-				| "環境森林科学コース";
+			course: "生物資源科学コース" | "応用生命科学コース" | "環境森林科学コース";
 			year: MasterYear;
 	  };
 

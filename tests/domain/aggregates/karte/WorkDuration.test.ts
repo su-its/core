@@ -23,9 +23,7 @@ describe("workDuration", () => {
 		});
 
 		it("NaNは無効", () => {
-			expect(() => workDuration(Number.NaN)).toThrow(
-				InvalidWorkDurationException,
-			);
+			expect(() => workDuration(Number.NaN)).toThrow(InvalidWorkDurationException);
 		});
 	});
 });

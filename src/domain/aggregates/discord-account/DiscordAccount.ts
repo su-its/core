@@ -29,31 +29,18 @@ export class DiscordAccount {
 		private readonly domainEvents: readonly DiscordAccountDomainEvent[] = [],
 	) {}
 
-	static link(
-		discordId: DiscordId,
-		memberId: MemberId,
-		nickName: string,
-	): DiscordAccount {
+	static link(discordId: DiscordId, memberId: MemberId, nickName: string): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName, [
 			new DiscordAccountLinked(discordId, memberId, nickName, new Date()),
 		]);
 	}
 
-	static reconstruct(
-		discordId: DiscordId,
-		memberId: MemberId,
-		nickName: string,
-	): DiscordAccount {
+	static reconstruct(discordId: DiscordId, memberId: MemberId, nickName: string): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName);
 	}
 
 	changeNickName(newNickName: string): DiscordAccount {
-		return new DiscordAccount(
-			this.discordId,
-			this.memberId,
-			newNickName,
-			this.domainEvents,
-		);
+		return new DiscordAccount(this.discordId, this.memberId, newNickName, this.domainEvents);
 	}
 
 	getDomainEvents(): readonly DiscordAccountDomainEvent[] {

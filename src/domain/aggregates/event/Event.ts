@@ -48,9 +48,7 @@ export class Event {
 
 	public addExhibit(exhibit: Exhibit): void {
 		if (this.exhibits.some((x) => x.id === exhibit.id)) {
-			throw new ExhibitAlreadyExistsException(
-				`Exhibit(id=${exhibit.id}) は既に存在します`,
-			);
+			throw new ExhibitAlreadyExistsException(`Exhibit(id=${exhibit.id}) は既に存在します`);
 		}
 		// NOTE: Exhibitに登録するタイミングでEventのmemberIdsにも登録する必要がある
 		for (const memberId of exhibit.getMemberIds()) {
@@ -68,17 +66,11 @@ export class Event {
 		this.getExhibitOrThrow(exhibitId).changeName(newName);
 	}
 
-	public changeExhibitDescription(
-		exhibitId: ExhibitId,
-		newDescription: string,
-	): void {
+	public changeExhibitDescription(exhibitId: ExhibitId, newDescription: string): void {
 		this.getExhibitOrThrow(exhibitId).changeDescription(newDescription);
 	}
 
-	public changeExhibitMarkdownContent(
-		exhibitId: ExhibitId,
-		newMarkdownContent: string,
-	): void {
+	public changeExhibitMarkdownContent(exhibitId: ExhibitId, newMarkdownContent: string): void {
 		this.getExhibitOrThrow(exhibitId).changeMarkdownContent(newMarkdownContent);
 	}
 
@@ -86,13 +78,8 @@ export class Event {
 		this.getExhibitOrThrow(exhibitId).changeUrl(newUrl);
 	}
 
-	public changeExhibitLightningTalkStartTime(
-		exhibitId: ExhibitId,
-		newStartTime: Date,
-	): void {
-		this.getExhibitOrThrow(exhibitId).changeLightningTalkStartTime(
-			newStartTime,
-		);
+	public changeExhibitLightningTalkStartTime(exhibitId: ExhibitId, newStartTime: Date): void {
+		this.getExhibitOrThrow(exhibitId).changeLightningTalkStartTime(newStartTime);
 	}
 
 	public changeExhibitLightningTalkDuration(
@@ -102,19 +89,14 @@ export class Event {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkDuration(newDuration);
 	}
 
-	public changeExhibitLightningTalkSlideUrl(
-		exhibitId: ExhibitId,
-		newSlideUrl: Url,
-	): void {
+	public changeExhibitLightningTalkSlideUrl(exhibitId: ExhibitId, newSlideUrl: Url): void {
 		this.getExhibitOrThrow(exhibitId).changeLightningTalkSlideUrl(newSlideUrl);
 	}
 
 	private getExhibitOrThrow(exhibitId: ExhibitId): Exhibit {
 		const exhibit = this.exhibits.find((x) => x.id === exhibitId);
 		if (!exhibit) {
-			throw new ExhibitNotFoundException(
-				`Exhibit(id=${exhibitId}) が見つかりません`,
-			);
+			throw new ExhibitNotFoundException(`Exhibit(id=${exhibitId}) が見つかりません`);
 		}
 		return exhibit;
 	}

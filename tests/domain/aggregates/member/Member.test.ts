@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import {
-	ActiveMember,
-	FormerMember,
-	UnconfirmedMember,
-} from "#domain/aggregates/member/Member";
+import { ActiveMember, FormerMember, UnconfirmedMember } from "#domain/aggregates/member/Member";
 import { memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { InvalidAffiliationOperationException } from "#domain/exceptions";
@@ -203,10 +199,7 @@ describe("ActiveMember", () => {
 				affiliation: createUndergraduateAffiliation(),
 			});
 			const newStudentId = StudentId.fromString("725A0099");
-			const master = undergrad.advanceInternally(
-				createMasterAffiliation(),
-				newStudentId,
-			);
+			const master = undergrad.advanceInternally(createMasterAffiliation(), newStudentId);
 
 			expect(master.status).toBe("active");
 			expect(master.affiliation.type).toBe("master");
@@ -223,10 +216,7 @@ describe("ActiveMember", () => {
 				affiliation: createMasterAffiliation(),
 			});
 			const newStudentId = StudentId.fromString("725A0100");
-			const doctoral = masterMember.advanceInternally(
-				createDoctoralAffiliation(),
-				newStudentId,
-			);
+			const doctoral = masterMember.advanceInternally(createDoctoralAffiliation(), newStudentId);
 
 			expect(doctoral.affiliation.type).toBe("doctoral");
 		});
@@ -242,10 +232,7 @@ describe("ActiveMember", () => {
 			});
 
 			expect(() =>
-				undergrad.advanceInternally(
-					createDoctoralAffiliation(),
-					StudentId.fromString("725A0100"),
-				),
+				undergrad.advanceInternally(createDoctoralAffiliation(), StudentId.fromString("725A0100")),
 			).toThrow(InvalidAffiliationOperationException);
 		});
 
@@ -435,10 +422,7 @@ describe("UnconfirmedMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = unconfirmed.confirm(
-				createStudentId(),
-				createUndergraduateAffiliation(),
-			);
+			const active = unconfirmed.confirm(createStudentId(), createUndergraduateAffiliation());
 
 			expect(active.status).toBe("active");
 			expect(active.studentId.getValue()).toBe("725A0001");
@@ -451,10 +435,7 @@ describe("UnconfirmedMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = unconfirmed.confirm(
-				createStudentId(),
-				createUndergraduateAffiliation(),
-			);
+			const active = unconfirmed.confirm(createStudentId(), createUndergraduateAffiliation());
 			const events = active.getDomainEvents();
 
 			expect(events).toHaveLength(1);
@@ -501,10 +482,7 @@ describe("FormerMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = former.reregister(
-				createStudentId(),
-				createMasterAffiliation(),
-			);
+			const active = former.reregister(createStudentId(), createMasterAffiliation());
 
 			expect(active.status).toBe("active");
 			expect(active.studentId.getValue()).toBe("725A0001");
@@ -518,10 +496,7 @@ describe("FormerMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = former.reregister(
-				createStudentId(),
-				createMasterAffiliation(),
-			);
+			const active = former.reregister(createStudentId(), createMasterAffiliation());
 			const events = active.getDomainEvents();
 
 			expect(events).toHaveLength(1);
@@ -580,10 +555,7 @@ describe("状態遷移のライフサイクル", () => {
 		});
 
 		const unconfirmed = active.unconfirm();
-		const confirmed = unconfirmed.confirm(
-			createStudentId(),
-			createMasterAffiliation(),
-		);
+		const confirmed = unconfirmed.confirm(createStudentId(), createMasterAffiliation());
 
 		const events = confirmed.getDomainEvents();
 		expect(events).toHaveLength(3);

@@ -30,10 +30,7 @@ export class ChangeLightningTalkSlideUrl extends IUseCase<
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
-		event.changeExhibitLightningTalkSlideUrl(
-			input.exhibitId,
-			input.newSlideUrl,
-		);
+		event.changeExhibitLightningTalkSlideUrl(input.exhibitId, input.newSlideUrl);
 		await this.eventRepository.save(event);
 		return { event };
 	}

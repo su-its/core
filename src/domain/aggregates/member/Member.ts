@@ -91,29 +91,17 @@ export class ActiveMember {
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				new MemberRemoved(this.id, this.email, reason, new Date()),
-			],
-		);
+		return new FormerMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			new MemberRemoved(this.id, this.email, reason, new Date()),
+		]);
 	}
 
 	unconfirm(): UnconfirmedMember {
-		return new UnconfirmedMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				new MemberUnconfirmed(this.id, this.email, new Date()),
-			],
-		);
+		return new UnconfirmedMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			new MemberUnconfirmed(this.id, this.email, new Date()),
+		]);
 	}
 
 	changeName(newName: string): ActiveMember {
@@ -124,10 +112,7 @@ export class ActiveMember {
 			this.personalEmail,
 			this.studentId,
 			this.affiliation,
-			[
-				...this.domainEvents,
-				new NameChanged(this.id, this.email, this.name, newName, new Date()),
-			],
+			[...this.domainEvents, new NameChanged(this.id, this.email, this.name, newName, new Date())],
 		);
 	}
 
@@ -141,13 +126,7 @@ export class ActiveMember {
 			this.affiliation,
 			[
 				...this.domainEvents,
-				new PersonalEmailChanged(
-					this.id,
-					this.email,
-					this.personalEmail,
-					newEmail,
-					new Date(),
-				),
+				new PersonalEmailChanged(this.id, this.email, this.personalEmail, newEmail, new Date()),
 			],
 		);
 	}
@@ -162,13 +141,7 @@ export class ActiveMember {
 			this.affiliation,
 			[
 				...this.domainEvents,
-				new StudentIdChanged(
-					this.id,
-					this.email,
-					this.studentId,
-					newStudentId,
-					new Date(),
-				),
+				new StudentIdChanged(this.id, this.email, this.studentId, newStudentId, new Date()),
 			],
 		);
 	}
@@ -219,13 +192,7 @@ export class ActiveMember {
 			newAffiliation,
 			[
 				...this.domainEvents,
-				new FacultyTransferred(
-					this.id,
-					this.email,
-					this.affiliation,
-					newAffiliation,
-					new Date(),
-				),
+				new FacultyTransferred(this.id, this.email, this.affiliation, newAffiliation, new Date()),
 			],
 		);
 	}
@@ -268,10 +235,7 @@ export class ActiveMember {
 	}
 
 	transferMajor(
-		newAffiliation:
-			| MasterAffiliation
-			| DoctoralAffiliation
-			| ProfessionalAffiliation,
+		newAffiliation: MasterAffiliation | DoctoralAffiliation | ProfessionalAffiliation,
 	): ActiveMember {
 		if (this.affiliation.type === "undergraduate") {
 			throw new InvalidAffiliationOperationException(
@@ -298,13 +262,7 @@ export class ActiveMember {
 			newAffiliation,
 			[
 				...this.domainEvents,
-				new MajorTransferred(
-					this.id,
-					this.email,
-					this.affiliation,
-					newAffiliation,
-					new Date(),
-				),
+				new MajorTransferred(this.id, this.email, this.affiliation, newAffiliation, new Date()),
 			],
 		);
 	}
@@ -313,9 +271,7 @@ export class ActiveMember {
 		return [...this.domainEvents];
 	}
 
-	private validateAdvancement(
-		newAffiliation: MasterAffiliation | DoctoralAffiliation,
-	): void {
+	private validateAdvancement(newAffiliation: MasterAffiliation | DoctoralAffiliation): void {
 		if (this.affiliation.type === "undergraduate") {
 			if (newAffiliation.type !== "master") {
 				throw new InvalidAffiliationOperationException(
@@ -365,12 +321,7 @@ export class UnconfirmedMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 	}): UnconfirmedMember {
-		return new UnconfirmedMember(
-			props.id,
-			props.email,
-			props.name,
-			props.personalEmail,
-		);
+		return new UnconfirmedMember(props.id, props.email, props.name, props.personalEmail);
 	}
 
 	confirm(studentId: StudentId, affiliation: Affiliation): ActiveMember {
@@ -383,53 +334,29 @@ export class UnconfirmedMember {
 			affiliation,
 			[
 				...this.domainEvents,
-				new MemberConfirmed(
-					this.id,
-					this.email,
-					studentId,
-					affiliation,
-					new Date(),
-				),
+				new MemberConfirmed(this.id, this.email, studentId, affiliation, new Date()),
 			],
 		);
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				new MemberRemoved(this.id, this.email, reason, new Date()),
-			],
-		);
+		return new FormerMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			new MemberRemoved(this.id, this.email, reason, new Date()),
+		]);
 	}
 
 	changeName(newName: string): UnconfirmedMember {
-		return new UnconfirmedMember(
-			this.id,
-			this.email,
-			newName,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				new NameChanged(this.id, this.email, this.name, newName, new Date()),
-			],
-		);
+		return new UnconfirmedMember(this.id, this.email, newName, this.personalEmail, [
+			...this.domainEvents,
+			new NameChanged(this.id, this.email, this.name, newName, new Date()),
+		]);
 	}
 
 	changePersonalEmail(newEmail: Recorded<Email>): UnconfirmedMember {
 		return new UnconfirmedMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
-			new PersonalEmailChanged(
-				this.id,
-				this.email,
-				this.personalEmail,
-				newEmail,
-				new Date(),
-			),
+			new PersonalEmailChanged(this.id, this.email, this.personalEmail, newEmail, new Date()),
 		]);
 	}
 
@@ -457,12 +384,7 @@ export class FormerMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 	}): FormerMember {
-		return new FormerMember(
-			props.id,
-			props.email,
-			props.name,
-			props.personalEmail,
-		);
+		return new FormerMember(props.id, props.email, props.name, props.personalEmail);
 	}
 
 	reregister(studentId: StudentId, affiliation: Affiliation): ActiveMember {
@@ -475,13 +397,7 @@ export class FormerMember {
 			affiliation,
 			[
 				...this.domainEvents,
-				new MemberReregistered(
-					this.id,
-					this.email,
-					studentId,
-					affiliation,
-					new Date(),
-				),
+				new MemberReregistered(this.id, this.email, studentId, affiliation, new Date()),
 			],
 		);
 	}
@@ -496,13 +412,7 @@ export class FormerMember {
 	changePersonalEmail(newEmail: Recorded<Email>): FormerMember {
 		return new FormerMember(this.id, this.email, this.name, newEmail, [
 			...this.domainEvents,
-			new PersonalEmailChanged(
-				this.id,
-				this.email,
-				this.personalEmail,
-				newEmail,
-				new Date(),
-			),
+			new PersonalEmailChanged(this.id, this.email, this.personalEmail, newEmail, new Date()),
 		]);
 	}
 

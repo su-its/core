@@ -27,15 +27,11 @@ describe("StudentId", () => {
 
 	describe("バリデーション", () => {
 		it("7桁の数字は無効", () => {
-			expect(() => StudentId.fromString("7031203")).toThrow(
-				InvalidStudentIdException,
-			);
+			expect(() => StudentId.fromString("7031203")).toThrow(InvalidStudentIdException);
 		});
 
 		it("9桁の数字は無効", () => {
-			expect(() => StudentId.fromString("703120310")).toThrow(
-				InvalidStudentIdException,
-			);
+			expect(() => StudentId.fromString("703120310")).toThrow(InvalidStudentIdException);
 		});
 
 		it("空文字は無効", () => {
@@ -43,21 +39,15 @@ describe("StudentId", () => {
 		});
 
 		it("英字のみは無効", () => {
-			expect(() => StudentId.fromString("ABCDEFGH")).toThrow(
-				InvalidStudentIdException,
-			);
+			expect(() => StudentId.fromString("ABCDEFGH")).toThrow(InvalidStudentIdException);
 		});
 
 		it("新形式で英字が2文字あると無効", () => {
-			expect(() => StudentId.fromString("72AB1061")).toThrow(
-				InvalidStudentIdException,
-			);
+			expect(() => StudentId.fromString("72AB1061")).toThrow(InvalidStudentIdException);
 		});
 
 		it("新形式で英字の位置が異なると無効", () => {
-			expect(() => StudentId.fromString("7A251061")).toThrow(
-				InvalidStudentIdException,
-			);
+			expect(() => StudentId.fromString("7A251061")).toThrow(InvalidStudentIdException);
 		});
 	});
 
