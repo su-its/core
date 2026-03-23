@@ -12,73 +12,65 @@ import { serializeDiscordAccountEventPayload } from "./serializeDiscordAccountEv
 type DiscordAccountRow = typeof discordAccounts.$inferSelect;
 
 function toDomain(row: DiscordAccountRow): DiscordAccount {
-	return DiscordAccount.reconstruct(
-		discordId(row.discordId),
-		memberId(row.memberId),
-		row.nickName,
-	);
+  return DiscordAccount.reconstruct(discordId(row.discordId), memberId(row.memberId), row.nickName);
 }
 
-export class DrizzleDiscordAccountRepository
-	implements DiscordAccountRepository
-{
-	async findByDiscordId(id: DiscordId): Promise<DiscordAccount | null> {
-		const db = getDb();
-		const row = await db.query.discordAccounts.findFirst({
-			where: eq(discordAccounts.discordId, id as string),
-		});
-		if (!row) return null;
-		return toDomain(row);
-	}
+export class DrizzleDiscordAccountRepository implements DiscordAccountRepository {
+  async findByDiscordId(id: DiscordId): Promise<DiscordAccount | null> {
+    const db = getDb();
+    const row = await db.query.discordAccounts.findFirst({
+      where: eq(discordAccounts.discordId, id as string),
+    });
+    if (!row) return null;
+    return toDomain(row);
+  }
 
-	async findByMemberId(id: MemberId): Promise<DiscordAccount[]> {
-		const db = getDb();
-		const rows = await db.query.discordAccounts.findMany({
-			where: eq(discordAccounts.memberId, id as string),
-		});
-		return rows.map(toDomain);
-	}
+  async findByMemberId(id: MemberId): Promise<DiscordAccount[]> {
+    const db = getDb();
+    const rows = await db.query.discordAccounts.findMany({
+      where: eq(discordAccounts.memberId, id as string),
+    });
+    return rows.map(toDomain);
+  }
 
-	async save(account: DiscordAccount): Promise<void> {
-		const db = getDb();
-		const now = new Date().toISOString();
-		const events = account.getDomainEvents();
+  async save(account: DiscordAccount): Promise<void> {
+    const db = getDb();
+    const now = new Date().toISOString();
+    const events = account.getDomainEvents();
 
-		await db.transaction(async (tx) => {
-			await tx
-				.insert(discordAccounts)
-				.values({
-					discordId: account.discordId as string,
-					nickName: account.nickName,
-					memberId: account.memberId as string,
-					updatedAt: now,
-				})
-				.onConflictDoUpdate({
-					target: discordAccounts.discordId,
-					set: {
-						nickName: account.nickName,
-						updatedAt: now,
-					},
-				});
+    await db.transaction(async (tx) => {
+      await tx
+        .insert(discordAccounts)
+        .values({
+          discordId: account.discordId as string,
+          nickName: account.nickName,
+          memberId: account.memberId as string,
+          updatedAt: now,
+        })
+        .onConflictDoUpdate({
+          target: discordAccounts.discordId,
+          set: {
+            nickName: account.nickName,
+            updatedAt: now,
+          },
+        });
 
-			if (events.length > 0) {
-				await tx.insert(discordAccountDomainEvents).values(
-					events.map((event) => ({
-						discordId: event.discordId as string,
-						memberId: event.memberId as string,
-						eventName: event.eventName,
-						payload: serializeDiscordAccountEventPayload(event),
-						occurredAt: event.occurredAt.toISOString(),
-					})),
-				);
-			}
-		});
-	}
+      if (events.length > 0) {
+        await tx.insert(discordAccountDomainEvents).values(
+          events.map((event) => ({
+            discordId: event.discordId as string,
+            memberId: event.memberId as string,
+            eventName: event.eventName,
+            payload: serializeDiscordAccountEventPayload(event),
+            occurredAt: event.occurredAt.toISOString(),
+          })),
+        );
+      }
+    });
+  }
 
-	async delete(id: DiscordId): Promise<void> {
-		const db = getDb();
-		await db
-			.delete(discordAccounts)
-			.where(eq(discordAccounts.discordId, id as string));
-	}
+  async delete(id: DiscordId): Promise<void> {
+    const db = getDb();
+    await db.delete(discordAccounts).where(eq(discordAccounts.discordId, id as string));
+  }
 }

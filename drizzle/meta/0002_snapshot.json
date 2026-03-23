@@ -142,12 +142,8 @@
           "name": "discord_accounts_member_id_fkey",
           "tableFrom": "discord_accounts",
           "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -262,12 +258,8 @@
           "name": "exhibits_event_id_fkey",
           "tableFrom": "exhibits",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -326,12 +318,8 @@
           "name": "lightning_talks_exhibit_id_fkey",
           "tableFrom": "lightning_talks",
           "tableTo": "exhibits",
-          "columnsFrom": [
-            "exhibit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["exhibit_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -504,12 +492,8 @@
           "name": "member_events_event_id_fkey",
           "tableFrom": "member_events",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -517,12 +501,8 @@
           "name": "member_events_member_id_fkey",
           "tableFrom": "member_events",
           "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -599,12 +579,8 @@
           "name": "member_exhibits_exhibit_id_fkey",
           "tableFrom": "member_exhibits",
           "tableTo": "exhibits",
-          "columnsFrom": [
-            "exhibit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["exhibit_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -612,12 +588,8 @@
           "name": "member_exhibits_member_id_fkey",
           "tableFrom": "member_exhibits",
           "tableTo": "members",
-          "columnsFrom": [
-            "member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["member_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -783,11 +755,7 @@
     "public.member_status": {
       "name": "member_status",
       "schema": "public",
-      "values": [
-        "active",
-        "unconfirmed",
-        "former"
-      ]
+      "values": ["active", "unconfirmed", "former"]
     }
   },
   "schemas": {},

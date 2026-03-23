@@ -6,8 +6,8 @@ import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { notRecorded, recorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import type {
-	MasterAffiliation,
-	UndergraduateAffiliation,
+  MasterAffiliation,
+  UndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
 import { serializeMemberEventPayload } from "#infrastructure/drizzle/serializeMemberEvent";
 
@@ -15,193 +15,190 @@ const testId = memberId("test-member-id");
 const testEmail = new UniversityEmail("test@shizuoka.ac.jp");
 const testStudentId = StudentId.fromString("725A0001");
 const testAffiliation: UndergraduateAffiliation = {
-	type: "undergraduate",
-	value: { faculty: "情報学部", department: "情報科学科", year: 3 },
+  type: "undergraduate",
+  value: { faculty: "情報学部", department: "情報科学科", year: 3 },
 };
 
 function createActiveMember() {
-	return ActiveMember.register({
-		id: testId,
-		email: testEmail,
-		name: "テスト太郎",
-		personalEmail: notRecorded(),
-		studentId: testStudentId,
-		affiliation: testAffiliation,
-	});
+  return ActiveMember.register({
+    id: testId,
+    email: testEmail,
+    name: "テスト太郎",
+    personalEmail: notRecorded(),
+    studentId: testStudentId,
+    affiliation: testAffiliation,
+  });
 }
 
 describe("serializeMemberEventPayload", () => {
-	it("MemberRegisteredイベントをシリアライズできる", () => {
-		const member = createActiveMember();
-		const events = member.getDomainEvents();
-		expect(events).toHaveLength(1);
+  it("MemberRegisteredイベントをシリアライズできる", () => {
+    const member = createActiveMember();
+    const events = member.getDomainEvents();
+    expect(events).toHaveLength(1);
 
-		const payload = serializeMemberEventPayload(events[0]);
-		expect(payload.eventName).toBe("MemberRegistered");
-		if (payload.eventName !== "MemberRegistered") throw new Error();
-		expect(payload.name).toBe("テスト太郎");
-		expect(payload.studentId).toBe("725A0001");
-		expect(payload.personalEmail).toEqual({ type: "notRecorded" });
-		expect(payload.affiliation).toEqual({
-			type: "undergraduate",
-			value: { faculty: "情報学部", department: "情報科学科", year: 3 },
-		});
-	});
+    const payload = serializeMemberEventPayload(events[0]);
+    expect(payload.eventName).toBe("MemberRegistered");
+    if (payload.eventName !== "MemberRegistered") throw new Error();
+    expect(payload.name).toBe("テスト太郎");
+    expect(payload.studentId).toBe("725A0001");
+    expect(payload.personalEmail).toEqual({ type: "notRecorded" });
+    expect(payload.affiliation).toEqual({
+      type: "undergraduate",
+      value: { faculty: "情報学部", department: "情報科学科", year: 3 },
+    });
+  });
 
-	it("NameChangedイベントをシリアライズできる", () => {
-		const member = createActiveMember().changeName("新しい名前");
-		const events = member.getDomainEvents();
-		const nameEvent = events.find((e) => e.eventName === "NameChanged");
-		if (!nameEvent) throw new Error("NameChanged event not found");
+  it("NameChangedイベントをシリアライズできる", () => {
+    const member = createActiveMember().changeName("新しい名前");
+    const events = member.getDomainEvents();
+    const nameEvent = events.find((e) => e.eventName === "NameChanged");
+    if (!nameEvent) throw new Error("NameChanged event not found");
 
-		const payload = serializeMemberEventPayload(nameEvent);
-		expect(payload.eventName).toBe("NameChanged");
-		if (payload.eventName !== "NameChanged") throw new Error();
-		expect(payload.previousName).toBe("テスト太郎");
-		expect(payload.newName).toBe("新しい名前");
-	});
+    const payload = serializeMemberEventPayload(nameEvent);
+    expect(payload.eventName).toBe("NameChanged");
+    if (payload.eventName !== "NameChanged") throw new Error();
+    expect(payload.previousName).toBe("テスト太郎");
+    expect(payload.newName).toBe("新しい名前");
+  });
 
-	it("MemberDeregisteredイベントをシリアライズできる", () => {
-		const member = createActiveMember().deregister("graduation");
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "MemberDeregistered");
-		if (!event) throw new Error("MemberDeregistered event not found");
+  it("MemberDeregisteredイベントをシリアライズできる", () => {
+    const member = createActiveMember().deregister("graduation");
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "MemberDeregistered");
+    if (!event) throw new Error("MemberDeregistered event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("MemberDeregistered");
-		if (payload.eventName !== "MemberDeregistered") throw new Error();
-		expect(payload.reason).toBe("graduation");
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("MemberDeregistered");
+    if (payload.eventName !== "MemberDeregistered") throw new Error();
+    expect(payload.reason).toBe("graduation");
+  });
 
-	it("MemberUnconfirmedイベントをシリアライズできる", () => {
-		const member = createActiveMember().unconfirm();
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "MemberUnconfirmed");
-		if (!event) throw new Error("MemberUnconfirmed event not found");
+  it("MemberUnconfirmedイベントをシリアライズできる", () => {
+    const member = createActiveMember().unconfirm();
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "MemberUnconfirmed");
+    if (!event) throw new Error("MemberUnconfirmed event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload).toEqual({ eventName: "MemberUnconfirmed" });
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload).toEqual({ eventName: "MemberUnconfirmed" });
+  });
 
-	it("StudentIdChangedイベントをシリアライズできる", () => {
-		const newStudentId = StudentId.fromString("725A0002");
-		const member = createActiveMember().changeStudentId(newStudentId);
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "StudentIdChanged");
-		if (!event) throw new Error("StudentIdChanged event not found");
+  it("StudentIdChangedイベントをシリアライズできる", () => {
+    const newStudentId = StudentId.fromString("725A0002");
+    const member = createActiveMember().changeStudentId(newStudentId);
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "StudentIdChanged");
+    if (!event) throw new Error("StudentIdChanged event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("StudentIdChanged");
-		if (payload.eventName !== "StudentIdChanged") throw new Error();
-		expect(payload.previousStudentId).toBe("725A0001");
-		expect(payload.newStudentId).toBe("725A0002");
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("StudentIdChanged");
+    if (payload.eventName !== "StudentIdChanged") throw new Error();
+    expect(payload.previousStudentId).toBe("725A0001");
+    expect(payload.newStudentId).toBe("725A0002");
+  });
 
-	it("PersonalEmailChangedイベントをシリアライズできる", () => {
-		const newEmail = recorded(new Email("new@example.com"));
-		const member = createActiveMember().changePersonalEmail(newEmail);
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "PersonalEmailChanged");
-		if (!event) throw new Error("PersonalEmailChanged event not found");
+  it("PersonalEmailChangedイベントをシリアライズできる", () => {
+    const newEmail = recorded(new Email("new@example.com"));
+    const member = createActiveMember().changePersonalEmail(newEmail);
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "PersonalEmailChanged");
+    if (!event) throw new Error("PersonalEmailChanged event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("PersonalEmailChanged");
-		if (payload.eventName !== "PersonalEmailChanged") throw new Error();
-		expect(payload.previousPersonalEmail).toEqual({ type: "notRecorded" });
-		expect(payload.newPersonalEmail).toEqual({
-			type: "recorded",
-			value: "new@example.com",
-		});
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("PersonalEmailChanged");
+    if (payload.eventName !== "PersonalEmailChanged") throw new Error();
+    expect(payload.previousPersonalEmail).toEqual({ type: "notRecorded" });
+    expect(payload.newPersonalEmail).toEqual({
+      type: "recorded",
+      value: "new@example.com",
+    });
+  });
 
-	it("InternallyAdvancedイベントをシリアライズできる", () => {
-		const masterAffiliation: MasterAffiliation = {
-			type: "master",
-			value: {
-				school: "総合科学技術研究科",
-				major: "情報学専攻",
-				course: "基盤情報学コース",
-				year: 1,
-			},
-		};
-		const newStudentId = StudentId.fromString("925A0001");
-		const member = createActiveMember().advanceInternally(
-			masterAffiliation,
-			newStudentId,
-		);
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "InternallyAdvanced");
-		if (!event) throw new Error("InternallyAdvanced event not found");
+  it("InternallyAdvancedイベントをシリアライズできる", () => {
+    const masterAffiliation: MasterAffiliation = {
+      type: "master",
+      value: {
+        school: "総合科学技術研究科",
+        major: "情報学専攻",
+        course: "基盤情報学コース",
+        year: 1,
+      },
+    };
+    const newStudentId = StudentId.fromString("925A0001");
+    const member = createActiveMember().advanceInternally(masterAffiliation, newStudentId);
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "InternallyAdvanced");
+    if (!event) throw new Error("InternallyAdvanced event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("InternallyAdvanced");
-		if (payload.eventName !== "InternallyAdvanced") throw new Error();
-		expect(payload.previousAffiliation.type).toBe("undergraduate");
-		expect(payload.newAffiliation.type).toBe("master");
-		expect(payload.previousStudentId).toBe("725A0001");
-		expect(payload.newStudentId).toBe("925A0001");
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("InternallyAdvanced");
+    if (payload.eventName !== "InternallyAdvanced") throw new Error();
+    expect(payload.previousAffiliation.type).toBe("undergraduate");
+    expect(payload.newAffiliation.type).toBe("master");
+    expect(payload.previousStudentId).toBe("725A0001");
+    expect(payload.newStudentId).toBe("925A0001");
+  });
 
-	it("FacultyTransferredイベントをシリアライズできる", () => {
-		const newAffiliation: UndergraduateAffiliation = {
-			type: "undergraduate",
-			value: { faculty: "理学部", department: "物理学科", year: 3 },
-		};
-		const member = createActiveMember().transferFaculty(newAffiliation);
-		const events = member.getDomainEvents();
-		const event = events.find((e) => e.eventName === "FacultyTransferred");
-		if (!event) throw new Error("FacultyTransferred event not found");
+  it("FacultyTransferredイベントをシリアライズできる", () => {
+    const newAffiliation: UndergraduateAffiliation = {
+      type: "undergraduate",
+      value: { faculty: "理学部", department: "物理学科", year: 3 },
+    };
+    const member = createActiveMember().transferFaculty(newAffiliation);
+    const events = member.getDomainEvents();
+    const event = events.find((e) => e.eventName === "FacultyTransferred");
+    if (!event) throw new Error("FacultyTransferred event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("FacultyTransferred");
-		if (payload.eventName !== "FacultyTransferred") throw new Error();
-		expect(payload.previousAffiliation).toEqual({
-			type: "undergraduate",
-			value: { faculty: "情報学部", department: "情報科学科", year: 3 },
-		});
-		expect(payload.newAffiliation).toEqual({
-			type: "undergraduate",
-			value: { faculty: "理学部", department: "物理学科", year: 3 },
-		});
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("FacultyTransferred");
+    if (payload.eventName !== "FacultyTransferred") throw new Error();
+    expect(payload.previousAffiliation).toEqual({
+      type: "undergraduate",
+      value: { faculty: "情報学部", department: "情報科学科", year: 3 },
+    });
+    expect(payload.newAffiliation).toEqual({
+      type: "undergraduate",
+      value: { faculty: "理学部", department: "物理学科", year: 3 },
+    });
+  });
 
-	it("複数イベントが正しくシリアライズされる", () => {
-		const member = createActiveMember()
-			.changeName("新しい名前")
-			.changeStudentId(StudentId.fromString("725A0002"));
-		const events = member.getDomainEvents();
-		expect(events).toHaveLength(3);
+  it("複数イベントが正しくシリアライズされる", () => {
+    const member = createActiveMember()
+      .changeName("新しい名前")
+      .changeStudentId(StudentId.fromString("725A0002"));
+    const events = member.getDomainEvents();
+    expect(events).toHaveLength(3);
 
-		const payloads = events.map((e) => serializeMemberEventPayload(e));
-		expect(payloads[0]?.eventName).toBe("MemberRegistered");
-		expect(payloads[1]?.eventName).toBe("NameChanged");
-		expect(payloads[2]?.eventName).toBe("StudentIdChanged");
-	});
+    const payloads = events.map((e) => serializeMemberEventPayload(e));
+    expect(payloads[0]?.eventName).toBe("MemberRegistered");
+    expect(payloads[1]?.eventName).toBe("NameChanged");
+    expect(payloads[2]?.eventName).toBe("StudentIdChanged");
+  });
 
-	it("MemberConfirmedイベントをシリアライズできる", () => {
-		const unconfirmed = createActiveMember().unconfirm();
-		const confirmed = unconfirmed.confirm(testStudentId, testAffiliation);
-		const events = confirmed.getDomainEvents();
-		const event = events.find((e) => e.eventName === "MemberConfirmed");
-		if (!event) throw new Error("MemberConfirmed event not found");
+  it("MemberConfirmedイベントをシリアライズできる", () => {
+    const unconfirmed = createActiveMember().unconfirm();
+    const confirmed = unconfirmed.confirm(testStudentId, testAffiliation);
+    const events = confirmed.getDomainEvents();
+    const event = events.find((e) => e.eventName === "MemberConfirmed");
+    if (!event) throw new Error("MemberConfirmed event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("MemberConfirmed");
-		if (payload.eventName !== "MemberConfirmed") throw new Error();
-		expect(payload.studentId).toBe("725A0001");
-		expect(payload.affiliation.type).toBe("undergraduate");
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("MemberConfirmed");
+    if (payload.eventName !== "MemberConfirmed") throw new Error();
+    expect(payload.studentId).toBe("725A0001");
+    expect(payload.affiliation.type).toBe("undergraduate");
+  });
 
-	it("MemberReregisteredイベントをシリアライズできる", () => {
-		const former = createActiveMember().deregister("graduation");
-		const reregistered = former.reregister(testStudentId, testAffiliation);
-		const events = reregistered.getDomainEvents();
-		const event = events.find((e) => e.eventName === "MemberReregistered");
-		if (!event) throw new Error("MemberReregistered event not found");
+  it("MemberReregisteredイベントをシリアライズできる", () => {
+    const former = createActiveMember().deregister("graduation");
+    const reregistered = former.reregister(testStudentId, testAffiliation);
+    const events = reregistered.getDomainEvents();
+    const event = events.find((e) => e.eventName === "MemberReregistered");
+    if (!event) throw new Error("MemberReregistered event not found");
 
-		const payload = serializeMemberEventPayload(event);
-		expect(payload.eventName).toBe("MemberReregistered");
-		if (payload.eventName !== "MemberReregistered") throw new Error();
-		expect(payload.studentId).toBe("725A0001");
-	});
+    const payload = serializeMemberEventPayload(event);
+    expect(payload.eventName).toBe("MemberReregistered");
+    if (payload.eventName !== "MemberReregistered") throw new Error();
+    expect(payload.studentId).toBe("725A0001");
+  });
 });

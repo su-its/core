@@ -1,22 +1,22 @@
 {
-	"compilerOptions": {
-		"target": "ES2022",
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
-		"paths": {
-			"#domain": ["./src/domain"],
-			"#domain/*": ["./src/domain/*"],
-			"#application": ["./src/application"],
-			"#application/*": ["./src/application/*"],
-			"#infrastructure": ["./src/infrastructure"],
-			"#infrastructure/*": ["./src/infrastructure/*"]
-		}
-	},
-	"include": ["src", "tests"],
-	"exclude": ["node_modules", "dist"]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "#domain": ["./src/domain"],
+      "#domain/*": ["./src/domain/*"],
+      "#application": ["./src/application"],
+      "#application/*": ["./src/application/*"],
+      "#infrastructure": ["./src/infrastructure"],
+      "#infrastructure/*": ["./src/infrastructure/*"]
+    }
+  },
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist"]
 }

@@ -2,10 +2,10 @@ import type { DiscordAccountDomainEvent } from "#domain/aggregates/discord-accou
 import type { SerializedDiscordAccountEventPayload } from "./schema";
 
 export function serializeDiscordAccountEventPayload(
-	event: DiscordAccountDomainEvent,
+  event: DiscordAccountDomainEvent,
 ): SerializedDiscordAccountEventPayload {
-	switch (event.eventName) {
-		case "DiscordAccountLinked":
-			return { eventName: "DiscordAccountLinked", nickName: event.nickName };
-	}
+  switch (event.eventName) {
+    case "DiscordAccountLinked":
+      return { eventName: "DiscordAccountLinked", nickName: event.nickName };
+  }
 }
