@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
 	foreignKey,
+	index,
 	integer,
 	jsonb,
 	pgEnum,
@@ -9,6 +10,7 @@ import {
 	text,
 	timestamp,
 	uniqueIndex,
+	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
 import type {
@@ -27,6 +29,72 @@ export type SerializedAffiliation =
 	| { type: "master"; value: MasterAffiliationValue }
 	| { type: "doctoral"; value: DoctoralAffiliationValue }
 	| { type: "professional"; value: ProfessionalAffiliationValue };
+
+/** Recorded<T> のシリアライズ表現 */
+type SerializedRecorded<T> =
+	| { type: "recorded"; value: T }
+	| { type: "notRecorded" };
+
+/** Member集約ドメインイベントのpayload型（共通カラム以外の固有データ） */
+export type SerializedMemberEventPayload =
+	| {
+			eventName: "MemberRegistered";
+			name: string;
+			personalEmail: SerializedRecorded<string>;
+			studentId: string;
+			affiliation: SerializedAffiliation;
+	  }
+	| { eventName: "MemberRemoved"; reason: string }
+	| {
+			eventName: "MemberReregistered";
+			studentId: string;
+			affiliation: SerializedAffiliation;
+	  }
+	| { eventName: "MemberUnconfirmed" }
+	| {
+			eventName: "MemberConfirmed";
+			studentId: string;
+			affiliation: SerializedAffiliation;
+	  }
+	| {
+			eventName: "InternallyAdvanced";
+			previousAffiliation: SerializedAffiliation;
+			newAffiliation: SerializedAffiliation;
+			previousStudentId: string;
+			newStudentId: string;
+	  }
+	| {
+			eventName: "FacultyTransferred";
+			previousAffiliation: SerializedAffiliation;
+			newAffiliation: SerializedAffiliation;
+	  }
+	| {
+			eventName: "DepartmentTransferred";
+			previousAffiliation: SerializedAffiliation;
+			newAffiliation: SerializedAffiliation;
+	  }
+	| {
+			eventName: "MajorTransferred";
+			previousAffiliation: SerializedAffiliation;
+			newAffiliation: SerializedAffiliation;
+	  }
+	| {
+			eventName: "StudentIdChanged";
+			previousStudentId: string;
+			newStudentId: string;
+	  }
+	| { eventName: "NameChanged"; previousName: string; newName: string }
+	| {
+			eventName: "PersonalEmailChanged";
+			previousPersonalEmail: SerializedRecorded<string>;
+			newPersonalEmail: SerializedRecorded<string>;
+	  };
+
+/** DiscordAccount集約ドメインイベントのpayload型 */
+export type SerializedDiscordAccountEventPayload = {
+	eventName: "DiscordAccountLinked";
+	nickName: string;
+};
 
 // ============================================================================
 // Enums
@@ -231,6 +299,50 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 		.notNull(),
 	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
 });
+
+// ============================================================================
+// Domain Event Tables
+// ============================================================================
+
+export const memberDomainEvents = pgTable(
+	"member_domain_events",
+	{
+		id: uuid().primaryKey().defaultRandom(),
+		memberId: text("member_id").notNull(),
+		email: text().notNull(),
+		eventName: varchar("event_name", { length: 64 }).notNull(),
+		payload: jsonb()
+			.notNull()
+			.$type<SerializedMemberEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("member_domain_events_member_id_idx").on(table.memberId),
+		index("member_domain_events_event_name_idx").on(table.eventName),
+		index("member_domain_events_occurred_at_idx").on(table.occurredAt),
+	],
+);
+
+export const discordAccountDomainEvents = pgTable(
+	"discord_account_domain_events",
+	{
+		id: uuid().primaryKey().defaultRandom(),
+		discordId: text("discord_id").notNull(),
+		memberId: text("member_id").notNull(),
+		eventName: varchar("event_name", { length: 64 }).notNull(),
+		payload: jsonb()
+			.notNull()
+			.$type<SerializedDiscordAccountEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("discord_account_domain_events_discord_id_idx").on(table.discordId),
+		index("discord_account_domain_events_member_id_idx").on(table.memberId),
+		index("discord_account_domain_events_occurred_at_idx").on(
+			table.occurredAt,
+		),
+	],
+);
 
 // ============================================================================
 // Relations

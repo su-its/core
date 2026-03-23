@@ -15,6 +15,13 @@
       "when": 1774216380465,
       "tag": "0001_skinny_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774264022484,
+      "tag": "0002_nervous_vargas",
+      "breakpoints": true
     }
   ]
 }

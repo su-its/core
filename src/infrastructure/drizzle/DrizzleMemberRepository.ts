@@ -19,7 +19,11 @@ import {
 	UndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
 import { getDb } from "./client";
-import { type SerializedAffiliation, members } from "./schema";
+import { type SerializedAffiliation, memberDomainEvents, members } from "./schema";
+import {
+	serializeAffiliation,
+	serializeMemberEventPayload,
+} from "./serializeMemberEvent";
 
 // ============================================================================
 // Type Definitions
@@ -46,23 +50,6 @@ function deserializeAffiliation(json: SerializedAffiliation): Affiliation {
 			throw new Error(`不明なaffiliation type: ${JSON.stringify(_)}`);
 		}
 	}
-}
-
-function serializeAffiliation(affiliation: Affiliation): SerializedAffiliation {
-	if (affiliation instanceof UndergraduateAffiliation) {
-		return { type: "undergraduate", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof MasterAffiliation) {
-		return { type: "master", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof DoctoralAffiliation) {
-		return { type: "doctoral", value: affiliation.getValue() };
-	}
-	if (affiliation instanceof ProfessionalAffiliation) {
-		return { type: "professional", value: affiliation.getValue() };
-	}
-	const _: never = affiliation;
-	throw new Error(`Unknown affiliation type: ${_}`);
 }
 
 function toDomain(row: MemberRow): Member {
@@ -165,21 +152,36 @@ export class DrizzleMemberRepository implements MemberRepository {
 	async save(member: Member): Promise<void> {
 		const db = getDb();
 		const values = toInsertValues(member);
+		const events = member.getDomainEvents();
 
-		await db
-			.insert(members)
-			.values(values)
-			.onConflictDoUpdate({
-				target: members.id,
-				set: {
-					name: values.name,
-					email: values.email,
-					personalEmail: values.personalEmail,
-					status: values.status,
-					studentId: values.studentId,
-					affiliation: values.affiliation,
-					updatedAt: values.updatedAt,
-				},
-			});
+		await db.transaction(async (tx) => {
+			await tx
+				.insert(members)
+				.values(values)
+				.onConflictDoUpdate({
+					target: members.id,
+					set: {
+						name: values.name,
+						email: values.email,
+						personalEmail: values.personalEmail,
+						status: values.status,
+						studentId: values.studentId,
+						affiliation: values.affiliation,
+						updatedAt: values.updatedAt,
+					},
+				});
+
+			if (events.length > 0) {
+				await tx.insert(memberDomainEvents).values(
+					events.map((event) => ({
+						memberId: event.id as string,
+						email: event.email.getValue(),
+						eventName: event.eventName,
+						payload: serializeMemberEventPayload(event),
+						occurredAt: event.occurredAt.toISOString(),
+					})),
+				);
+			}
+		});
 	}
 }
