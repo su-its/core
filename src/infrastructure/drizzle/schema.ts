@@ -11,22 +11,7 @@ import {
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
-import type {
-	DoctoralAffiliationValue,
-	MasterAffiliationValue,
-	ProfessionalAffiliationValue,
-	UndergraduateAffiliationValue,
-} from "#domain/shared/affiliation/universityStructure";
-
-// ============================================================================
-// Serialization Types
-// ============================================================================
-
-export type SerializedAffiliation =
-	| { type: "undergraduate"; value: UndergraduateAffiliationValue }
-	| { type: "master"; value: MasterAffiliationValue }
-	| { type: "doctoral"; value: DoctoralAffiliationValue }
-	| { type: "professional"; value: ProfessionalAffiliationValue };
+import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 
 // ============================================================================
 // Enums
@@ -51,7 +36,7 @@ export const members = pgTable(
 		email: text().notNull(),
 		personalEmail: text("personal_email"),
 		status: memberStatus().notNull().default("active"),
-		affiliation: jsonb().$type<SerializedAffiliation>(),
+		affiliation: jsonb().$type<Affiliation>(),
 		createdAt: timestamp({ mode: "string" })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
