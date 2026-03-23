@@ -13,7 +13,7 @@ export default defineConfig({
 		include: ["tests/**/*.test.ts"],
 	},
 	lint: {
-		ignorePatterns: ["dist/**", "drizzle/**"],
+		ignorePatterns: ["dist/**", "drizzle/**", "example/**"],
 		options: {
 			typeAware: true,
 			typeCheck: true,
