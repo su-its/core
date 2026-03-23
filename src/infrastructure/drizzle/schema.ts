@@ -3,12 +3,40 @@ import { sql } from "drizzle-orm";
 import {
 	foreignKey,
 	integer,
+	jsonb,
+	pgEnum,
 	pgTable,
 	text,
 	timestamp,
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
+import type {
+	DoctoralAffiliationValue,
+	MasterAffiliationValue,
+	ProfessionalAffiliationValue,
+	UndergraduateAffiliationValue,
+} from "#domain/shared/affiliation/universityStructure";
+
+// ============================================================================
+// Serialization Types
+// ============================================================================
+
+export type SerializedAffiliation =
+	| { type: "undergraduate"; value: UndergraduateAffiliationValue }
+	| { type: "master"; value: MasterAffiliationValue }
+	| { type: "doctoral"; value: DoctoralAffiliationValue }
+	| { type: "professional"; value: ProfessionalAffiliationValue };
+
+// ============================================================================
+// Enums
+// ============================================================================
+
+export const memberStatus = pgEnum("member_status", [
+	"active",
+	"unconfirmed",
+	"former",
+]);
 
 // ============================================================================
 // Tables (introspected from production database)
@@ -19,14 +47,15 @@ export const members = pgTable(
 	{
 		id: text().primaryKey().notNull(),
 		name: text().notNull(),
-		studentId: text("student_id").notNull(),
-		department: text().notNull(),
+		studentId: varchar("student_id", { length: 8 }),
 		email: text().notNull(),
 		personalEmail: text("personal_email"),
-		createdAt: timestamp({ precision: 3, mode: "string" })
+		status: memberStatus().notNull().default("active"),
+		affiliation: jsonb().$type<SerializedAffiliation>(),
+		createdAt: timestamp({ mode: "string" })
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
-		updatedAt: timestamp({ precision: 3, mode: "string" }).notNull(),
+		updatedAt: timestamp({ mode: "string" }).notNull(),
 	},
 	(table) => [
 		uniqueIndex("members_email_key").using(

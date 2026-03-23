@@ -2,26 +2,23 @@ import { v4 as uuid } from "uuid";
 import { MemberEmailAlreadyExistsException } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
 import {
-	Department,
-	DiscordAccount,
-	Email,
-	Member,
+	ActiveMember,
+	type Email,
+	type Member,
 	type MemberRepository,
-	StudentId,
-	UniversityEmail,
+	type UniversityEmail,
 	memberId,
 } from "#domain";
+import type { Recorded } from "#domain/shared/Recorded";
+import type { StudentId } from "#domain/shared/StudentId";
+import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 
 export interface RegisterMemberInput {
 	name: string;
-	studentId: string;
-	department: string;
-	email: string;
-	personalEmail?: string;
-	discordInfo?: {
-		accountId: string;
-		nickName: string;
-	};
+	studentId: StudentId;
+	email: UniversityEmail;
+	personalEmail: Recorded<Email>;
+	affiliation: Affiliation;
 }
 
 export interface RegisterMemberOutput {
@@ -39,31 +36,17 @@ export class RegisterMemberUseCase extends IUseCase<
 	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
 		const existingMember = await this.memberRepo.findByEmail(input.email);
 		if (existingMember) {
-			throw new MemberEmailAlreadyExistsException(input.email);
+			throw new MemberEmailAlreadyExistsException(input.email.getValue());
 		}
 
-		const universityEmail = new UniversityEmail(input.email);
-		const personalEmail = input.personalEmail
-			? new Email(input.personalEmail)
-			: undefined;
-
-		const member = new Member(
-			memberId(uuid()),
-			input.name,
-			StudentId.fromString(input.studentId),
-			Department.fromString(input.department),
-			universityEmail,
-			personalEmail,
-		);
-
-		if (input.discordInfo) {
-			const discordAccount = new DiscordAccount(
-				input.discordInfo.accountId,
-				input.discordInfo.nickName,
-				member.id,
-			);
-			member.addDiscordAccount(discordAccount);
-		}
+		const member = ActiveMember.register({
+			id: memberId(uuid()),
+			email: input.email,
+			name: input.name,
+			personalEmail: input.personalEmail,
+			studentId: input.studentId,
+			affiliation: input.affiliation,
+		});
 
 		await this.memberRepo.save(member);
 

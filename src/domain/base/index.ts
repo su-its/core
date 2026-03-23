@@ -1,2 +1,2 @@
-export * from "./NonEmptyArray";
+export * from "./DomainEvent";
 export * from "./ValueObject";
