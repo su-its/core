@@ -5,7 +5,7 @@ const memberUseCases = createMemberUseCases();
 (async () => {
 	const result = await memberUseCases.getMemberByEmail
 		.execute({ email: "kawaguchi.kinji@shizuoka.ac.jp" })
-		.catch((error) => {
+		.catch((error: unknown) => {
 			console.error("メンバー情報の取得に失敗しました:", error);
 			throw error;
 		});
@@ -15,7 +15,6 @@ const memberUseCases = createMemberUseCases();
 	}
 
 	console.log(result.member);
-})().catch((error) => {
+})().catch((error: unknown) => {
 	console.error(error);
-	process.exit(1);
 });
