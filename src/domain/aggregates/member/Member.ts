@@ -16,15 +16,15 @@ import {
 	InternallyAdvanced,
 	MajorTransferred,
 	MemberConfirmed,
-	MemberRegistered,
 	MemberDeregistered,
+	MemberRegistered,
 	MemberReregistered,
 	MemberUnconfirmed,
 	NameChanged,
 	PersonalEmailChanged,
 	StudentIdChanged,
 } from "./MemberEvent";
-import type { MemberDomainEvent, DeregistrationReason } from "./MemberEvent";
+import type { DeregistrationReason, MemberDomainEvent } from "./MemberEvent";
 import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
