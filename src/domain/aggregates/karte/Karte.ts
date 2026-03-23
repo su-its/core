@@ -1,5 +1,8 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
+import type { Affiliation } from "#domain/shared";
+import type { StudentId } from "#domain/shared";
+import type { Assignee } from "./Assignee";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";
@@ -20,6 +23,22 @@ type CompleteResolution =
 	  };
 
 /**
+ * 新規作成・訂正時の相談者
+ *
+ * 完全なAffiliationのみ受け付ける。PartialAffiliationは不可。
+ */
+export type CompleteClient =
+	| {
+			readonly type: "student";
+			readonly studentId: StudentId;
+			readonly name: string;
+			readonly affiliation: Affiliation;
+	  }
+	| { readonly type: "teacher"; readonly name: string }
+	| { readonly type: "staff"; readonly name: string }
+	| { readonly type: "other"; readonly name: string };
+
+/**
  * カルテの内容を表す入力型
  *
  * create/correctの共通部分。全フィールドが完全に揃った状態を要求する。
@@ -27,7 +46,7 @@ type CompleteResolution =
  */
 type KarteContentProps = {
 	readonly consultedAt: Date;
-	readonly client: Client;
+	readonly client: CompleteClient;
 	readonly consent: Consent;
 	readonly consultation: {
 		readonly categories: NonEmptyArray<ConsultationCategory>;
@@ -160,15 +179,21 @@ function toConsultation(props: KarteContentProps): Consultation {
 	return {
 		categories: recorded(props.consultation.categories),
 		targetDevice: recorded(props.consultation.targetDevice),
-		troubleDetails: props.consultation.troubleDetails,
+		troubleDetails: recorded(props.consultation.troubleDetails),
 	};
 }
 
 /** 生の入力から SupportRecord（Recorded付き）を構築する */
 function toSupportRecord(props: KarteContentProps): SupportRecord {
+	const [first, ...rest] = props.supportRecord.assignedMemberIds;
+	const assignees: NonEmptyArray<Assignee> = [
+		{ type: "resolved", memberId: first },
+		...rest.map((memberId): Assignee => ({ type: "resolved", memberId })),
+	];
+
 	return {
-		assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
-		content: props.supportRecord.content,
+		assignees: recorded(assignees),
+		content: recorded(props.supportRecord.content),
 		resolution: recorded(toRecordedResolution(props.supportRecord.resolution)),
 		workDuration: recorded(props.supportRecord.workDuration),
 	};

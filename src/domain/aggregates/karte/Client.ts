@@ -1,4 +1,4 @@
-import type { Affiliation } from "#domain/shared";
+import type { Affiliation, PartialAffiliation } from "#domain/shared";
 import type { StudentId } from "#domain/shared";
 
 /** 学生の相談者 */
@@ -8,8 +8,8 @@ type StudentClient = {
 	readonly studentId: StudentId;
 	/** 氏名 */
 	readonly name: string;
-	/** 所属 */
-	readonly affiliation: Affiliation;
+	/** 所属（完全または部分的） */
+	readonly affiliation: Affiliation | PartialAffiliation;
 };
 
 /** 教員の相談者 */

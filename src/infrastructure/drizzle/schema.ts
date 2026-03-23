@@ -15,6 +15,12 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import type {
+	PartialDoctoralAffiliationValue,
+	PartialMasterAffiliationValue,
+	PartialProfessionalAffiliationValue,
+	PartialUndergraduateAffiliationValue,
+} from "#domain/shared/affiliation/partialUniversityStructure";
+import type {
 	DoctoralAffiliationValue,
 	MasterAffiliationValue,
 	ProfessionalAffiliationValue,
@@ -228,10 +234,10 @@ export const followUpEnum = pgEnum("follow_up", [
 
 /** Affiliationのシリアライズ形式 — ドメインの値型で判別共用体にする */
 export type SerializedAffiliation =
-	| { type: "undergraduate"; value: UndergraduateAffiliationValue }
-	| { type: "master"; value: MasterAffiliationValue }
-	| { type: "doctoral"; value: DoctoralAffiliationValue }
-	| { type: "professional"; value: ProfessionalAffiliationValue };
+	| { type: "undergraduate"; value: UndergraduateAffiliationValue | PartialUndergraduateAffiliationValue }
+	| { type: "master"; value: MasterAffiliationValue | PartialMasterAffiliationValue }
+	| { type: "doctoral"; value: DoctoralAffiliationValue | PartialDoctoralAffiliationValue }
+	| { type: "professional"; value: ProfessionalAffiliationValue | PartialProfessionalAffiliationValue };
 
 export const kartes = pgTable("kartes", {
 	id: text().primaryKey(),
@@ -249,10 +255,12 @@ export const kartes = pgTable("kartes", {
 	clientAffiliation: jsonb("client_affiliation").$type<SerializedAffiliation>(),
 	liabilityConsent: boolean("liability_consent").notNull(),
 	disclosureConsent: boolean("disclosure_consent").notNull(),
-	troubleDetails: text("trouble_details").notNull(),
+	/** NULL = notRecorded */
+	troubleDetails: text("trouble_details"),
 	/** NULL = notRecorded */
 	targetDevice: text("target_device"),
-	supportContent: text("support_content").notNull(),
+	/** NULL = notRecorded */
+	supportContent: text("support_content"),
 	/** NULL = notRecorded */
 	resolutionType: resolutionTypeEnum("resolution_type"),
 	/** Only for unresolved; NULL = notRecorded or N/A */
@@ -296,28 +304,33 @@ export const karteConsultationCategories = pgTable(
 	],
 );
 
-export const karteAssignedMembers = pgTable(
-	"karte_assigned_members",
+export const assigneeTypeEnum = pgEnum("assignee_type", [
+	"resolved",
+	"unresolved",
+]);
+
+export const karteAssignees = pgTable(
+	"karte_assignees",
 	{
 		karteId: text("karte_id").notNull(),
-		memberId: text("member_id").notNull(),
+		assigneeType: assigneeTypeEnum("assignee_type").notNull(),
+		/** resolved の場合のみ。メンバーID */
+		memberId: text("member_id"),
+		/** unresolved の場合のみ。対応者名 */
+		assigneeName: text("assignee_name"),
 	},
 	(table) => [
-		primaryKey({
-			columns: [table.karteId, table.memberId],
-			name: "karte_assigned_members_pkey",
-		}),
 		foreignKey({
 			columns: [table.karteId],
 			foreignColumns: [kartes.id],
-			name: "karte_assigned_members_karte_id_fkey",
+			name: "karte_assignees_karte_id_fkey",
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
 		foreignKey({
 			columns: [table.memberId],
 			foreignColumns: [members.id],
-			name: "karte_assigned_members_member_id_fkey",
+			name: "karte_assignees_member_id_fkey",
 		})
 			.onUpdate("cascade")
 			.onDelete("restrict"),
@@ -412,7 +425,7 @@ export const memberExhibitsRelations = relations(memberExhibits, ({ one }) => ({
 
 export const kartesRelations = relations(kartes, ({ many }) => ({
 	karteConsultationCategories: many(karteConsultationCategories),
-	karteAssignedMembers: many(karteAssignedMembers),
+	karteAssignees: many(karteAssignees),
 }));
 
 export const consultationCategoriesRelations = relations(
@@ -436,15 +449,15 @@ export const karteConsultationCategoriesRelations = relations(
 	}),
 );
 
-export const karteAssignedMembersRelations = relations(
-	karteAssignedMembers,
+export const karteAssigneesRelations = relations(
+	karteAssignees,
 	({ one }) => ({
 		karte: one(kartes, {
-			fields: [karteAssignedMembers.karteId],
+			fields: [karteAssignees.karteId],
 			references: [kartes.id],
 		}),
 		member: one(members, {
-			fields: [karteAssignedMembers.memberId],
+			fields: [karteAssignees.memberId],
 			references: [members.id],
 		}),
 	}),

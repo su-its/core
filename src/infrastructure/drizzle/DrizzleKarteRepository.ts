@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import type { Assignee } from "#domain/aggregates/karte/Assignee";
 import type { Client } from "#domain/aggregates/karte/Client";
 import type { Consultation } from "#domain/aggregates/karte/Consultation";
 import type { ConsultationCategory } from "#domain/aggregates/karte/ConsultationCategory";
@@ -10,12 +11,17 @@ import { notRecorded, recorded } from "#domain/aggregates/karte/Recorded";
 import type { Resolution } from "#domain/aggregates/karte/Resolution";
 import type { SupportRecord } from "#domain/aggregates/karte/SupportRecord";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
-import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
+import { memberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import {
 	type Affiliation,
 	DoctoralAffiliation,
 	MasterAffiliation,
+	type PartialAffiliation,
+	PartialDoctoralAffiliation,
+	PartialMasterAffiliation,
+	PartialProfessionalAffiliation,
+	PartialUndergraduateAffiliation,
 	ProfessionalAffiliation,
 	StudentId,
 	UndergraduateAffiliation,
@@ -24,7 +30,7 @@ import { getDb } from "./client";
 import type { SerializedAffiliation } from "./schema";
 import {
 	consultationCategories,
-	karteAssignedMembers,
+	karteAssignees,
 	karteConsultationCategories,
 	kartes,
 } from "./schema";
@@ -39,7 +45,7 @@ type KarteWithRelations = KarteRow & {
 	karteConsultationCategories: (typeof karteConsultationCategories.$inferSelect & {
 		category: typeof consultationCategories.$inferSelect;
 	})[];
-	karteAssignedMembers: (typeof karteAssignedMembers.$inferSelect)[];
+	karteAssignees: (typeof karteAssignees.$inferSelect)[];
 };
 
 // ============================================================================
@@ -79,30 +85,62 @@ function toRecordedClient(row: KarteRow): Recorded<Client> {
 	}
 }
 
-function deserializeAffiliation(json: SerializedAffiliation): Affiliation {
+/**
+ * JSONBからAffiliationを復元する。
+ *
+ * yearフィールドの有無で完全/部分を判別する。
+ * DB由来のJSONBデータのため、キャストで型を絞り込む。
+ */
+function deserializeAffiliation(
+	json: SerializedAffiliation,
+): Affiliation | PartialAffiliation {
+	const hasYear = "year" in json.value;
+
 	switch (json.type) {
 		case "undergraduate":
-			return new UndergraduateAffiliation(json.value);
+			return hasYear
+				? new UndergraduateAffiliation(json.value as never)
+				: new PartialUndergraduateAffiliation(json.value as never);
 		case "master":
-			return new MasterAffiliation(json.value);
+			return hasYear
+				? new MasterAffiliation(json.value as never)
+				: new PartialMasterAffiliation(json.value as never);
 		case "doctoral":
-			return new DoctoralAffiliation(json.value);
+			return hasYear
+				? new DoctoralAffiliation(json.value as never)
+				: new PartialDoctoralAffiliation(json.value as never);
 		case "professional":
-			return new ProfessionalAffiliation(json.value);
+			return hasYear
+				? new ProfessionalAffiliation(json.value as never)
+				: new PartialProfessionalAffiliation(json.value as never);
 	}
 }
 
-function serializeAffiliation(affiliation: Affiliation): SerializedAffiliation {
-	if (affiliation instanceof UndergraduateAffiliation) {
+function serializeAffiliation(
+	affiliation: Affiliation | PartialAffiliation,
+): SerializedAffiliation {
+	if (
+		affiliation instanceof UndergraduateAffiliation ||
+		affiliation instanceof PartialUndergraduateAffiliation
+	) {
 		return { type: "undergraduate", value: affiliation.getValue() };
 	}
-	if (affiliation instanceof MasterAffiliation) {
+	if (
+		affiliation instanceof MasterAffiliation ||
+		affiliation instanceof PartialMasterAffiliation
+	) {
 		return { type: "master", value: affiliation.getValue() };
 	}
-	if (affiliation instanceof DoctoralAffiliation) {
+	if (
+		affiliation instanceof DoctoralAffiliation ||
+		affiliation instanceof PartialDoctoralAffiliation
+	) {
 		return { type: "doctoral", value: affiliation.getValue() };
 	}
-	if (affiliation instanceof ProfessionalAffiliation) {
+	if (
+		affiliation instanceof ProfessionalAffiliation ||
+		affiliation instanceof PartialProfessionalAffiliation
+	) {
 		return { type: "professional", value: affiliation.getValue() };
 	}
 	const _: never = affiliation;
@@ -136,7 +174,8 @@ function toConsultation(row: KarteWithRelations): Consultation {
 				: notRecorded(),
 		targetDevice:
 			row.targetDevice !== null ? recorded(row.targetDevice) : notRecorded(),
-		troubleDetails: row.troubleDetails,
+		troubleDetails:
+			row.troubleDetails !== null ? recorded(row.troubleDetails) : notRecorded(),
 	};
 }
 
@@ -155,17 +194,29 @@ function toResolution(row: KarteRow): Recorded<Resolution> {
 	}
 }
 
+function toAssignee(
+	row: typeof karteAssignees.$inferSelect,
+): Assignee {
+	if (row.assigneeType === "resolved") {
+		if (row.memberId === null) {
+			throw new Error("データ不整合: assigneeType=resolved だが memberId が null");
+		}
+		return { type: "resolved", memberId: memberId(row.memberId) };
+	}
+	if (row.assigneeName === null) {
+		throw new Error("データ不整合: assigneeType=unresolved だが assigneeName が null");
+	}
+	return { type: "unresolved", name: row.assigneeName };
+}
+
 function toSupportRecord(row: KarteWithRelations): SupportRecord {
 	return {
-		assignedMemberIds:
-			row.karteAssignedMembers.length > 0
-				? recorded(
-						toNonEmptyArray(
-							row.karteAssignedMembers.map((kam) => memberId(kam.memberId)),
-						),
-					)
+		assignees:
+			row.karteAssignees.length > 0
+				? recorded(toNonEmptyArray(row.karteAssignees.map(toAssignee)))
 				: notRecorded(),
-		content: row.supportContent,
+		content:
+			row.supportContent !== null ? recorded(row.supportContent) : notRecorded(),
 		resolution: toResolution(row),
 		workDuration:
 			row.workDurationMinutes !== null
@@ -256,12 +307,26 @@ export class DrizzleKarteRepository implements KarteRepository {
 				karteConsultationCategories: {
 					with: { category: true },
 				},
-				karteAssignedMembers: true,
+				karteAssignees: true,
 			},
 		});
 
 		if (!row) return null;
 		return toDomain(row);
+	}
+
+	async findAll(): Promise<Karte[]> {
+		const db = getDb();
+		const rows = await db.query.kartes.findMany({
+			with: {
+				karteConsultationCategories: {
+					with: { category: true },
+				},
+				karteAssignees: true,
+			},
+			orderBy: (kartes, { desc }) => [desc(kartes.recordedAt)],
+		});
+		return rows.map(toDomain);
 	}
 
 	async save(karte: Karte): Promise<void> {
@@ -282,9 +347,9 @@ export class DrizzleKarteRepository implements KarteRepository {
 			clientAffiliation: clientCols.clientAffiliation,
 			liabilityConsent: karte.consent.liabilityConsent,
 			disclosureConsent: karte.consent.disclosureConsent,
-			troubleDetails: karte.consultation.troubleDetails,
+			troubleDetails: recordedToNullable(karte.consultation.troubleDetails),
 			targetDevice: recordedToNullable(karte.consultation.targetDevice),
-			supportContent: karte.supportRecord.content,
+			supportContent: recordedToNullable(karte.supportRecord.content),
 			resolutionType: resCols.resolutionType,
 			followUp: resCols.followUp,
 			workDurationMinutes: recordedToNullable(karte.supportRecord.workDuration),
@@ -306,7 +371,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 
 		if (karte.consultation.categories.type === "recorded") {
 			for (const cat of karte.consultation.categories.value) {
-				// Ensure category master exists
 				await db
 					.insert(consultationCategories)
 					.values({
@@ -326,16 +390,22 @@ export class DrizzleKarteRepository implements KarteRepository {
 			}
 		}
 
-		// Sync assigned members (delete-all-then-insert)
+		// Sync assignees (delete-all-then-insert)
 		await db
-			.delete(karteAssignedMembers)
-			.where(eq(karteAssignedMembers.karteId, karte.id as string));
+			.delete(karteAssignees)
+			.where(eq(karteAssignees.karteId, karte.id as string));
 
-		if (karte.supportRecord.assignedMemberIds.type === "recorded") {
-			for (const mid of karte.supportRecord.assignedMemberIds.value) {
-				await db.insert(karteAssignedMembers).values({
+		if (karte.supportRecord.assignees.type === "recorded") {
+			for (const assignee of karte.supportRecord.assignees.value) {
+				await db.insert(karteAssignees).values({
 					karteId: karte.id as string,
-					memberId: mid as string,
+					assigneeType: assignee.type,
+					memberId:
+						assignee.type === "resolved"
+							? (assignee.memberId as string)
+							: null,
+					assigneeName:
+						assignee.type === "unresolved" ? assignee.name : null,
 				});
 			}
 		}

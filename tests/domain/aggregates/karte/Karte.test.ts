@@ -83,16 +83,16 @@ describe("Karte", () => {
 
 			expect(karte.consultation.categories.type).toBe("recorded");
 			expect(karte.consultation.targetDevice.type).toBe("recorded");
-			expect(karte.consultation.troubleDetails).toBe("eduroamに接続できない");
+			expect(karte.consultation.troubleDetails.type).toBe("recorded");
 		});
 
 		it("supportRecord内のフィールドがRecordedでラップされる", () => {
 			const karte = Karte.create(createProps());
 
-			expect(karte.supportRecord.assignedMemberIds.type).toBe("recorded");
+			expect(karte.supportRecord.assignees.type).toBe("recorded");
 			expect(karte.supportRecord.resolution.type).toBe("recorded");
 			expect(karte.supportRecord.workDuration.type).toBe("recorded");
-			expect(karte.supportRecord.content).toBe("プロファイルを再設定して解決");
+			expect(karte.supportRecord.content.type).toBe("recorded");
 		});
 	});
 
@@ -131,9 +131,10 @@ describe("Karte", () => {
 				},
 			});
 
-			expect(corrected.consultation.troubleDetails).toBe(
-				"訂正: 実はVPN接続の問題だった",
-			);
+			expect(corrected.consultation.troubleDetails).toEqual({
+				type: "recorded",
+				value: "訂正: 実はVPN接続の問題だった",
+			});
 		});
 
 		it("未解決の場合にfollowUpがRecordedでラップされる", () => {
