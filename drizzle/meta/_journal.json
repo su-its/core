@@ -15,6 +15,20 @@
       "when": 1774216380465,
       "tag": "0001_skinny_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774331629753,
+      "tag": "0002_awesome_overlord",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774342843197,
+      "tag": "0003_secret_marvel_apes",
+      "breakpoints": true
     }
   ]
 }

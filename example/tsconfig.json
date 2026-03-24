@@ -6,8 +6,9 @@
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
+		"baseUrl": "..",
 		"paths": {
-			"@shizuoka-its/core": ["../dist"]
+			"@shizuoka-its/core": ["./dist"]
 		}
 	},
 	"include": ["./**/*.ts"]
