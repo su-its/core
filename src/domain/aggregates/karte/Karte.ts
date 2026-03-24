@@ -15,8 +15,8 @@ import type { Resolution } from "./Resolution";
 import type { SupportRecord } from "./SupportRecord";
 import type { WorkDuration } from "./WorkDuration";
 
-/** 新規作成時の解決ステータス — 後処理は必須 */
-type CompleteResolution =
+/** 新規作成・訂正時の解決ステータス — 後処理は必須 */
+export type CompleteResolution =
 	| { readonly type: "resolved" }
 	| {
 			readonly type: "unresolved";
@@ -45,7 +45,7 @@ export type CompleteClient =
  * create/correctの共通部分。全フィールドが完全に揃った状態を要求する。
  * Recorded型は使わず、生の値を受け取る。
  */
-type KarteContentProps = {
+export type KarteContentProps = {
 	readonly consultedAt: ConsultedAt;
 	readonly client: CompleteClient;
 	readonly consent: Consent;

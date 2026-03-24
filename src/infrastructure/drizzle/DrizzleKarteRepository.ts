@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm";
 import type { Assignee } from "#domain/aggregates/karte/Assignee";
 import type { Client } from "#domain/aggregates/karte/Client";
+import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
 import type { Consultation } from "#domain/aggregates/karte/Consultation";
-import { CONSULTATION_CATEGORIES, type ConsultationCategory } from "#domain/aggregates/karte/ConsultationCategory";
+import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
 import { Karte } from "#domain/aggregates/karte/Karte";
 import { type KarteId, karteId } from "#domain/aggregates/karte/KarteId";
 import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
@@ -237,7 +238,7 @@ function recordedToNullable<T>(r: Recorded<T>): T | null {
 
 /** ConsultedAt → DBのtimestampカラム用Date | null */
 function consultedAtToDate(
-	r: Recorded<import("#domain/aggregates/karte/ConsultedAt").ConsultedAt>,
+	r: Recorded<ConsultedAt>,
 ): Date | null {
 	if (r.type === "notRecorded") return null;
 	const ca = r.value;
@@ -283,7 +284,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 
 	async save(karte: Karte): Promise<void> {
 		const db = getDb();
-		const now = new Date();
 
 		const clientCols = clientToColumns(karte.client);
 		const resCols = resolutionToColumns(karte.supportRecord.resolution);
