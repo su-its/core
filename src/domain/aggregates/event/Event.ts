@@ -48,7 +48,7 @@ export class Event {
 
 	public addExhibit(exhibit: Exhibit): void {
 		if (this.exhibits.some((x) => x.id === exhibit.id)) {
-			throw new ExhibitAlreadyExistsException(`Exhibit(id=${exhibit.id}) は既に存在します`);
+			throw new ExhibitAlreadyExistsException(exhibit.id);
 		}
 		// NOTE: Exhibitに登録するタイミングでEventのmemberIdsにも登録する必要がある
 		for (const memberId of exhibit.getMemberIds()) {
@@ -96,7 +96,7 @@ export class Event {
 	private getExhibitOrThrow(exhibitId: ExhibitId): Exhibit {
 		const exhibit = this.exhibits.find((x) => x.id === exhibitId);
 		if (!exhibit) {
-			throw new ExhibitNotFoundException(`Exhibit(id=${exhibitId}) が見つかりません`);
+			throw new ExhibitNotFoundException(exhibitId);
 		}
 		return exhibit;
 	}

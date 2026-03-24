@@ -102,9 +102,7 @@ export class Exhibit {
 
 	private getLightningTalkOrThrow(): LightningTalk {
 		if (!this.lightningTalk) {
-			throw new LightningTalkNotFoundException(
-				`Exhibit(id=${this.id}) に紐づく LightningTalk が存在しません`,
-			);
+			throw new LightningTalkNotFoundException(this.id);
 		}
 		return this.lightningTalk;
 	}
