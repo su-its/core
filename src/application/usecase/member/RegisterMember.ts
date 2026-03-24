@@ -11,14 +11,14 @@ import {
 } from "#domain";
 import type { Recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
-import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
+import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 
 export interface RegisterMemberInput {
 	name: string;
 	studentId: StudentId;
 	email: UniversityEmail;
 	personalEmail: Recorded<Email>;
-	affiliation: Affiliation;
+	affiliation: CompleteAffiliation;
 }
 
 export interface RegisterMemberOutput {

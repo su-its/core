@@ -16,11 +16,9 @@ import { memberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import {
 	type Affiliation,
-	type PartialAffiliation,
 	StudentId,
 } from "#domain/shared";
 import { getDb } from "./client";
-import type { SerializedAffiliation } from "./schema";
 import { karteAssignees, kartes } from "./schema";
 
 // ============================================================================
@@ -76,15 +74,15 @@ function toRecordedClient(row: KarteRow): Recorded<Client> {
  * DB由来のJSONBデータのため、キャストで型を絞り込む。
  */
 function deserializeAffiliation(
-	json: SerializedAffiliation,
-): Affiliation | PartialAffiliation {
-	return { type: json.type, value: json.value } as Affiliation | PartialAffiliation;
+	json: Affiliation,
+): Affiliation {
+	return { type: json.type, value: json.value } as Affiliation;
 }
 
 function serializeAffiliation(
-	affiliation: Affiliation | PartialAffiliation,
-): SerializedAffiliation {
-	return { type: affiliation.type, value: affiliation.value } as SerializedAffiliation;
+	affiliation: Affiliation,
+): Affiliation {
+	return { type: affiliation.type, value: affiliation.value } as Affiliation;
 }
 
 /**
@@ -208,7 +206,7 @@ function clientToColumns(
 		clientStudentId: c.type === "student" ? c.studentId.getValue() : null,
 		clientAffiliation:
 			c.type === "student"
-				? (serializeAffiliation(c.affiliation) as SerializedAffiliation)
+				? (serializeAffiliation(c.affiliation) as Affiliation)
 				: null,
 	};
 }

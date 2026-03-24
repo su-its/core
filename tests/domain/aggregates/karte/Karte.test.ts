@@ -5,14 +5,14 @@ import { karteId } from "#domain/aggregates/karte/KarteId";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { StudentId } from "#domain/shared/StudentId";
-import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
+import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 
 /** テスト用のKarteCreationPropsを生成する */
 function createProps() {
-	const affiliation: Affiliation = {
+	const affiliation: CompleteAffiliation = {
 		type: "undergraduate",
 		value: { faculty: "情報学部", department: "情報科学科", year: 3 },
-	} as Affiliation;
+	} as CompleteAffiliation;
 
 	return {
 		id: karteId("test-karte-id"),

@@ -1,6 +1,6 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import type { Affiliation } from "#domain/shared";
+import type { CompleteAffiliation } from "#domain/shared";
 import type { StudentId } from "#domain/shared";
 import type { Assignee } from "./Assignee";
 import type { Client } from "./Client";
@@ -33,7 +33,7 @@ export type CompleteClient =
 			readonly type: "student";
 			readonly studentId: StudentId;
 			readonly name: string;
-			readonly affiliation: Affiliation;
+			readonly affiliation: CompleteAffiliation;
 	  }
 	| { readonly type: "teacher"; readonly name: string }
 	| { readonly type: "staff"; readonly name: string }

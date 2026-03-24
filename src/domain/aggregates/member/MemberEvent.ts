@@ -2,11 +2,11 @@ import type { DomainEvent } from "#domain/base/DomainEvent";
 import type { Recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
 import type {
-	Affiliation,
-	DoctoralAffiliation,
-	MasterAffiliation,
-	ProfessionalAffiliation,
-	UndergraduateAffiliation,
+	CompleteAffiliation,
+	CompleteDoctoralAffiliation,
+	CompleteMasterAffiliation,
+	CompleteProfessionalAffiliation,
+	CompleteUndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
 import type { Email } from "./Email";
 import type { MemberId } from "./MemberId";
@@ -28,7 +28,7 @@ export class MemberRegistered implements DomainEvent {
 		readonly name: string,
 		readonly personalEmail: Recorded<Email>,
 		readonly studentId: StudentId,
-		readonly affiliation: Affiliation,
+		readonly affiliation: CompleteAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -51,7 +51,7 @@ export class MemberReregistered implements DomainEvent {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly studentId: StudentId,
-		readonly affiliation: Affiliation,
+		readonly affiliation: CompleteAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -73,7 +73,7 @@ export class MemberConfirmed implements DomainEvent {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly studentId: StudentId,
-		readonly affiliation: Affiliation,
+		readonly affiliation: CompleteAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -84,8 +84,10 @@ export class InternallyAdvanced implements DomainEvent {
 	constructor(
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
-		readonly previousAffiliation: Affiliation,
-		readonly newAffiliation: MasterAffiliation | DoctoralAffiliation,
+		readonly previousAffiliation: CompleteAffiliation,
+		readonly newAffiliation:
+			| CompleteMasterAffiliation
+			| CompleteDoctoralAffiliation,
 		readonly previousStudentId: StudentId,
 		readonly newStudentId: StudentId,
 		readonly occurredAt: Date,
@@ -98,8 +100,8 @@ export class FacultyTransferred implements DomainEvent {
 	constructor(
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
-		readonly previousAffiliation: UndergraduateAffiliation,
-		readonly newAffiliation: UndergraduateAffiliation,
+		readonly previousAffiliation: CompleteUndergraduateAffiliation,
+		readonly newAffiliation: CompleteUndergraduateAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -110,8 +112,8 @@ export class DepartmentTransferred implements DomainEvent {
 	constructor(
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
-		readonly previousAffiliation: UndergraduateAffiliation,
-		readonly newAffiliation: UndergraduateAffiliation,
+		readonly previousAffiliation: CompleteUndergraduateAffiliation,
+		readonly newAffiliation: CompleteUndergraduateAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }
@@ -123,13 +125,13 @@ export class MajorTransferred implements DomainEvent {
 		readonly id: MemberId,
 		readonly email: UniversityEmail,
 		readonly previousAffiliation:
-			| MasterAffiliation
-			| DoctoralAffiliation
-			| ProfessionalAffiliation,
+			| CompleteMasterAffiliation
+			| CompleteDoctoralAffiliation
+			| CompleteProfessionalAffiliation,
 		readonly newAffiliation:
-			| MasterAffiliation
-			| DoctoralAffiliation
-			| ProfessionalAffiliation,
+			| CompleteMasterAffiliation
+			| CompleteDoctoralAffiliation
+			| CompleteProfessionalAffiliation,
 		readonly occurredAt: Date,
 	) {}
 }

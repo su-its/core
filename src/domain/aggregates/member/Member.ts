@@ -2,11 +2,11 @@ import { InvalidAffiliationOperationException } from "#domain/exceptions";
 import type { Recorded } from "#domain/shared/Recorded";
 import type { StudentId } from "#domain/shared/StudentId";
 import {
-	type Affiliation,
-	type DoctoralAffiliation,
-	type MasterAffiliation,
-	type ProfessionalAffiliation,
-	type UndergraduateAffiliation,
+	type CompleteAffiliation,
+	type CompleteDoctoralAffiliation,
+	type CompleteMasterAffiliation,
+	type CompleteProfessionalAffiliation,
+	type CompleteUndergraduateAffiliation,
 	affiliationTypeNames,
 } from "#domain/shared/affiliation/Affiliation";
 import type { Email } from "./Email";
@@ -39,7 +39,7 @@ export class ActiveMember {
 		readonly name: string,
 		readonly personalEmail: Recorded<Email>,
 		readonly studentId: StudentId,
-		readonly affiliation: Affiliation,
+		readonly affiliation: CompleteAffiliation,
 		private readonly domainEvents: readonly MemberDomainEvent[] = [],
 	) {}
 
@@ -49,7 +49,7 @@ export class ActiveMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 		studentId: StudentId;
-		affiliation: Affiliation;
+		affiliation: CompleteAffiliation;
 	}): ActiveMember {
 		return new ActiveMember(
 			props.id,
@@ -78,7 +78,7 @@ export class ActiveMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 		studentId: StudentId;
-		affiliation: Affiliation;
+		affiliation: CompleteAffiliation;
 	}): ActiveMember {
 		return new ActiveMember(
 			props.id,
@@ -174,7 +174,7 @@ export class ActiveMember {
 	}
 
 	advanceInternally(
-		newAffiliation: MasterAffiliation | DoctoralAffiliation,
+		newAffiliation: CompleteMasterAffiliation | CompleteDoctoralAffiliation,
 		newStudentId: StudentId,
 	): ActiveMember {
 		this.validateAdvancement(newAffiliation);
@@ -201,7 +201,9 @@ export class ActiveMember {
 		);
 	}
 
-	transferFaculty(newAffiliation: UndergraduateAffiliation): ActiveMember {
+	transferFaculty(
+		newAffiliation: CompleteUndergraduateAffiliation,
+	): ActiveMember {
 		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学部",
@@ -230,7 +232,9 @@ export class ActiveMember {
 		);
 	}
 
-	transferDepartment(newAffiliation: UndergraduateAffiliation): ActiveMember {
+	transferDepartment(
+		newAffiliation: CompleteUndergraduateAffiliation,
+	): ActiveMember {
 		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学科",
@@ -269,9 +273,9 @@ export class ActiveMember {
 
 	transferMajor(
 		newAffiliation:
-			| MasterAffiliation
-			| DoctoralAffiliation
-			| ProfessionalAffiliation,
+			| CompleteMasterAffiliation
+			| CompleteDoctoralAffiliation
+			| CompleteProfessionalAffiliation,
 	): ActiveMember {
 		if (this.affiliation.type === "undergraduate") {
 			throw new InvalidAffiliationOperationException(
@@ -314,7 +318,7 @@ export class ActiveMember {
 	}
 
 	private validateAdvancement(
-		newAffiliation: MasterAffiliation | DoctoralAffiliation,
+		newAffiliation: CompleteMasterAffiliation | CompleteDoctoralAffiliation,
 	): void {
 		if (this.affiliation.type === "undergraduate") {
 			if (newAffiliation.type !== "master") {
@@ -373,7 +377,10 @@ export class UnconfirmedMember {
 		);
 	}
 
-	confirm(studentId: StudentId, affiliation: Affiliation): ActiveMember {
+	confirm(
+		studentId: StudentId,
+		affiliation: CompleteAffiliation,
+	): ActiveMember {
 		return new ActiveMember(
 			this.id,
 			this.email,
@@ -465,7 +472,10 @@ export class FormerMember {
 		);
 	}
 
-	reregister(studentId: StudentId, affiliation: Affiliation): ActiveMember {
+	reregister(
+		studentId: StudentId,
+		affiliation: CompleteAffiliation,
+	): ActiveMember {
 		return new ActiveMember(
 			this.id,
 			this.email,

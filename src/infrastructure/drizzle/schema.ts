@@ -15,16 +15,6 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
-import type {
-	DoctoralAffiliationValue,
-	MasterAffiliationValue,
-	PartialDoctoralAffiliationValue,
-	PartialMasterAffiliationValue,
-	PartialProfessionalAffiliationValue,
-	PartialUndergraduateAffiliationValue,
-	ProfessionalAffiliationValue,
-	UndergraduateAffiliationValue,
-} from "#domain/shared/affiliation/universityStructure";
 
 // ============================================================================
 // Enums
@@ -283,13 +273,6 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 // Karte Tables
 // ============================================================================
 
-/** Affiliationのシリアライズ形式 — ドメインの値型で判別共用体にする */
-export type SerializedAffiliation =
-	| { type: "undergraduate"; value: UndergraduateAffiliationValue | PartialUndergraduateAffiliationValue }
-	| { type: "master"; value: MasterAffiliationValue | PartialMasterAffiliationValue }
-	| { type: "doctoral"; value: DoctoralAffiliationValue | PartialDoctoralAffiliationValue }
-	| { type: "professional"; value: ProfessionalAffiliationValue | PartialProfessionalAffiliationValue };
-
 export const kartes = pgTable("kartes", {
 	id: text().primaryKey(),
 	recordedAt: timestamp("recorded_at").notNull(),
@@ -305,7 +288,7 @@ export const kartes = pgTable("kartes", {
 	/** Only for student clients; 学籍番号は8文字固定 */
 	clientStudentId: char("client_student_id", { length: 8 }),
 	/** Only for student clients; Affiliation as JSONB */
-	clientAffiliation: jsonb("client_affiliation").$type<SerializedAffiliation>(),
+	clientAffiliation: jsonb("client_affiliation").$type<Affiliation>(),
 	liabilityConsent: boolean("liability_consent").notNull(),
 	disclosureConsent: boolean("disclosure_consent").notNull(),
 	/** 空配列 = notRecorded */
