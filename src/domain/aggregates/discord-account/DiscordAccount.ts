@@ -1,5 +1,5 @@
-import type { MemberId } from "#domain/aggregates/member/MemberId";
-import type { DomainEvent } from "#domain/base/DomainEvent";
+import type { MemberId } from "#domain";
+import type { DomainEvent } from "../../base";
 import type { DiscordId } from "./DiscordId";
 
 /** Discordアカウント紐付けイベント */

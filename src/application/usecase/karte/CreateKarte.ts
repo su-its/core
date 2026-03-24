@@ -1,7 +1,10 @@
-import { IUseCase } from "#application/usecase/base";
-import { Karte, type KarteContentProps } from "#domain/aggregates/karte/Karte";
-import type { KarteId } from "#domain/aggregates/karte/KarteId";
-import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
+import {
+	Karte,
+	type KarteContentProps,
+	type KarteId,
+	type KarteRepository,
+} from "#domain";
+import { IUseCase } from "../base";
 
 export type CreateKarteInput = KarteContentProps & { readonly id: KarteId };
 

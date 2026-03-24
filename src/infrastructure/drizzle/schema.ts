@@ -15,19 +15,19 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { DISCORD_ACCOUNT_EVENT_NAMES } from "#domain/aggregates/discord-account/DiscordAccount";
-import { ASSIGNEE_TYPES } from "#domain/aggregates/karte/Assignee";
-import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
-import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
-import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
-import { FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
-import { RESOLUTION_TYPES } from "#domain/aggregates/karte/Resolution";
-import { MEMBER_EVENT_NAMES } from "#domain/aggregates/member/MemberEvent";
-import type {
-	Affiliation,
-	CompleteAffiliation,
-} from "#domain/shared/affiliation/Affiliation";
-import type { Recorded } from "#domain/shared/Recorded";
+import {
+	ASSIGNEE_TYPES,
+	CLIENT_TYPES,
+	CONSULTATION_CATEGORIES,
+	CONSULTED_AT_PRECISIONS,
+	DISCORD_ACCOUNT_EVENT_NAMES,
+	FOLLOW_UP_OPTIONS,
+	MEMBER_EVENT_NAMES,
+	RESOLUTION_TYPES,
+	type Affiliation,
+	type CompleteAffiliation,
+	type Recorded,
+} from "#domain";
 
 // ============================================================================
 // Event Payload Types

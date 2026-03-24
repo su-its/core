@@ -1,5 +1,5 @@
-import type { Affiliation } from "#domain/shared";
-import type { StudentId } from "#domain/shared";
+import type { Affiliation } from "../../shared";
+import type { StudentId } from "../../shared";
 
 /** 学生の相談者 */
 type StudentClient = {
