@@ -1,6 +1,6 @@
+import type { Karte, KarteId, KarteRepository } from "#domain";
 import { KarteNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
-import type { Karte, KarteId, KarteRepository } from "#domain";
 
 export type GetKarteInput = {
 	readonly karteId: KarteId;

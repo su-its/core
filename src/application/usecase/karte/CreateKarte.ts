@@ -1,10 +1,10 @@
-import { IUseCase } from "../base";
 import {
 	Karte,
 	type KarteContentProps,
 	type KarteId,
 	type KarteRepository,
 } from "#domain";
+import { IUseCase } from "../base";
 
 export type CreateKarteInput = KarteContentProps & { readonly id: KarteId };
 

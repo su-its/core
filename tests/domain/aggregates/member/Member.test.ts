@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
 	ActiveMember,
+	type CompleteDoctoralAffiliation,
+	type CompleteMasterAffiliation,
+	type CompleteUndergraduateAffiliation,
 	FormerMember,
 	InvalidAffiliationOperationException,
 	StudentId,
@@ -8,9 +11,6 @@ import {
 	UniversityEmail,
 	memberId,
 	notRecorded,
-	type CompleteDoctoralAffiliation,
-	type CompleteMasterAffiliation,
-	type CompleteUndergraduateAffiliation,
 } from "#domain";
 
 function createEmail() {

@@ -1,5 +1,5 @@
-import { IUseCase } from "../base";
 import type { Karte, KarteRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export type ListKartesInput = Record<string, never>;
 

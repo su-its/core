@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+	type CompleteAffiliation,
 	Karte,
+	type KarteContentProps,
+	type MemberId,
 	StudentId,
 	dateTime,
 	karteId,
@@ -9,9 +12,6 @@ import {
 	notRecorded,
 	recorded,
 	workDuration,
-	type CompleteAffiliation,
-	type KarteContentProps,
-	type MemberId,
 } from "#domain";
 
 const TEST_AFFILIATION: CompleteAffiliation = {

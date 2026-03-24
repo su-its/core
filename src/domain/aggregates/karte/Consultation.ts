@@ -1,6 +1,6 @@
 import type { NonEmptyArray } from "../../base";
-import type { ConsultationCategory } from "./ConsultationCategory";
 import type { Recorded } from "../../shared";
+import type { ConsultationCategory } from "./ConsultationCategory";
 
 /**
  * 相談事

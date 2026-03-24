@@ -1,6 +1,6 @@
 import type { NonEmptyArray } from "../../base";
-import type { Assignee } from "./Assignee";
 import type { Recorded } from "../../shared";
+import type { Assignee } from "./Assignee";
 import type { Resolution } from "./Resolution";
 import type { WorkDuration } from "./WorkDuration";
 

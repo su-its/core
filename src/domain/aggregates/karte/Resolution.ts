@@ -1,5 +1,5 @@
-import type { FollowUp } from "./FollowUp";
 import type { Recorded } from "../../shared";
+import type { FollowUp } from "./FollowUp";
 
 /**
  * 解決ステータス — 相談が解決したかどうか

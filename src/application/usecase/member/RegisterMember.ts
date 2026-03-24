@@ -1,6 +1,4 @@
 import { v4 as uuid } from "uuid";
-import { MemberEmailAlreadyExistsException } from "../../exceptions";
-import { IUseCase } from "../base";
 import {
 	ActiveMember,
 	type CompleteAffiliation,
@@ -12,6 +10,8 @@ import {
 	type UniversityEmail,
 	memberId,
 } from "#domain";
+import { MemberEmailAlreadyExistsException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {
 	name: string;

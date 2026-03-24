@@ -1,11 +1,11 @@
-import { KarteNotFoundException } from "../../exceptions";
-import { IUseCase } from "../base";
 import type {
 	Karte,
 	KarteContentProps,
 	KarteId,
 	KarteRepository,
 } from "#domain";
+import { KarteNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export type CorrectKarteInput = KarteContentProps & {
 	readonly karteId: KarteId;

@@ -1,6 +1,6 @@
+import type { Event, EventId, EventRepository } from "#domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
-import type { Event, EventId, EventRepository } from "#domain";
 
 export interface UpdateEventInput {
 	eventId: EventId;

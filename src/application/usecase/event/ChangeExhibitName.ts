@@ -1,6 +1,6 @@
+import type { Event, EventId, EventRepository, ExhibitId } from "#domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
-import type { Event, EventId, EventRepository, ExhibitId } from "#domain";
 
 export interface ChangeExhibitNameInput {
 	eventId: EventId;

@@ -1,15 +1,15 @@
-import { IUseCase } from "../base";
 import {
-	Karte,
 	type Client,
 	type Consent,
 	type Consultation,
 	type ConsultedAt,
+	Karte,
 	type KarteId,
 	type KarteRepository,
 	type Recorded,
 	type SupportRecord,
 } from "#domain";
+import { IUseCase } from "../base";
 
 /**
  * 過去データのインポート用入力

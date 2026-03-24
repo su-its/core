@@ -1,6 +1,6 @@
+import type { Event, EventId, EventRepository, ExhibitId, Url } from "#domain";
 import { EventNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
-import type { Event, EventId, EventRepository, ExhibitId, Url } from "#domain";
 
 export interface ChangeLightningTalkSlideUrlInput {
 	eventId: EventId;

@@ -1,5 +1,5 @@
-import { IUseCase } from "../base";
 import { Event, type EventId, type EventRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export interface CreateEventInput {
 	id: EventId;

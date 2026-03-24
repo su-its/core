@@ -1,5 +1,3 @@
-import { EventNotFoundException } from "../../exceptions";
-import { IUseCase } from "../base";
 import type {
 	Event,
 	EventRepository,
@@ -7,6 +5,8 @@ import type {
 	MemberId,
 	MemberRepository,
 } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RemoveMemberFromExhibitInput {
 	memberId: MemberId;
