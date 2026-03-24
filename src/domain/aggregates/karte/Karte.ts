@@ -57,7 +57,7 @@ export type KarteContentProps = {
 	};
 	readonly supportRecord: {
 		readonly assignedMemberIds: NonEmptyArray<MemberId>;
-		readonly content: string;
+		readonly content: NonEmptyString;
 		readonly resolution: CompleteResolution;
 		readonly workDuration: WorkDuration;
 	};
