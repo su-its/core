@@ -28,6 +28,7 @@ export type EventUseCases = {
 };
 
 /**
+ * @deprecated createEventService() を使用してください
  * @beta 将来的にAPIが変更される可能性があります。
  */
 export function createEventUseCases(): EventUseCases {

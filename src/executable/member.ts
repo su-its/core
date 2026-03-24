@@ -21,6 +21,7 @@ export type MemberUseCases = {
 	connectDiscordAccount: ConnectDiscordAccountUseCase;
 };
 
+/** @deprecated createMemberService() を使用してください */
 export function createMemberUseCases(): MemberUseCases {
 	const memberRepo = new DrizzleMemberRepository();
 	const discordRepo = new DrizzleDiscordAccountRepository();
