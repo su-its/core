@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { Assignee } from "#domain/aggregates/karte/Assignee";
 import type { Client } from "#domain/aggregates/karte/Client";
 import type { Consultation } from "#domain/aggregates/karte/Consultation";
-import type { ConsultationCategory } from "#domain/aggregates/karte/ConsultationCategory";
+import { CONSULTATION_CATEGORIES, type ConsultationCategory } from "#domain/aggregates/karte/ConsultationCategory";
 import { Karte } from "#domain/aggregates/karte/Karte";
 import { type KarteId, karteId } from "#domain/aggregates/karte/KarteId";
 import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
@@ -21,7 +21,6 @@ import {
 import { getDb } from "./client";
 import type { SerializedAffiliation } from "./schema";
 import {
-	consultationCategories,
 	karteAssignees,
 	karteConsultationCategories,
 	kartes,
@@ -34,9 +33,7 @@ import {
 type KarteRow = typeof kartes.$inferSelect;
 
 type KarteWithRelations = KarteRow & {
-	karteConsultationCategories: (typeof karteConsultationCategories.$inferSelect & {
-		category: typeof consultationCategories.$inferSelect;
-	})[];
+	karteConsultationCategories: (typeof karteConsultationCategories.$inferSelect)[];
 	karteAssignees: (typeof karteAssignees.$inferSelect)[];
 };
 
@@ -112,10 +109,11 @@ function toConsultation(row: KarteWithRelations): Consultation {
 			row.karteConsultationCategories.length > 0
 				? recorded(
 						toNonEmptyArray(
-							row.karteConsultationCategories.map((kcc) => ({
-								id: kcc.category.id as ConsultationCategory["id"],
-								displayName: kcc.category.displayName,
-							})),
+							row.karteConsultationCategories.map((kcc) => {
+								const id = kcc.categoryId;
+								const master = CONSULTATION_CATEGORIES.find((c) => c.id === id);
+								return { id, displayName: master?.displayName ?? id };
+							}),
 						),
 					)
 				: notRecorded(),
@@ -270,9 +268,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 		const row = await db.query.kartes.findFirst({
 			where: eq(kartes.id, id as string),
 			with: {
-				karteConsultationCategories: {
-					with: { category: true },
-				},
+				karteConsultationCategories: true,
 				karteAssignees: true,
 			},
 		});
@@ -285,9 +281,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 		const db = getDb();
 		const rows = await db.query.kartes.findMany({
 			with: {
-				karteConsultationCategories: {
-					with: { category: true },
-				},
+				karteConsultationCategories: true,
 				karteAssignees: true,
 			},
 			orderBy: (kartes, { desc }) => [desc(kartes.recordedAt)],
@@ -337,18 +331,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 
 		if (karte.consultation.categories.type === "recorded") {
 			for (const cat of karte.consultation.categories.value) {
-				await db
-					.insert(consultationCategories)
-					.values({
-						id: cat.id,
-						displayName: cat.displayName,
-						updatedAt: now,
-					})
-					.onConflictDoUpdate({
-						target: consultationCategories.id,
-						set: { displayName: cat.displayName, updatedAt: now },
-					});
-
 				await db.insert(karteConsultationCategories).values({
 					karteId: karte.id as string,
 					categoryId: cat.id,

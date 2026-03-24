@@ -56,6 +56,28 @@ export const followUpEnum = pgEnum("follow_up", [
 	"その他",
 ]);
 
+export const consultationCategoryEnum = pgEnum("consultation_category", [
+	"wifi_eduroam",
+	"wifi_success",
+	"wifi_smartphone",
+	"usage_mac",
+	"usage_fs",
+	"usage_vpn",
+	"usage_mail",
+	"usage_gakujo",
+	"usage_onedrive",
+	"usage_printer",
+	"usage_vm",
+	"usage_ms_software",
+	"hardware_pc",
+	"problem_credential",
+	"problem_windows",
+	"problem_linux",
+	"programming",
+	"rent",
+	"other",
+]);
+
 // ============================================================================
 // Tables (introspected from production database)
 // ============================================================================
@@ -291,18 +313,11 @@ export const kartes = pgTable("kartes", {
 	workDurationMinutes: integer("work_duration_minutes"),
 });
 
-export const consultationCategories = pgTable("consultation_categories", {
-	id: text().primaryKey(),
-	displayName: text("display_name").notNull(),
-	createdAt: timestamp().default(sql`CURRENT_TIMESTAMP`).notNull(),
-	updatedAt: timestamp().notNull(),
-});
-
 export const karteConsultationCategories = pgTable(
 	"karte_consultation_categories",
 	{
 		karteId: text("karte_id").notNull(),
-		categoryId: text("category_id").notNull(),
+		categoryId: consultationCategoryEnum("category_id").notNull(),
 	},
 	(table) => [
 		primaryKey({
@@ -316,13 +331,6 @@ export const karteConsultationCategories = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("cascade"),
-		foreignKey({
-			columns: [table.categoryId],
-			foreignColumns: [consultationCategories.id],
-			name: "karte_consultation_categories_category_id_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("restrict"),
 	],
 );
 
@@ -434,23 +442,12 @@ export const kartesRelations = relations(kartes, ({ many }) => ({
 	karteAssignees: many(karteAssignees),
 }));
 
-export const consultationCategoriesRelations = relations(
-	consultationCategories,
-	({ many }) => ({
-		karteConsultationCategories: many(karteConsultationCategories),
-	}),
-);
-
 export const karteConsultationCategoriesRelations = relations(
 	karteConsultationCategories,
 	({ one }) => ({
 		karte: one(kartes, {
 			fields: [karteConsultationCategories.karteId],
 			references: [kartes.id],
-		}),
-		category: one(consultationCategories, {
-			fields: [karteConsultationCategories.categoryId],
-			references: [consultationCategories.id],
 		}),
 	}),
 );
