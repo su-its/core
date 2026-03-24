@@ -75,6 +75,7 @@ export const members = pgTable(
 			.default(sql`CURRENT_TIMESTAMP`)
 			.notNull(),
 		updatedAt: timestamp({ mode: "string" }).notNull(),
+		nickname: text(),
 	},
 	(table) => [
 		uniqueIndex("members_email_key").using(
