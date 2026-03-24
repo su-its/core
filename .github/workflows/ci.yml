@@ -54,8 +54,8 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain drizzle/)" ]; then
             echo "::error::Drizzle schema and generated files are out of sync. Run 'npm run db:generate' and commit the result."
+            git add -N drizzle/
             git diff drizzle/
-            git status drizzle/
             exit 1
           fi
 
