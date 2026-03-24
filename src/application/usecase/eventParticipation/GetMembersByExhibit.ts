@@ -1,5 +1,5 @@
-import { ExhibitNotFoundFromExhibitIdException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+import { ExhibitNotFoundFromExhibitIdException } from "../../exceptions";
+import { IUseCase } from "../base";
 import type {
 	EventRepository,
 	ExhibitId,

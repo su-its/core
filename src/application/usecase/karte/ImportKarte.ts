@@ -1,13 +1,15 @@
-import { IUseCase } from "#application/usecase/base";
-import type { Client } from "#domain/aggregates/karte/Client";
-import type { Consent } from "#domain/aggregates/karte/Consent";
-import type { Consultation } from "#domain/aggregates/karte/Consultation";
-import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
-import { Karte } from "#domain/aggregates/karte/Karte";
-import type { KarteId } from "#domain/aggregates/karte/KarteId";
-import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
-import type { Recorded } from "#domain/aggregates/karte/Recorded";
-import type { SupportRecord } from "#domain/aggregates/karte/SupportRecord";
+import { IUseCase } from "../base";
+import {
+	Karte,
+	type Client,
+	type Consent,
+	type Consultation,
+	type ConsultedAt,
+	type KarteId,
+	type KarteRepository,
+	type Recorded,
+	type SupportRecord,
+} from "#domain";
 
 /**
  * 過去データのインポート用入力

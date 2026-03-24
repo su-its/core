@@ -1,4 +1,4 @@
-import { IUseCase } from "#application/usecase/base";
+import { IUseCase } from "../base";
 import type { Member, MemberRepository } from "#domain";
 
 export type GetMemberListInput = Record<string, never>;

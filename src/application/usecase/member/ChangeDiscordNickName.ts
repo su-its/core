@@ -1,5 +1,5 @@
-import { DiscordAccountNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+import { DiscordAccountNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 import type {
 	DiscordAccount,
 	DiscordAccountRepository,

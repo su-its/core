@@ -1,6 +1,6 @@
-import { InvalidAffiliationOperationException } from "#domain/exceptions";
-import type { Recorded } from "#domain/shared/Recorded";
-import type { StudentId } from "#domain/shared/StudentId";
+import { InvalidAffiliationOperationException } from "../../exceptions";
+import type { Recorded } from "../../shared";
+import type { StudentId } from "../../shared";
 import {
 	type CompleteAffiliation,
 	type CompleteDoctoralAffiliation,
@@ -8,7 +8,7 @@ import {
 	type CompleteProfessionalAffiliation,
 	type CompleteUndergraduateAffiliation,
 	affiliationTypeNames,
-} from "#domain/shared/affiliation/Affiliation";
+} from "../../shared";
 import type { Email } from "./Email";
 import {
 	DepartmentTransferred,

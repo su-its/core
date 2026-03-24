@@ -13,13 +13,15 @@ import {
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { ASSIGNEE_TYPES } from "#domain/aggregates/karte/Assignee";
-import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
-import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
-import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
-import { FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
-import { RESOLUTION_TYPES } from "#domain/aggregates/karte/Resolution";
-import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
+import {
+	ASSIGNEE_TYPES,
+	CLIENT_TYPES,
+	CONSULTATION_CATEGORIES,
+	CONSULTED_AT_PRECISIONS,
+	FOLLOW_UP_OPTIONS,
+	RESOLUTION_TYPES,
+	type Affiliation,
+} from "#domain";
 
 // ============================================================================
 // Enums

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { workDuration } from "#domain/aggregates/karte/WorkDuration";
-import { InvalidWorkDurationException } from "#domain/exceptions";
+import { InvalidWorkDurationException, workDuration } from "#domain";
 
 describe("workDuration", () => {
 	describe("正常系", () => {

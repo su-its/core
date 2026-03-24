@@ -1,5 +1,5 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 import type {
 	EventId,
 	EventRepository,

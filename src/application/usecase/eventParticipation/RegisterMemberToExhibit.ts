@@ -1,8 +1,8 @@
 import {
 	EventNotFoundException,
 	MemberNotFoundException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+} from "../../exceptions";
+import { IUseCase } from "../base";
 import type {
 	Event,
 	EventRepository,

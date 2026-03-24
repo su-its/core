@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { dateTime } from "#domain/aggregates/karte/ConsultedAt";
-import type { KarteContentProps } from "#domain/aggregates/karte/Karte";
-import { Karte } from "#domain/aggregates/karte/Karte";
-import { karteId } from "#domain/aggregates/karte/KarteId";
-import { notRecorded, recorded } from "#domain/aggregates/karte/Recorded";
-import { workDuration } from "#domain/aggregates/karte/WorkDuration";
-import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
-import { nonEmptyString } from "#domain/base/NonEmptyString";
-import { StudentId } from "#domain/shared/StudentId";
-import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
+import {
+	Karte,
+	StudentId,
+	dateTime,
+	karteId,
+	memberId,
+	nonEmptyString,
+	notRecorded,
+	recorded,
+	workDuration,
+	type CompleteAffiliation,
+	type KarteContentProps,
+	type MemberId,
+} from "#domain";
 
 const TEST_AFFILIATION: CompleteAffiliation = {
 	type: "undergraduate",

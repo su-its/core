@@ -1,4 +1,4 @@
-import { IUseCase } from "#application/usecase/base";
+import { IUseCase } from "../base";
 import { Event, type EventId, type EventRepository } from "#domain";
 
 export interface CreateEventInput {

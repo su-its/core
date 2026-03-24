@@ -1,8 +1,8 @@
 import {
 	DiscordAccountAlreadyLinkedException,
 	MemberNotFoundException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
+} from "../../exceptions";
+import { IUseCase } from "../base";
 import {
 	DiscordAccount,
 	type DiscordAccountRepository,
