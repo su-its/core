@@ -30,10 +30,7 @@ export class ChangeLightningTalkStartTime extends IUseCase<
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
-		event.changeExhibitLightningTalkStartTime(
-			input.exhibitId,
-			input.newStartTime,
-		);
+		event.changeExhibitLightningTalkStartTime(input.exhibitId, input.newStartTime);
 		await this.eventRepository.save(event);
 		return { event };
 	}

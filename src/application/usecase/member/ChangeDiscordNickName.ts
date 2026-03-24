@@ -1,8 +1,4 @@
-import type {
-	DiscordAccount,
-	DiscordAccountRepository,
-	DiscordId,
-} from "#domain";
+import type { DiscordAccount, DiscordAccountRepository, DiscordId } from "#domain";
 import { DiscordAccountNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
@@ -23,12 +19,8 @@ export class ChangeDiscordNickNameUseCase extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: ChangeDiscordNickNameInput,
-	): Promise<ChangeDiscordNickNameOutput> {
-		const account = await this.discordRepo.findByDiscordId(
-			input.discordAccountId,
-		);
+	async execute(input: ChangeDiscordNickNameInput): Promise<ChangeDiscordNickNameOutput> {
+		const account = await this.discordRepo.findByDiscordId(input.discordAccountId);
 		if (!account) {
 			throw new DiscordAccountNotFoundException(input.discordAccountId);
 		}

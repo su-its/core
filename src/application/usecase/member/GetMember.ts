@@ -9,10 +9,7 @@ export interface GetMemberOutput {
 	member: Member | null;
 }
 
-export class GetMemberUseCase extends IUseCase<
-	GetMemberInput,
-	GetMemberOutput
-> {
+export class GetMemberUseCase extends IUseCase<GetMemberInput, GetMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

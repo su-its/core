@@ -7,9 +7,7 @@ function serializeRecorded(rec: Recorded<Email>): Recorded<string> {
 		: { type: "notRecorded" };
 }
 
-export function serializeMemberEventPayload(
-	event: MemberDomainEvent,
-): MemberEventPayload {
+export function serializeMemberEventPayload(event: MemberDomainEvent): MemberEventPayload {
 	switch (event.eventName) {
 		case "MemberRegistered":
 			return {

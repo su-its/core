@@ -22,9 +22,7 @@ export class RemoveExhibitFromEvent extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: RemoveExhibitFromEventInput,
-	): Promise<RemoveExhibitFromEventOutput> {
+	async execute(input: RemoveExhibitFromEventInput): Promise<RemoveExhibitFromEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

@@ -15,13 +15,7 @@ import {
 	memberId,
 } from "#domain";
 import { type DrizzleDb, getDb } from "./client";
-import {
-	events,
-	exhibits,
-	lightningTalks,
-	memberEvents,
-	memberExhibits,
-} from "./schema";
+import { events, exhibits, lightningTalks, memberEvents, memberExhibits } from "./schema";
 
 // ============================================================================
 // Type Definitions - Using $inferSelect for schema-derived types
@@ -48,11 +42,7 @@ export class DrizzleEventRepository implements EventRepository {
 	 * Converts a database record to a domain Event entity.
 	 */
 	private toDomain(record: EventWithRelations): Event {
-		const event = new Event(
-			eventId(record.id),
-			record.name,
-			new Date(record.date),
-		);
+		const event = new Event(eventId(record.id), record.name, new Date(record.date));
 
 		// Load event member IDs
 		for (const memberEvent of record.memberEvents) {
@@ -114,10 +104,7 @@ export class DrizzleEventRepository implements EventRepository {
 		const db = getDb();
 		const snapshot = event.toSnapshot();
 		const now = new Date().toISOString();
-		const dateStr =
-			snapshot.date instanceof Date
-				? snapshot.date.toISOString()
-				: snapshot.date;
+		const dateStr = snapshot.date instanceof Date ? snapshot.date.toISOString() : snapshot.date;
 
 		// 1) Event upsert
 		await db
@@ -151,11 +138,7 @@ export class DrizzleEventRepository implements EventRepository {
 
 		// 5) Sync member exhibits
 		for (const exhibitDomain of event.getExhibits()) {
-			await this.syncMemberExhibits(
-				db,
-				exhibitDomain.id,
-				exhibitDomain.getMemberIds(),
-			);
+			await this.syncMemberExhibits(db, exhibitDomain.id, exhibitDomain.getMemberIds());
 		}
 	}
 
@@ -174,12 +157,8 @@ export class DrizzleEventRepository implements EventRepository {
 		const obsoleteIds = [...existingIdSet].filter((id) => !keptIdSet.has(id));
 
 		if (obsoleteIds.length > 0) {
-			await db
-				.delete(lightningTalks)
-				.where(inArray(lightningTalks.exhibitId, obsoleteIds));
-			await db
-				.delete(memberExhibits)
-				.where(inArray(memberExhibits.exhibitId, obsoleteIds));
+			await db.delete(lightningTalks).where(inArray(lightningTalks.exhibitId, obsoleteIds));
+			await db.delete(memberExhibits).where(inArray(memberExhibits.exhibitId, obsoleteIds));
 			await db.delete(exhibits).where(inArray(exhibits.id, obsoleteIds));
 		}
 	}
@@ -236,9 +215,7 @@ export class DrizzleEventRepository implements EventRepository {
 					},
 				});
 		} else {
-			await db
-				.delete(lightningTalks)
-				.where(eq(lightningTalks.exhibitId, ex.id));
+			await db.delete(lightningTalks).where(eq(lightningTalks.exhibitId, ex.id));
 		}
 	}
 
@@ -268,9 +245,7 @@ export class DrizzleEventRepository implements EventRepository {
 		exhibitId: ExhibitId,
 		memberIds: MemberId[],
 	): Promise<void> {
-		await db
-			.delete(memberExhibits)
-			.where(eq(memberExhibits.exhibitId, exhibitId));
+		await db.delete(memberExhibits).where(eq(memberExhibits.exhibitId, exhibitId));
 
 		const now = new Date().toISOString();
 		for (const memberId of memberIds) {
@@ -380,12 +355,8 @@ export class DrizzleEventRepository implements EventRepository {
 		const exhibitIds = exhibitRecords.map((ex) => ex.id);
 
 		if (exhibitIds.length > 0) {
-			await db
-				.delete(lightningTalks)
-				.where(inArray(lightningTalks.exhibitId, exhibitIds));
-			await db
-				.delete(memberExhibits)
-				.where(inArray(memberExhibits.exhibitId, exhibitIds));
+			await db.delete(lightningTalks).where(inArray(lightningTalks.exhibitId, exhibitIds));
+			await db.delete(memberExhibits).where(inArray(memberExhibits.exhibitId, exhibitIds));
 		}
 
 		await db.delete(memberEvents).where(eq(memberEvents.eventId, eventId));

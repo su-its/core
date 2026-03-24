@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import {
 	ActiveMember,
 	type CompleteDoctoralAffiliation,
@@ -201,10 +201,7 @@ describe("ActiveMember", () => {
 				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const newStudentId = StudentId.fromString("725A0099");
-			const master = undergrad.advanceInternally(
-				createCompleteMasterAffiliation(),
-				newStudentId,
-			);
+			const master = undergrad.advanceInternally(createCompleteMasterAffiliation(), newStudentId);
 
 			expect(master.status).toBe("active");
 			expect(master.affiliation.type).toBe("master");
@@ -393,9 +390,9 @@ describe("ActiveMember", () => {
 				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 
-			expect(() =>
-				member.transferMajor(createCompleteMasterAffiliation()),
-			).toThrow(InvalidAffiliationOperationException);
+			expect(() => member.transferMajor(createCompleteMasterAffiliation())).toThrow(
+				InvalidAffiliationOperationException,
+			);
 		});
 
 		it("別研究科への転専攻はエラー", () => {
@@ -499,10 +496,7 @@ describe("FormerMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = former.reregister(
-				createStudentId(),
-				createCompleteMasterAffiliation(),
-			);
+			const active = former.reregister(createStudentId(), createCompleteMasterAffiliation());
 
 			expect(active.status).toBe("active");
 			expect(active.studentId.getValue()).toBe("725A0001");
@@ -516,10 +510,7 @@ describe("FormerMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 			});
-			const active = former.reregister(
-				createStudentId(),
-				createCompleteMasterAffiliation(),
-			);
+			const active = former.reregister(createStudentId(), createCompleteMasterAffiliation());
 			const events = active.getDomainEvents();
 
 			expect(events).toHaveLength(1);
@@ -578,10 +569,7 @@ describe("状態遷移のライフサイクル", () => {
 		});
 
 		const unconfirmed = active.unconfirm();
-		const confirmed = unconfirmed.confirm(
-			createStudentId(),
-			createCompleteMasterAffiliation(),
-		);
+		const confirmed = unconfirmed.confirm(createStudentId(), createCompleteMasterAffiliation());
 
 		const events = confirmed.getDomainEvents();
 		expect(events).toHaveLength(3);

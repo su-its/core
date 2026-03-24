@@ -22,10 +22,7 @@ export class StudentId extends ValueObject<string> {
 	/** 学籍番号として妥当な文字列かを検証する */
 	static isValid(value: string): boolean {
 		const normalized = value.trim().toUpperCase();
-		return (
-			StudentId.NUMERIC_ONLY.test(normalized) ||
-			StudentId.ALPHANUMERIC.test(normalized)
-		);
+		return StudentId.NUMERIC_ONLY.test(normalized) || StudentId.ALPHANUMERIC.test(normalized);
 	}
 
 	static fromString(value: string): StudentId {

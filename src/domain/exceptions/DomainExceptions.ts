@@ -21,9 +21,7 @@ export class InvalidUniversityEmailException extends DomainException {
 
 export class InvalidLightningTalkDurationException extends DomainException {
 	constructor(duration: number) {
-		super(
-			`無効なライトニングトークの長さです: ${duration}分 (正の数値で指定してください)`,
-		);
+		super(`無効なライトニングトークの長さです: ${duration}分 (正の数値で指定してください)`);
 		this.name = "InvalidLightningTalkDurationException";
 	}
 }
@@ -37,9 +35,7 @@ export class InvalidUrlException extends DomainException {
 
 export class InvalidUrlProtocolException extends DomainException {
 	constructor(url: string, protocol: string) {
-		super(
-			`指定されたURLのプロトコルは許可されていません: ${url} (プロトコル: ${protocol})`,
-		);
+		super(`指定されたURLのプロトコルは許可されていません: ${url} (プロトコル: ${protocol})`);
 		this.name = "InvalidUrlProtocolException";
 	}
 }
@@ -85,9 +81,7 @@ export class ExhibitHasMemberException extends DomainException {
 
 export class InvalidStudentIdException extends DomainException {
 	constructor(studentId: string) {
-		super(
-			`無効な学籍番号です: ${studentId} (8桁数字 または 3桁数字+英大文字1文字+4桁数字)`,
-		);
+		super(`無効な学籍番号です: ${studentId} (8桁数字 または 3桁数字+英大文字1文字+4桁数字)`);
 		this.name = "InvalidStudentIdException";
 	}
 }
@@ -120,9 +114,7 @@ export class InvalidAffiliationOperationException extends DomainException {
 		readonly currentAffiliationType: string,
 		readonly reason: string,
 	) {
-		super(
-			`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`,
-		);
+		super(`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`);
 		this.name = "InvalidAffiliationOperationException";
 	}
 }

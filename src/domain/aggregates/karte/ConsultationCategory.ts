@@ -34,8 +34,7 @@ export const CONSULTATION_CATEGORIES = [
 ] as const;
 
 /** 定義済みカテゴリID — CONSULTATION_CATEGORIESから導出 */
-export type ConsultationCategoryId =
-	(typeof CONSULTATION_CATEGORIES)[number]["id"];
+export type ConsultationCategoryId = (typeof CONSULTATION_CATEGORIES)[number]["id"];
 
 /** カテゴリ型 */
 export type ConsultationCategory = {

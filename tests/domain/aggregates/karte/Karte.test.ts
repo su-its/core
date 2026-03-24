@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import {
 	type CompleteAffiliation,
 	Karte,
@@ -154,11 +154,7 @@ describe("Karte", () => {
 				...props,
 				supportRecord: {
 					...props.supportRecord,
-					assignedMemberIds: [
-						memberId("member-1"),
-						memberId("member-2"),
-						memberId("member-3"),
-					],
+					assignedMemberIds: [memberId("member-1"), memberId("member-2"), memberId("member-3")],
 				},
 			});
 			if (karte.supportRecord.assignees.type === "recorded") {
@@ -273,9 +269,7 @@ describe("Karte", () => {
 			const beforeCorrect = Date.now();
 			const corrected = original.correct(createContentProps());
 
-			expect(corrected.lastUpdatedAt.getTime()).toBeGreaterThanOrEqual(
-				beforeCorrect,
-			);
+			expect(corrected.lastUpdatedAt.getTime()).toBeGreaterThanOrEqual(beforeCorrect);
 		});
 
 		it("内容が新しい値で置き換わる", () => {
@@ -349,16 +343,16 @@ describe("Karte", () => {
 				}),
 				consent: { liabilityConsent: true, disclosureConsent: true },
 				consultation: {
-					categories: recorded([
-						{ id: "wifi_eduroam" as const, displayName: "eduroam" },
-					] as [{ id: "wifi_eduroam"; displayName: string }]),
+					categories: recorded([{ id: "wifi_eduroam" as const, displayName: "eduroam" }] as [
+						{ id: "wifi_eduroam"; displayName: string },
+					]),
 					targetDevice: recorded("ノートPC"),
 					troubleDetails: recorded("接続できない"),
 				},
 				supportRecord: {
-					assignees: recorded([
-						{ type: "resolved" as const, memberId: memberId("m-1") },
-					] as [{ type: "resolved"; memberId: MemberId }]),
+					assignees: recorded([{ type: "resolved" as const, memberId: memberId("m-1") }] as [
+						{ type: "resolved"; memberId: MemberId },
+					]),
 					content: recorded("対応した"),
 					resolution: recorded({ type: "resolved" as const }),
 					workDuration: recorded(workDuration(15)),

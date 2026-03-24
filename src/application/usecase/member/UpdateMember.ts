@@ -1,15 +1,5 @@
-import type {
-	Email,
-	Member,
-	MemberId,
-	MemberRepository,
-	Recorded,
-	StudentId,
-} from "#domain";
-import {
-	MemberNotActiveException,
-	MemberNotFoundException,
-} from "../../exceptions";
+import type { Email, Member, MemberId, MemberRepository, Recorded, StudentId } from "#domain";
+import { MemberNotActiveException, MemberNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface UpdateMemberInput {
@@ -23,10 +13,7 @@ export interface UpdateMemberOutput {
 	member: Member;
 }
 
-export class UpdateMemberUseCase extends IUseCase<
-	UpdateMemberInput,
-	UpdateMemberOutput
-> {
+export class UpdateMemberUseCase extends IUseCase<UpdateMemberInput, UpdateMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

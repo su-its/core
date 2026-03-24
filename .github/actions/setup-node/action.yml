@@ -1,12 +1,13 @@
-name: Setup Node.js
-description: Setup Node.js with cache and install dependencies
+name: Setup Node.js and Vite+
+description: Setup Node.js, Vite+, and install dependencies
 
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
       with:
-        node-version: '22.x'
+        node-version: "22.x"
         cache: npm
-    - run: npm ci
+    - uses: voidzero-dev/setup-vp@v1
+    - run: vp install
       shell: bash

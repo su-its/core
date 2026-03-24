@@ -15,10 +15,7 @@ export interface ChangeExhibitUrlOutput {
 /**
  * 展示URL変更ユースケース
  */
-export class ChangeExhibitUrl extends IUseCase<
-	ChangeExhibitUrlInput,
-	ChangeExhibitUrlOutput
-> {
+export class ChangeExhibitUrl extends IUseCase<ChangeExhibitUrlInput, ChangeExhibitUrlOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}

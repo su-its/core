@@ -87,18 +87,14 @@ export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 
 export class DiscordAccountAlreadyLinkedToSameMemberException extends ApplicationException {
 	constructor(discordAccountId: string, memberId: string) {
-		super(
-			`Discordアカウント ${discordAccountId} は既にこのメンバー ${memberId} に紐付いています`,
-		);
+		super(`Discordアカウント ${discordAccountId} は既にこのメンバー ${memberId} に紐付いています`);
 		this.name = "DiscordAccountAlreadyLinkedToSameMemberException";
 	}
 }
 
 export class MemberNotActiveException extends ApplicationException {
 	constructor(memberId: string, currentStatus: string) {
-		super(
-			`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`,
-		);
+		super(`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`);
 		this.name = "MemberNotActiveException";
 	}
 }

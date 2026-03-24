@@ -33,17 +33,13 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: ConnectDiscordAccountInput,
-	): Promise<ConnectDiscordAccountOutput> {
+	async execute(input: ConnectDiscordAccountInput): Promise<ConnectDiscordAccountOutput> {
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
 			throw new MemberNotFoundException(input.memberId);
 		}
 
-		const existing = await this.discordRepo.findByDiscordId(
-			input.discordAccountId,
-		);
+		const existing = await this.discordRepo.findByDiscordId(input.discordAccountId);
 		if (existing) {
 			if (existing.memberId === input.memberId) {
 				throw new DiscordAccountAlreadyLinkedToSameMemberException(
@@ -51,10 +47,7 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 					input.memberId,
 				);
 			}
-			throw new DiscordAccountAlreadyLinkedException(
-				input.discordAccountId,
-				existing.memberId,
-			);
+			throw new DiscordAccountAlreadyLinkedException(input.discordAccountId, existing.memberId);
 		}
 
 		const discordAccount = DiscordAccount.link(

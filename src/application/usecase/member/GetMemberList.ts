@@ -7,10 +7,7 @@ export interface GetMemberListOutput {
 	members: Member[];
 }
 
-export class GetMemberListUseCase extends IUseCase<
-	GetMemberListInput,
-	GetMemberListOutput
-> {
+export class GetMemberListUseCase extends IUseCase<GetMemberListInput, GetMemberListOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

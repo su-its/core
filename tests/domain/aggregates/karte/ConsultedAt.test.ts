@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import {
 	InvalidConsultedAtException,
 	dateOnly,
@@ -129,9 +129,7 @@ describe("parseConsultedAt", () => {
 	});
 
 	it("パース不能な文字列は例外", () => {
-		expect(() => parseConsultedAt("not-a-date")).toThrow(
-			InvalidConsultedAtException,
-		);
+		expect(() => parseConsultedAt("not-a-date")).toThrow(InvalidConsultedAtException);
 	});
 
 	it("空文字は例外", () => {
@@ -139,8 +137,6 @@ describe("parseConsultedAt", () => {
 	});
 
 	it("YYYY-MM で月が範囲外なら例外", () => {
-		expect(() => parseConsultedAt("2005-13")).toThrow(
-			InvalidConsultedAtException,
-		);
+		expect(() => parseConsultedAt("2005-13")).toThrow(InvalidConsultedAtException);
 	});
 });

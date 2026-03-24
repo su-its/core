@@ -13,11 +13,7 @@ import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
 
 /** 除籍理由 */
-export type RemovalReason =
-	| "graduation"
-	| "externalAdvancement"
-	| "noResponse"
-	| "voluntaryLeave";
+export type RemovalReason = "graduation" | "externalAdvancement" | "noResponse" | "voluntaryLeave";
 
 /** 室員登録 */
 export type MemberRegistered = DomainEvent & {
@@ -69,9 +65,7 @@ export type InternallyAdvanced = DomainEvent & {
 	readonly id: MemberId;
 	readonly email: UniversityEmail;
 	readonly previousAffiliation: CompleteAffiliation;
-	readonly newAffiliation:
-		| CompleteMasterAffiliation
-		| CompleteDoctoralAffiliation;
+	readonly newAffiliation: CompleteMasterAffiliation | CompleteDoctoralAffiliation;
 	readonly previousStudentId: StudentId;
 	readonly newStudentId: StudentId;
 };

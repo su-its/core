@@ -78,40 +78,28 @@ export class ActiveMember {
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				{
-					eventName: "MemberRemoved",
-					id: this.id,
-					email: this.email,
-					reason,
-					occurredAt: new Date(),
-				},
-			],
-		);
+		return new FormerMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			{
+				eventName: "MemberRemoved",
+				id: this.id,
+				email: this.email,
+				reason,
+				occurredAt: new Date(),
+			},
+		]);
 	}
 
 	unconfirm(): UnconfirmedMember {
-		return new UnconfirmedMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				{
-					eventName: "MemberUnconfirmed",
-					id: this.id,
-					email: this.email,
-					occurredAt: new Date(),
-				},
-			],
-		);
+		return new UnconfirmedMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			{
+				eventName: "MemberUnconfirmed",
+				id: this.id,
+				email: this.email,
+				occurredAt: new Date(),
+			},
+		]);
 	}
 
 	changeName(newName: string): ActiveMember {
@@ -209,9 +197,7 @@ export class ActiveMember {
 		);
 	}
 
-	transferFaculty(
-		newAffiliation: CompleteUndergraduateAffiliation,
-	): ActiveMember {
+	transferFaculty(newAffiliation: CompleteUndergraduateAffiliation): ActiveMember {
 		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学部",
@@ -241,9 +227,7 @@ export class ActiveMember {
 		);
 	}
 
-	transferDepartment(
-		newAffiliation: CompleteUndergraduateAffiliation,
-	): ActiveMember {
+	transferDepartment(newAffiliation: CompleteUndergraduateAffiliation): ActiveMember {
 		if (this.affiliation.type !== "undergraduate") {
 			throw new InvalidAffiliationOperationException(
 				"転学科",
@@ -380,18 +364,10 @@ export class UnconfirmedMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 	}): UnconfirmedMember {
-		return new UnconfirmedMember(
-			props.id,
-			props.email,
-			props.name,
-			props.personalEmail,
-		);
+		return new UnconfirmedMember(props.id, props.email, props.name, props.personalEmail);
 	}
 
-	confirm(
-		studentId: StudentId,
-		affiliation: CompleteAffiliation,
-	): ActiveMember {
+	confirm(studentId: StudentId, affiliation: CompleteAffiliation): ActiveMember {
 		return new ActiveMember(
 			this.id,
 			this.email,
@@ -414,42 +390,30 @@ export class UnconfirmedMember {
 	}
 
 	remove(reason: RemovalReason): FormerMember {
-		return new FormerMember(
-			this.id,
-			this.email,
-			this.name,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				{
-					eventName: "MemberRemoved",
-					id: this.id,
-					email: this.email,
-					reason,
-					occurredAt: new Date(),
-				},
-			],
-		);
+		return new FormerMember(this.id, this.email, this.name, this.personalEmail, [
+			...this.domainEvents,
+			{
+				eventName: "MemberRemoved",
+				id: this.id,
+				email: this.email,
+				reason,
+				occurredAt: new Date(),
+			},
+		]);
 	}
 
 	changeName(newName: string): UnconfirmedMember {
-		return new UnconfirmedMember(
-			this.id,
-			this.email,
-			newName,
-			this.personalEmail,
-			[
-				...this.domainEvents,
-				{
-					eventName: "NameChanged",
-					id: this.id,
-					email: this.email,
-					previousName: this.name,
-					newName,
-					occurredAt: new Date(),
-				},
-			],
-		);
+		return new UnconfirmedMember(this.id, this.email, newName, this.personalEmail, [
+			...this.domainEvents,
+			{
+				eventName: "NameChanged",
+				id: this.id,
+				email: this.email,
+				previousName: this.name,
+				newName,
+				occurredAt: new Date(),
+			},
+		]);
 	}
 
 	changePersonalEmail(newEmail: Recorded<Email>): UnconfirmedMember {
@@ -490,18 +454,10 @@ export class FormerMember {
 		name: string;
 		personalEmail: Recorded<Email>;
 	}): FormerMember {
-		return new FormerMember(
-			props.id,
-			props.email,
-			props.name,
-			props.personalEmail,
-		);
+		return new FormerMember(props.id, props.email, props.name, props.personalEmail);
 	}
 
-	reregister(
-		studentId: StudentId,
-		affiliation: CompleteAffiliation,
-	): ActiveMember {
+	reregister(studentId: StudentId, affiliation: CompleteAffiliation): ActiveMember {
 		return new ActiveMember(
 			this.id,
 			this.email,

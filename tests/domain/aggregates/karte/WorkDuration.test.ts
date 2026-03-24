@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { InvalidWorkDurationException, workDuration } from "#domain";
 
 describe("workDuration", () => {
@@ -22,9 +22,7 @@ describe("workDuration", () => {
 		});
 
 		it("NaNは無効", () => {
-			expect(() => workDuration(Number.NaN)).toThrow(
-				InvalidWorkDurationException,
-			);
+			expect(() => workDuration(Number.NaN)).toThrow(InvalidWorkDurationException);
 		});
 	});
 });

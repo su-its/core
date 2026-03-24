@@ -7,10 +7,7 @@ export interface GetEventListOutput {
 	events: Event[];
 }
 
-export class GetEventList extends IUseCase<
-	GetEventListInput,
-	GetEventListOutput
-> {
+export class GetEventList extends IUseCase<GetEventListInput, GetEventListOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}

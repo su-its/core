@@ -1,9 +1,4 @@
-import type {
-	Karte,
-	KarteContentProps,
-	KarteId,
-	KarteRepository,
-} from "#domain";
+import type { Karte, KarteContentProps, KarteId, KarteRepository } from "#domain";
 import { KarteNotFoundException } from "../../exceptions";
 import { IUseCase } from "../base";
 
@@ -15,10 +10,7 @@ export type CorrectKarteOutput = {
 	readonly karte: Karte;
 };
 
-export class CorrectKarteUseCase extends IUseCase<
-	CorrectKarteInput,
-	CorrectKarteOutput
-> {
+export class CorrectKarteUseCase extends IUseCase<CorrectKarteInput, CorrectKarteOutput> {
 	constructor(private readonly karteRepository: KarteRepository) {
 		super();
 	}

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import {
 	ActiveMember,
 	Email,
@@ -83,10 +83,7 @@ describe("serializeMemberEventPayload", () => {
 			},
 		};
 		const newStudentId = StudentId.fromString("925A0001");
-		const member = createActiveMember().advanceInternally(
-			masterAffiliation,
-			newStudentId,
-		);
+		const member = createActiveMember().advanceInternally(masterAffiliation, newStudentId);
 		const events = member.getDomainEvents();
 		const event = events.find((e) => e.eventName === "InternallyAdvanced");
 		if (!event) throw new Error("InternallyAdvanced event not found");

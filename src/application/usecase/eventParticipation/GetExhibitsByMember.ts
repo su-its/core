@@ -17,12 +17,8 @@ export class GetExhibitsByMember extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: GetExhibitsByMemberInput,
-	): Promise<GetExhibitsByMemberOutput> {
-		const events = await this.eventRepository.findByParticipantMemberId(
-			input.memberId,
-		);
+	async execute(input: GetExhibitsByMemberInput): Promise<GetExhibitsByMemberOutput> {
+		const events = await this.eventRepository.findByParticipantMemberId(input.memberId);
 		const exhibits: Exhibit[] = [];
 		for (const event of events) {
 			for (const exhibit of event.getExhibits()) {

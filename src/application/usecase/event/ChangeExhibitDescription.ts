@@ -23,9 +23,7 @@ export class ChangeExhibitDescription extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: ChangeExhibitDescriptionInput,
-	): Promise<ChangeExhibitDescriptionOutput> {
+	async execute(input: ChangeExhibitDescriptionInput): Promise<ChangeExhibitDescriptionOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

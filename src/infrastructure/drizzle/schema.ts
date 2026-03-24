@@ -71,24 +71,15 @@ export type DiscordAccountEventPayload =
 // ============================================================================
 
 /** readonly配列をpgEnumが要求するmutableタプルに変換する */
-function toEnumValues<T extends string>(
-	values: readonly T[],
-): [T, ...T[]] {
+function toEnumValues<T extends string>(values: readonly T[]): [T, ...T[]] {
 	return [...values] as [T, ...T[]];
 }
 
-export const memberStatus = pgEnum("member_status", [
-	"active",
-	"unconfirmed",
-	"former",
-]);
+export const memberStatus = pgEnum("member_status", ["active", "unconfirmed", "former"]);
 
 export const clientTypeEnum = pgEnum("client_type", toEnumValues(CLIENT_TYPES));
 
-export const resolutionTypeEnum = pgEnum(
-	"resolution_type",
-	toEnumValues(RESOLUTION_TYPES),
-);
+export const resolutionTypeEnum = pgEnum("resolution_type", toEnumValues(RESOLUTION_TYPES));
 
 export const followUpEnum = pgEnum("follow_up", toEnumValues(FOLLOW_UP_OPTIONS));
 
@@ -102,10 +93,7 @@ export const consultationCategoryEnum = pgEnum(
 	toEnumValues(CONSULTATION_CATEGORIES.map((c) => c.id)),
 );
 
-export const memberEventNameEnum = pgEnum(
-	"member_event_name",
-	toEnumValues(MEMBER_EVENT_NAMES),
-);
+export const memberEventNameEnum = pgEnum("member_event_name", toEnumValues(MEMBER_EVENT_NAMES));
 
 export const discordAccountEventNameEnum = pgEnum(
 	"discord_account_event_name",
@@ -132,10 +120,7 @@ export const members = pgTable(
 		updatedAt: timestamp({ mode: "string" }).notNull(),
 	},
 	(table) => [
-		uniqueIndex("members_email_key").using(
-			"btree",
-			table.email.asc().nullsLast().op("text_ops"),
-		),
+		uniqueIndex("members_email_key").using("btree", table.email.asc().nullsLast().op("text_ops")),
 	],
 );
 
@@ -300,9 +285,7 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 		withTimezone: true,
 		mode: "string",
 	}),
-	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" })
-		.defaultNow()
-		.notNull(),
+	startedAt: timestamp("started_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 	appliedStepsCount: integer("applied_steps_count").default(0).notNull(),
 });
 
@@ -344,10 +327,7 @@ export const kartes = pgTable("kartes", {
 	workDurationMinutes: integer("work_duration_minutes"),
 });
 
-export const assigneeTypeEnum = pgEnum(
-	"assignee_type",
-	toEnumValues(ASSIGNEE_TYPES),
-);
+export const assigneeTypeEnum = pgEnum("assignee_type", toEnumValues(ASSIGNEE_TYPES));
 
 export const karteAssignees = pgTable(
 	"karte_assignees",
@@ -411,9 +391,7 @@ export const discordAccountDomainEvents = pgTable(
 	(table) => [
 		index("discord_account_domain_events_discord_id_idx").on(table.discordId),
 		index("discord_account_domain_events_member_id_idx").on(table.memberId),
-		index("discord_account_domain_events_occurred_at_idx").on(
-			table.occurredAt,
-		),
+		index("discord_account_domain_events_occurred_at_idx").on(table.occurredAt),
 	],
 );
 
@@ -427,15 +405,12 @@ export const membersRelations = relations(members, ({ many }) => ({
 	memberExhibits: many(memberExhibits),
 }));
 
-export const discordAccountsRelations = relations(
-	discordAccounts,
-	({ one }) => ({
-		member: one(members, {
-			fields: [discordAccounts.memberId],
-			references: [members.id],
-		}),
+export const discordAccountsRelations = relations(discordAccounts, ({ one }) => ({
+	member: one(members, {
+		fields: [discordAccounts.memberId],
+		references: [members.id],
 	}),
-);
+}));
 
 export const eventsRelations = relations(events, ({ many }) => ({
 	memberEvents: many(memberEvents),
@@ -491,16 +466,13 @@ export const kartesRelations = relations(kartes, ({ many }) => ({
 	karteAssignees: many(karteAssignees),
 }));
 
-export const karteAssigneesRelations = relations(
-	karteAssignees,
-	({ one }) => ({
-		karte: one(kartes, {
-			fields: [karteAssignees.karteId],
-			references: [kartes.id],
-		}),
-		member: one(members, {
-			fields: [karteAssignees.memberId],
-			references: [members.id],
-		}),
+export const karteAssigneesRelations = relations(karteAssignees, ({ one }) => ({
+	karte: one(kartes, {
+		fields: [karteAssignees.karteId],
+		references: [kartes.id],
 	}),
-);
+	member: one(members, {
+		fields: [karteAssignees.memberId],
+		references: [members.id],
+	}),
+}));

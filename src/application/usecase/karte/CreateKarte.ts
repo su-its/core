@@ -1,9 +1,4 @@
-import {
-	Karte,
-	type KarteContentProps,
-	type KarteId,
-	type KarteRepository,
-} from "#domain";
+import { Karte, type KarteContentProps, type KarteId, type KarteRepository } from "#domain";
 import { IUseCase } from "../base";
 
 export type CreateKarteInput = KarteContentProps & { readonly id: KarteId };
@@ -12,10 +7,7 @@ export type CreateKarteOutput = {
 	readonly karte: Karte;
 };
 
-export class CreateKarteUseCase extends IUseCase<
-	CreateKarteInput,
-	CreateKarteOutput
-> {
+export class CreateKarteUseCase extends IUseCase<CreateKarteInput, CreateKarteOutput> {
 	constructor(private readonly karteRepository: KarteRepository) {
 		super();
 	}

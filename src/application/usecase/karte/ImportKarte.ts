@@ -32,10 +32,7 @@ export type ImportKarteOutput = {
 	readonly karte: Karte;
 };
 
-export class ImportKarteUseCase extends IUseCase<
-	ImportKarteInput,
-	ImportKarteOutput
-> {
+export class ImportKarteUseCase extends IUseCase<ImportKarteInput, ImportKarteOutput> {
 	constructor(private readonly karteRepository: KarteRepository) {
 		super();
 	}

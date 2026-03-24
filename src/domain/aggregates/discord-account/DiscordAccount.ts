@@ -41,11 +41,7 @@ export class DiscordAccount {
 		private readonly domainEvents: readonly DiscordAccountDomainEvent[] = [],
 	) {}
 
-	static link(
-		discordId: DiscordId,
-		memberId: MemberId,
-		nickName: string,
-	): DiscordAccount {
+	static link(discordId: DiscordId, memberId: MemberId, nickName: string): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName, [
 			{
 				eventName: "DiscordAccountLinked",
@@ -57,11 +53,7 @@ export class DiscordAccount {
 		]);
 	}
 
-	static reconstruct(
-		discordId: DiscordId,
-		memberId: MemberId,
-		nickName: string,
-	): DiscordAccount {
+	static reconstruct(discordId: DiscordId, memberId: MemberId, nickName: string): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName);
 	}
 

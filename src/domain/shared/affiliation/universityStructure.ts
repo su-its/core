@@ -31,9 +31,7 @@ export type ProfessionalYear = 1 | 2;
 // ============================================================================
 
 /** Object.keys の型安全版 */
-function keysOf<T extends Record<string, unknown>>(
-	obj: T,
-): (keyof T & string)[] {
+function keysOf<T extends Record<string, unknown>>(obj: T): (keyof T & string)[] {
 	return Object.keys(obj) as (keyof T & string)[];
 }
 
@@ -68,29 +66,15 @@ const educationMajors = {
 } as const;
 
 /** @see https://www.inf.shizuoka.ac.jp/ */
-const informaticsDepts = [
-	"情報科学科",
-	"行動情報学科",
-	"情報社会学科",
-] as const;
+const informaticsDepts = ["情報科学科", "行動情報学科", "情報社会学科"] as const;
 
 /** @see https://www.sci.shizuoka.ac.jp/dep_study */
-const scienceDepts = [
-	"数学科",
-	"物理学科",
-	"化学科",
-	"生物科学科",
-	"地球科学科",
-] as const;
+const scienceDepts = ["数学科", "物理学科", "化学科", "生物科学科", "地球科学科"] as const;
 const scienceCourses = ["創造理学コース"] as const;
 
 /** @see https://www.eng.shizuoka.ac.jp/department/ */
 const engineeringDeptCourses = {
-	機械工学科: [
-		"宇宙・環境コース",
-		"知能・材料コース",
-		"電気機械システムコース",
-	],
+	機械工学科: ["宇宙・環境コース", "知能・材料コース", "電気機械システムコース"],
 	電気電子工学科: ["情報エレクトロニクスコース", "エネルギー・電子制御コース"],
 	電子物質科学科: ["電子物理デバイスコース", "材料エネルギー化学コース"],
 	化学バイオ工学科: ["環境応用化学コース", "バイオ応用工学コース"],
@@ -124,13 +108,7 @@ const humanitiesMasterMajorCourses = {
 /** @see https://www.shizuoka.ac.jp/subject/graduate/stg/ */
 const integratedSciTechMajorCourses = {
 	情報学専攻: ["基盤情報学コース", "領域情報学コース"],
-	理学専攻: [
-		"数学コース",
-		"物理学コース",
-		"化学コース",
-		"生物科学コース",
-		"地球科学コース",
-	],
+	理学専攻: ["数学コース", "物理学コース", "化学コース", "生物科学コース", "地球科学コース"],
 	工学専攻: [
 		"機械工学コース",
 		"電気電子工学コース",
@@ -185,15 +163,11 @@ type HumanitiesFacultyValue =
 	  };
 
 type EducationMajorName = keyof typeof educationMajors;
-type EducationSubspecialty<M extends EducationMajorName> =
-	(typeof educationMajors)[M][number];
+type EducationSubspecialty<M extends EducationMajorName> = (typeof educationMajors)[M][number];
 
 /** 教育学部 @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/ */
 type EducationFacultyValue = {
-	[M in EducationMajorName]: (typeof educationMajors)[M] extends readonly [
-		string,
-		...string[],
-	]
+	[M in EducationMajorName]: (typeof educationMajors)[M] extends readonly [string, ...string[]]
 		? {
 				/** 学部 */
 				faculty: "教育学部";
@@ -242,10 +216,7 @@ type ScienceFacultyValue =
 /** 工学部 @see https://www.eng.shizuoka.ac.jp/department/ */
 type EngineeringDept = keyof typeof engineeringDeptCourses;
 type EngineeringFacultyValue = {
-	[D in EngineeringDept]: (typeof engineeringDeptCourses)[D] extends readonly [
-		string,
-		...string[],
-	]
+	[D in EngineeringDept]: (typeof engineeringDeptCourses)[D] extends readonly [string, ...string[]]
 		? {
 				faculty: "工学部";
 				/** 学科 */
@@ -261,10 +232,7 @@ type EngineeringFacultyValue = {
 /** 農学部 @see https://www.agr.shizuoka.ac.jp/ */
 type AgricultureDept = keyof typeof agricultureDeptCourses;
 type AgricultureFacultyValue = {
-	[D in AgricultureDept]: (typeof agricultureDeptCourses)[D] extends readonly [
-		string,
-		...string[],
-	]
+	[D in AgricultureDept]: (typeof agricultureDeptCourses)[D] extends readonly [string, ...string[]]
 		? {
 				faculty: "農学部";
 				department: D;
@@ -404,10 +372,8 @@ type ToPartialSchoolValue<T> = T extends {
 
 export type PartialUndergraduateAffiliationValue =
 	ToPartialFacultyValue<UndergraduateAffiliationValue>;
-export type PartialMasterAffiliationValue =
-	ToPartialSchoolValue<MasterAffiliationValue>;
-export type PartialDoctoralAffiliationValue =
-	ToPartialSchoolValue<DoctoralAffiliationValue>;
+export type PartialMasterAffiliationValue = ToPartialSchoolValue<MasterAffiliationValue>;
+export type PartialDoctoralAffiliationValue = ToPartialSchoolValue<DoctoralAffiliationValue>;
 export type PartialProfessionalAffiliationValue =
 	ToPartialSchoolValue<ProfessionalAffiliationValue>;
 
@@ -475,9 +441,7 @@ export type CourseType = keyof typeof UNIVERSITY_STRUCTURE;
 // ヘルパー関数
 // ============================================================================
 
-export function getInstitutions(
-	courseType: CourseType,
-): readonly InstitutionEntry[] {
+export function getInstitutions(courseType: CourseType): readonly InstitutionEntry[] {
 	return UNIVERSITY_STRUCTURE[courseType].institutions;
 }
 
@@ -486,14 +450,8 @@ export function getInstitutions(
  * 簡易的なフラットリストのため、入学区分やコースなどの階層は含まない。
  * 正確な階層選択には getAffiliationSteps を使用すること。
  */
-export function getSubdivisions(
-	courseType: CourseType,
-	institution: string,
-): readonly string[] {
-	return (
-		getInstitutions(courseType).find((i) => i.name === institution)
-			?.subdivisions ?? []
-	);
+export function getSubdivisions(courseType: CourseType, institution: string): readonly string[] {
+	return getInstitutions(courseType).find((i) => i.name === institution)?.subdivisions ?? [];
 }
 
 export function getMaxYear(courseType: CourseType): number {
@@ -534,9 +492,7 @@ export function getAffiliationSteps(
 	}
 }
 
-function getUndergraduateSteps(
-	s: Readonly<Record<string, string>>,
-): AffiliationStep[] {
+function getUndergraduateSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({
 		field: "faculty",
@@ -617,10 +573,7 @@ function getUndergraduateSteps(
 			});
 			if (!s.department) return steps;
 			if (s.department in engineeringDeptCourses) {
-				const courses =
-					engineeringDeptCourses[
-						s.department as keyof typeof engineeringDeptCourses
-					];
+				const courses = engineeringDeptCourses[s.department as keyof typeof engineeringDeptCourses];
 				if (courses.length > 0) {
 					steps.push({
 						field: "course",
@@ -638,10 +591,7 @@ function getUndergraduateSteps(
 			});
 			if (!s.department) return steps;
 			if (s.department in agricultureDeptCourses) {
-				const courses =
-					agricultureDeptCourses[
-						s.department as keyof typeof agricultureDeptCourses
-					];
+				const courses = agricultureDeptCourses[s.department as keyof typeof agricultureDeptCourses];
 				if (courses.length > 0) {
 					steps.push({
 						field: "course",
@@ -670,9 +620,7 @@ function getUndergraduateSteps(
 	return steps;
 }
 
-function getMasterSteps(
-	s: Readonly<Record<string, string>>,
-): AffiliationStep[] {
+function getMasterSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({
 		field: "school",
@@ -691,9 +639,7 @@ function getMasterSteps(
 			if (!s.major) return steps;
 			if (s.major in humanitiesMasterMajorCourses) {
 				const courses =
-					humanitiesMasterMajorCourses[
-						s.major as keyof typeof humanitiesMasterMajorCourses
-					];
+					humanitiesMasterMajorCourses[s.major as keyof typeof humanitiesMasterMajorCourses];
 				steps.push({ field: "course", label: "コース", options: [...courses] });
 			}
 			break;
@@ -707,9 +653,7 @@ function getMasterSteps(
 			if (!s.major) return steps;
 			if (s.major in integratedSciTechMajorCourses) {
 				const courses =
-					integratedSciTechMajorCourses[
-						s.major as keyof typeof integratedSciTechMajorCourses
-					];
+					integratedSciTechMajorCourses[s.major as keyof typeof integratedSciTechMajorCourses];
 				steps.push({ field: "course", label: "コース", options: [...courses] });
 			}
 			break;
@@ -720,9 +664,7 @@ function getMasterSteps(
 	return steps;
 }
 
-function getDoctoralSteps(
-	s: Readonly<Record<string, string>>,
-): AffiliationStep[] {
+function getDoctoralSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({
 		field: "school",
@@ -757,9 +699,7 @@ function getDoctoralSteps(
 	return steps;
 }
 
-function getProfessionalSteps(
-	s: Readonly<Record<string, string>>,
-): AffiliationStep[] {
+function getProfessionalSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({ field: "school", label: "研究科", options: ["教育学研究科"] });
 	if (!s.school) return steps;

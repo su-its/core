@@ -7,10 +7,7 @@ export type ListKartesOutput = {
 	readonly kartes: readonly Karte[];
 };
 
-export class ListKartesUseCase extends IUseCase<
-	ListKartesInput,
-	ListKartesOutput
-> {
+export class ListKartesUseCase extends IUseCase<ListKartesInput, ListKartesOutput> {
 	constructor(private readonly karteRepository: KarteRepository) {
 		super();
 	}
