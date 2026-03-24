@@ -13,6 +13,7 @@ import {
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { ASSIGNEE_TYPES } from "#domain/aggregates/karte/Assignee";
 import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
 import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
 import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
@@ -288,10 +289,10 @@ export const kartes = pgTable("kartes", {
 	workDurationMinutes: integer("work_duration_minutes"),
 });
 
-export const assigneeTypeEnum = pgEnum("assignee_type", [
-	"resolved",
-	"unresolved",
-]);
+export const assigneeTypeEnum = pgEnum(
+	"assignee_type",
+	toEnumValues(ASSIGNEE_TYPES),
+);
 
 export const karteAssignees = pgTable(
 	"karte_assignees",

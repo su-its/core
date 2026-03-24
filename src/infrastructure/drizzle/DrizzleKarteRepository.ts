@@ -221,7 +221,7 @@ function recordedToNullable<T>(r: Recorded<T>): T | null {
 /** DB → ConsultedAt の復元（精度情報を使って正確に復元する） */
 function deserializeConsultedAt(
 	date: Date | null,
-	precision: "year" | "yearMonth" | "date" | "datetime" | null,
+	precision: ConsultedAt["precision"] | null,
 ): Recorded<ConsultedAt> {
 	if (date === null || precision === null) return notRecorded();
 	switch (precision) {
@@ -258,7 +258,7 @@ function consultedAtToDate(r: Recorded<ConsultedAt>): Date | null {
 /** ConsultedAt → 精度enum値 | null */
 function consultedAtToPrecision(
 	r: Recorded<ConsultedAt>,
-): "year" | "yearMonth" | "date" | "datetime" | null {
+): ConsultedAt["precision"] | null {
 	return r.type === "recorded" ? r.value.precision : null;
 }
 
@@ -342,7 +342,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 				const assigneeRows = karte.supportRecord.assignees.value.map(
 					(assignee) => ({
 						karteId: karte.id as string,
-						assigneeType: assignee.type as "resolved" | "unresolved",
+						assigneeType: assignee.type as Assignee["type"],
 						memberId:
 							assignee.type === "resolved"
 								? (assignee.memberId as string)
