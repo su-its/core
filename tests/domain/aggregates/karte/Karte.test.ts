@@ -4,6 +4,7 @@ import { Karte } from "#domain/aggregates/karte/Karte";
 import { karteId } from "#domain/aggregates/karte/KarteId";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
+import { nonEmptyString } from "#domain/base/NonEmptyString";
 import { StudentId } from "#domain/shared/StudentId";
 import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 
@@ -34,12 +35,12 @@ function createProps() {
 					displayName: "eduroamに対する接続方法の相談",
 				},
 			] as [{ id: "wifi_eduroam"; displayName: string }],
-			targetDevice: "ノートPC",
-			troubleDetails: "eduroamに接続できない",
+			targetDevice: nonEmptyString("ノートPC"),
+			troubleDetails: nonEmptyString("eduroamに接続できない"),
 		},
 		supportRecord: {
 			assignedMemberIds: [memberId("member-1")] as [MemberId],
-			content: "プロファイルを再設定して解決",
+			content: nonEmptyString("プロファイルを再設定して解決"),
 			resolution: { type: "resolved" as const },
 			workDuration: workDuration(30),
 		},
@@ -108,7 +109,7 @@ describe("Karte", () => {
 				...createProps(),
 				consultation: {
 					...createProps().consultation,
-					troubleDetails: "訂正後の内容",
+					troubleDetails: nonEmptyString("訂正後の内容"),
 				},
 			});
 
@@ -132,7 +133,7 @@ describe("Karte", () => {
 				...createProps(),
 				consultation: {
 					...createProps().consultation,
-					troubleDetails: "訂正: 実はVPN接続の問題だった",
+					troubleDetails: nonEmptyString("訂正: 実はVPN接続の問題だった"),
 				},
 			});
 

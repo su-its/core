@@ -1,5 +1,6 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
+import type { NonEmptyString } from "#domain/base/NonEmptyString";
 import type { CompleteAffiliation } from "#domain/shared";
 import type { StudentId } from "#domain/shared";
 import type { Assignee } from "./Assignee";
@@ -51,8 +52,8 @@ export type KarteContentProps = {
 	readonly consent: Consent;
 	readonly consultation: {
 		readonly categories: NonEmptyArray<ConsultationCategory>;
-		readonly targetDevice: string;
-		readonly troubleDetails: string;
+		readonly targetDevice: NonEmptyString;
+		readonly troubleDetails: NonEmptyString;
 	};
 	readonly supportRecord: {
 		readonly assignedMemberIds: NonEmptyArray<MemberId>;
