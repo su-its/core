@@ -85,6 +85,15 @@ export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 	}
 }
 
+export class DiscordAccountAlreadyLinkedToSameMemberException extends ApplicationException {
+	constructor(discordAccountId: string, memberId: string) {
+		super(
+			`Discordアカウント ${discordAccountId} は既にこのメンバー ${memberId} に紐付いています`,
+		);
+		this.name = "DiscordAccountAlreadyLinkedToSameMemberException";
+	}
+}
+
 export class MemberNotActiveException extends ApplicationException {
 	constructor(memberId: string, currentStatus: string) {
 		super(

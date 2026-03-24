@@ -1,22 +1,21 @@
+import { v4 as uuid } from "uuid";
 import { eq } from "drizzle-orm";
 import {
-	ActiveMember,
-	Email,
-	FormerMember,
-	StudentId,
-	UnconfirmedMember,
-	UniversityEmail,
-	memberId,
-	notRecorded,
-	recorded,
-	type CompleteAffiliation,
-	type Member,
-	type MemberId,
-	type MemberRepository,
-	type Recorded,
-} from "#domain";
+  ActiveMember,
+  FormerMember,
+  type Member,
+  type MemberRepository,
+  UnconfirmedMember,
+} from "#domain/aggregates/member";
+import { Email } from "#domain/aggregates/member/Email";
+import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
+import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
+import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
+import { StudentId } from "#domain/shared/StudentId";
+import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 import { getDb } from "./client";
-import { members } from "./schema";
+import { memberDomainEvents, members } from "./schema";
+import { serializeMemberEventPayload } from "./serializeMemberEvent";
 
 // ============================================================================
 // Type Definitions
@@ -124,21 +123,37 @@ export class DrizzleMemberRepository implements MemberRepository {
   async save(member: Member): Promise<void> {
     const db = getDb();
     const values = toInsertValues(member);
+    const events = member.getDomainEvents();
 
-    await db
-      .insert(members)
-      .values(values)
-      .onConflictDoUpdate({
-        target: members.id,
-        set: {
-          name: values.name,
-          email: values.email,
-          personalEmail: values.personalEmail,
-          status: values.status,
-          studentId: values.studentId,
-          affiliation: values.affiliation,
-          updatedAt: values.updatedAt,
-        },
-      });
+    await db.transaction(async (tx) => {
+      await tx
+        .insert(members)
+        .values(values)
+        .onConflictDoUpdate({
+          target: members.id,
+          set: {
+            name: values.name,
+            email: values.email,
+            personalEmail: values.personalEmail,
+            status: values.status,
+            studentId: values.studentId,
+            affiliation: values.affiliation,
+            updatedAt: values.updatedAt,
+          },
+        });
+
+      if (events.length > 0) {
+        await tx.insert(memberDomainEvents).values(
+          events.map((event) => ({
+            id: uuid(),
+            memberId: event.id as string,
+            email: event.email.getValue(),
+            eventName: event.eventName,
+            payload: serializeMemberEventPayload(event),
+            occurredAt: event.occurredAt.toISOString(),
+          })),
+        );
+      }
+    });
   }
 }

@@ -1,5 +1,5 @@
-import { ValueObject } from "../base";
-import { InvalidStudentIdException } from "../exceptions";
+import { ValueObject } from "#domain/base/ValueObject";
+import { InvalidStudentIdException } from "#domain/exceptions";
 
 /**
  * 学籍番号

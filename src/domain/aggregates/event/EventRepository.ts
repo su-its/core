@@ -1,4 +1,4 @@
-import type { MemberId } from "#domain";
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { Event } from "./Event";
 import type { EventId } from "./EventId";
 import type { ExhibitId } from "./ExhibitId";

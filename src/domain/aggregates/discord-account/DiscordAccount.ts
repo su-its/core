@@ -1,19 +1,31 @@
-import type { MemberId } from "#domain";
-import type { DomainEvent } from "../../base";
+import type { MemberId } from "#domain/aggregates/member/MemberId";
+import type { DomainEvent } from "#domain/base/DomainEvent";
 import type { DiscordId } from "./DiscordId";
 
 /** Discordアカウント紐付けイベント */
-export class DiscordAccountLinked implements DomainEvent {
-	readonly eventName = "DiscordAccountLinked" as const;
-	constructor(
-		readonly discordId: DiscordId,
-		readonly memberId: MemberId,
-		readonly nickName: string,
-		readonly occurredAt: Date,
-	) {}
-}
+export type DiscordAccountLinked = DomainEvent & {
+	readonly eventName: "DiscordAccountLinked";
+	readonly discordId: DiscordId;
+	readonly memberId: MemberId;
+	readonly nickName: string;
+};
 
-export type DiscordAccountDomainEvent = DiscordAccountLinked;
+/** ニックネーム変更イベント */
+export type NickNameChanged = DomainEvent & {
+	readonly eventName: "NickNameChanged";
+	readonly discordId: DiscordId;
+	readonly memberId: MemberId;
+	readonly previousNickName: string;
+	readonly newNickName: string;
+};
+
+export type DiscordAccountDomainEvent = DiscordAccountLinked | NickNameChanged;
+
+/** DiscordAccountイベント名の選択肢一覧 */
+export const DISCORD_ACCOUNT_EVENT_NAMES = [
+	"DiscordAccountLinked",
+	"NickNameChanged",
+] as const satisfies readonly DiscordAccountDomainEvent["eventName"][];
 
 /**
  * Discordアカウント — Discord連携の紐付けを表す
@@ -35,7 +47,13 @@ export class DiscordAccount {
 		nickName: string,
 	): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName, [
-			new DiscordAccountLinked(discordId, memberId, nickName, new Date()),
+			{
+				eventName: "DiscordAccountLinked",
+				discordId,
+				memberId,
+				nickName,
+				occurredAt: new Date(),
+			},
 		]);
 	}
 
@@ -48,12 +66,17 @@ export class DiscordAccount {
 	}
 
 	changeNickName(newNickName: string): DiscordAccount {
-		return new DiscordAccount(
-			this.discordId,
-			this.memberId,
-			newNickName,
-			this.domainEvents,
-		);
+		return new DiscordAccount(this.discordId, this.memberId, newNickName, [
+			...this.domainEvents,
+			{
+				eventName: "NickNameChanged",
+				discordId: this.discordId,
+				memberId: this.memberId,
+				previousNickName: this.nickName,
+				newNickName,
+				occurredAt: new Date(),
+			},
+		]);
 	}
 
 	getDomainEvents(): readonly DiscordAccountDomainEvent[] {

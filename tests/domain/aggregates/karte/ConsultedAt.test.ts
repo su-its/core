@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
-	InvalidConsultedAtException,
 	dateOnly,
 	dateTime,
 	parseConsultedAt,
 	yearMonth,
 	yearOnly,
-} from "#domain";
+} from "#domain/aggregates/karte/ConsultedAt";
+import { InvalidConsultedAtException } from "#domain/exceptions";
 
 describe("ConsultedAt ファクトリ関数", () => {
 	describe("yearOnly", () => {

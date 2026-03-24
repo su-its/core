@@ -1,8 +1,8 @@
-import type { MemberId } from "#domain";
+import type { MemberId } from "#domain/aggregates/member/MemberId";
 import {
 	LightningTalkExhibitIdMismatchException,
 	LightningTalkNotFoundException,
-} from "../../exceptions";
+} from "#domain/exceptions";
 import type { ExhibitId } from "./ExhibitId";
 import type { LightningTalk } from "./LightningTalk";
 import type { LightningTalkDuration } from "./LightningTalkDuration";

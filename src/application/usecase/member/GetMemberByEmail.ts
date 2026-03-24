@@ -1,5 +1,5 @@
+import { IUseCase } from "#application/usecase/base";
 import type { Member, MemberRepository, UniversityEmail } from "#domain";
-import { IUseCase } from "../base";
 
 export interface GetMemberByEmailInput {
 	email: UniversityEmail;

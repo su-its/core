@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { EmptyStringException, nonEmptyString } from "#domain";
+import { nonEmptyString } from "#domain/base/NonEmptyString";
+import { EmptyStringException } from "#domain/exceptions";
 
 describe("nonEmptyString", () => {
 	describe("正常系", () => {

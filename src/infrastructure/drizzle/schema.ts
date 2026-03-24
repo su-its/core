@@ -4,6 +4,7 @@ import {
 	boolean,
 	char,
 	foreignKey,
+	index,
 	integer,
 	jsonb,
 	pgEnum,
@@ -11,17 +12,59 @@ import {
 	text,
 	timestamp,
 	uniqueIndex,
+	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import {
-	ASSIGNEE_TYPES,
-	CLIENT_TYPES,
-	CONSULTATION_CATEGORIES,
-	CONSULTED_AT_PRECISIONS,
-	FOLLOW_UP_OPTIONS,
-	RESOLUTION_TYPES,
-	type Affiliation,
-} from "#domain";
+import { DISCORD_ACCOUNT_EVENT_NAMES } from "#domain/aggregates/discord-account/DiscordAccount";
+import { ASSIGNEE_TYPES } from "#domain/aggregates/karte/Assignee";
+import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
+import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
+import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
+import { FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
+import { RESOLUTION_TYPES } from "#domain/aggregates/karte/Resolution";
+import { MEMBER_EVENT_NAMES } from "#domain/aggregates/member/MemberEvent";
+import type {
+	Affiliation,
+	CompleteAffiliation,
+} from "#domain/shared/affiliation/Affiliation";
+import type { Recorded } from "#domain/shared/Recorded";
+
+// ============================================================================
+// Event Payload Types
+// ============================================================================
+
+/** Member集約ドメインイベントのpayload型（共通カラム以外の固有データ） */
+export type MemberEventPayload =
+	| {
+			name: string;
+			personalEmail: Recorded<string>;
+			studentId: string;
+			affiliation: CompleteAffiliation;
+	  }
+	| { reason: string }
+	| { studentId: string; affiliation: CompleteAffiliation }
+	| Record<string, never>
+	| {
+			previousAffiliation: CompleteAffiliation;
+			newAffiliation: CompleteAffiliation;
+			previousStudentId: string;
+			newStudentId: string;
+	  }
+	| {
+			previousAffiliation: CompleteAffiliation;
+			newAffiliation: CompleteAffiliation;
+	  }
+	| { previousStudentId: string; newStudentId: string }
+	| { previousName: string; newName: string }
+	| {
+			previousPersonalEmail: Recorded<string>;
+			newPersonalEmail: Recorded<string>;
+	  };
+
+/** DiscordAccount集約ドメインイベントのpayload型 */
+export type DiscordAccountEventPayload =
+	| { nickName: string }
+	| { previousNickName: string; newNickName: string };
 
 // ============================================================================
 // Enums
@@ -57,6 +100,16 @@ export const consultedAtPrecisionEnum = pgEnum(
 export const consultationCategoryEnum = pgEnum(
 	"consultation_category",
 	toEnumValues(CONSULTATION_CATEGORIES.map((c) => c.id)),
+);
+
+export const memberEventNameEnum = pgEnum(
+	"member_event_name",
+	toEnumValues(MEMBER_EVENT_NAMES),
+);
+
+export const discordAccountEventNameEnum = pgEnum(
+	"discord_account_event_name",
+	toEnumValues(DISCORD_ACCOUNT_EVENT_NAMES),
 );
 
 // ============================================================================
@@ -321,6 +374,46 @@ export const karteAssignees = pgTable(
 		})
 			.onUpdate("cascade")
 			.onDelete("restrict"),
+	],
+);
+
+// ============================================================================
+// Domain Event Tables
+// ============================================================================
+
+export const memberDomainEvents = pgTable(
+	"member_domain_events",
+	{
+		id: uuid().primaryKey(),
+		memberId: text("member_id").notNull(),
+		email: text().notNull(),
+		eventName: memberEventNameEnum("event_name").notNull(),
+		payload: jsonb().notNull().$type<MemberEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("member_domain_events_member_id_idx").on(table.memberId),
+		index("member_domain_events_event_name_idx").on(table.eventName),
+		index("member_domain_events_occurred_at_idx").on(table.occurredAt),
+	],
+);
+
+export const discordAccountDomainEvents = pgTable(
+	"discord_account_domain_events",
+	{
+		id: uuid().primaryKey(),
+		discordId: text("discord_id").notNull(),
+		memberId: text("member_id").notNull(),
+		eventName: discordAccountEventNameEnum("event_name").notNull(),
+		payload: jsonb().notNull().$type<DiscordAccountEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("discord_account_domain_events_discord_id_idx").on(table.discordId),
+		index("discord_account_domain_events_member_id_idx").on(table.memberId),
+		index("discord_account_domain_events_occurred_at_idx").on(
+			table.occurredAt,
+		),
 	],
 );
 
