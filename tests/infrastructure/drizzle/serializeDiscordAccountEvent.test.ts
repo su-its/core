@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { DiscordAccount, discordId, memberId } from "#domain";
 import { serializeDiscordAccountEventPayload } from "#infrastructure/drizzle/serializeDiscordAccountEvent";
 

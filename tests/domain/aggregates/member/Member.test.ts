@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { ActiveMember, FormerMember, UnconfirmedMember } from "#domain/aggregates/member/Member";
 import { memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";

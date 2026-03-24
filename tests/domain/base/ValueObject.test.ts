@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { ValueObject } from "#domain/base/ValueObject";
 
 class StringVO extends ValueObject<string> {

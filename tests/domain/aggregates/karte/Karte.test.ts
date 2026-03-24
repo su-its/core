@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vite-plus/test";
 import { dateTime } from "#domain/aggregates/karte/ConsultedAt";
 import type { KarteContentProps } from "#domain/aggregates/karte/Karte";
 import { Karte } from "#domain/aggregates/karte/Karte";
