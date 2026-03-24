@@ -159,19 +159,28 @@ const creativeSciTechMajors = [
 // 導出型 — ランタイムデータから自動生成
 // ============================================================================
 
-// ── 学部 ──
+// ── 学部（Undergraduate） ──
 
+/** 人文社会科学部 @see https://www.hss.shizuoka.ac.jp/ */
 type HumanitiesFacultyValue =
 	| {
+			/** 学部 */
 			faculty: "人文社会科学部";
+			/** 入学区分 */
 			enrollmentType: "昼間コース";
+			/** 学科 */
 			department: (typeof humanitiesDepts.day)[number];
+			/** 在学年次 */
 			year: UndergraduateYear;
 	  }
 	| {
+			/** 学部 */
 			faculty: "人文社会科学部";
+			/** 入学区分 */
 			enrollmentType: "夜間主コース";
+			/** 学科 */
 			department: (typeof humanitiesDepts.night)[number];
+			/** 在学年次 */
 			year: UndergraduateYear;
 	  };
 
@@ -179,16 +188,22 @@ type EducationMajorName = keyof typeof educationMajors;
 type EducationSubspecialty<M extends EducationMajorName> =
 	(typeof educationMajors)[M][number];
 
+/** 教育学部 @see https://www.ed.shizuoka.ac.jp/applicants/about/organization/ */
 type EducationFacultyValue = {
 	[M in EducationMajorName]: (typeof educationMajors)[M] extends readonly [
 		string,
 		...string[],
 	]
 		? {
+				/** 学部 */
 				faculty: "教育学部";
+				/** 課程 */
 				program: "学校教育教員養成課程";
+				/** 専攻 */
 				major: M;
+				/** 専修 */
 				subspecialty: EducationSubspecialty<M>;
+				/** 在学年次 */
 				year: UndergraduateYear;
 			}
 		: {
@@ -199,24 +214,32 @@ type EducationFacultyValue = {
 			};
 }[EducationMajorName];
 
+/** 情報学部 @see https://www.inf.shizuoka.ac.jp/ */
 type InformaticsFacultyValue = {
+	/** 学部 */
 	faculty: "情報学部";
+	/** 学科 */
 	department: (typeof informaticsDepts)[number];
+	/** 在学年次 */
 	year: UndergraduateYear;
 };
 
+/** 理学部 @see https://www.sci.shizuoka.ac.jp/dep_study */
 type ScienceFacultyValue =
 	| {
 			faculty: "理学部";
+			/** 学科 */
 			department: (typeof scienceDepts)[number];
 			year: UndergraduateYear;
 	  }
 	| {
 			faculty: "理学部";
+			/** コース */
 			course: (typeof scienceCourses)[number];
 			year: UndergraduateYear;
 	  };
 
+/** 工学部 @see https://www.eng.shizuoka.ac.jp/department/ */
 type EngineeringDept = keyof typeof engineeringDeptCourses;
 type EngineeringFacultyValue = {
 	[D in EngineeringDept]: (typeof engineeringDeptCourses)[D] extends readonly [
@@ -225,13 +248,17 @@ type EngineeringFacultyValue = {
 	]
 		? {
 				faculty: "工学部";
+				/** 学科 */
 				department: D;
+				/** コース */
 				course: (typeof engineeringDeptCourses)[D][number];
+				/** 在学年次 */
 				year: UndergraduateYear;
 			}
 		: { faculty: "工学部"; department: D; year: UndergraduateYear };
 }[EngineeringDept];
 
+/** 農学部 @see https://www.agr.shizuoka.ac.jp/ */
 type AgricultureDept = keyof typeof agricultureDeptCourses;
 type AgricultureFacultyValue = {
 	[D in AgricultureDept]: (typeof agricultureDeptCourses)[D] extends readonly [
@@ -247,69 +274,92 @@ type AgricultureFacultyValue = {
 		: { faculty: "農学部"; department: D; year: UndergraduateYear };
 }[AgricultureDept];
 
+/** グローバル共創科学部 @see https://www.gkk.shizuoka.ac.jp/outline/courses/ */
 type GlobalCoCreationFacultyValue = {
 	faculty: "グローバル共創科学部";
+	/** 学科 */
 	department: "グローバル共創科学科";
+	/** コース */
 	course: (typeof globalCoCreationCourses)[number];
+	/** 在学年次 */
 	year: UndergraduateYear;
 };
 
+/** 地域創造学環 @see https://www.srd.shizuoka.ac.jp/ */
 type RegionalDevelopmentValue = {
 	faculty: "地域創造学環";
+	/** 在学年次 */
 	year: UndergraduateYear;
 };
 
 export type UndergraduateAffiliationValue =
-	| HumanitiesFacultyValue
-	| EducationFacultyValue
-	| InformaticsFacultyValue
-	| ScienceFacultyValue
-	| EngineeringFacultyValue
-	| AgricultureFacultyValue
-	| GlobalCoCreationFacultyValue
-	| RegionalDevelopmentValue;
+	| HumanitiesFacultyValue // 人文社会科学部
+	| EducationFacultyValue // 教育学部
+	| InformaticsFacultyValue // 情報学部
+	| ScienceFacultyValue // 理学部
+	| EngineeringFacultyValue // 工学部
+	| AgricultureFacultyValue // 農学部
+	| GlobalCoCreationFacultyValue // グローバル共創科学部
+	| RegionalDevelopmentValue; // 地域創造学環
 
-// ── 修士 ──
+// ── 修士課程（Master） ──
 
+/** 人文社会科学研究科 @see https://www.hss.shizuoka.ac.jp/ghss/ */
 type HumanitiesMasterMajor = keyof typeof humanitiesMasterMajorCourses;
 type HumanitiesMasterValue = {
 	[M in HumanitiesMasterMajor]: {
+		/** 研究科・大学院 */
 		school: "人文社会科学研究科";
+		/** 専攻 */
 		major: M;
+		/** コース */
 		course: (typeof humanitiesMasterMajorCourses)[M][number];
+		/** 在学年次 */
 		year: MasterYear;
 	};
 }[HumanitiesMasterMajor];
 
+/** 総合科学技術研究科 @see https://www.shizuoka.ac.jp/subject/graduate/stg/ */
 type IntegratedSciTechMajor = keyof typeof integratedSciTechMajorCourses;
 type IntegratedSciTechMasterValue = {
 	[M in IntegratedSciTechMajor]: {
 		school: "総合科学技術研究科";
+		/** 専攻 */
 		major: M;
+		/** コース */
 		course: (typeof integratedSciTechMajorCourses)[M][number];
+		/** 在学年次 */
 		year: MasterYear;
 	};
 }[IntegratedSciTechMajor];
 
+/** 山岳流域研究院 @see https://www.igsmw.shizuoka.ac.jp/ */
 type MountainWatershedValue = { school: "山岳流域研究院"; year: MasterYear };
 
 export type MasterAffiliationValue =
-	| HumanitiesMasterValue
-	| IntegratedSciTechMasterValue
-	| MountainWatershedValue;
+	| HumanitiesMasterValue // 人文社会科学研究科
+	| IntegratedSciTechMasterValue // 総合科学技術研究科
+	| MountainWatershedValue; // 山岳流域研究院
 
-// ── 博士 ──
+// ── 博士課程（Doctoral） ──
 
+/** 創造科学技術大学院 @see https://gsst.shizuoka.ac.jp/ */
 type CreativeSciTechDoctoralValue = {
 	school: "創造科学技術大学院";
+	/** 専攻 */
 	major: (typeof creativeSciTechMajors)[number];
+	/** 在学年次 */
 	year: DoctoralYear;
 };
+
+/** 教育学研究科（博士） @see https://subdev.ed.shizuoka.ac.jp/ */
 type EducationDoctoralValue = {
 	school: "教育学研究科";
 	major: "共同教科開発学専攻";
 	year: DoctoralYear;
 };
+
+/** 光医工学研究科 @see https://www.cmmp.shizuoka.ac.jp/ */
 type OptoBiomedicalDoctoralValue = {
 	school: "光医工学研究科";
 	major: "光医工学共同専攻";
@@ -317,15 +367,18 @@ type OptoBiomedicalDoctoralValue = {
 };
 
 export type DoctoralAffiliationValue =
-	| CreativeSciTechDoctoralValue
-	| EducationDoctoralValue
-	| OptoBiomedicalDoctoralValue;
+	| CreativeSciTechDoctoralValue // 創造科学技術大学院
+	| EducationDoctoralValue // 教育学研究科
+	| OptoBiomedicalDoctoralValue; // 光医工学研究科
 
-// ── 専門職 ──
+// ── 専門職学位課程（Professional） ──
 
+/** 教育学研究科（専門職） @see https://dapse2.ed.shizuoka.ac.jp/ */
 export type ProfessionalAffiliationValue = {
 	school: "教育学研究科";
+	/** 専攻 */
 	major: "教育実践高度化専攻";
+	/** 在学年次 */
 	year: ProfessionalYear;
 };
 
