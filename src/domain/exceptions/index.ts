@@ -1,1 +1,1 @@
-export * from "./DomainExceptions";
+export * from "./DomainExceptions.ts";

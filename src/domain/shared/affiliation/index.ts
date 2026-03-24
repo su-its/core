@@ -1,2 +1,2 @@
-export * from "./Affiliation";
-export * from "./universityStructure";
+export * from "./Affiliation.ts";
+export * from "./universityStructure.ts";

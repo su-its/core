@@ -4,6 +4,7 @@
 		"target": "ES2022",
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
+		"allowImportingTsExtensions": true,
 		"baseUrl": ".",
 		"paths": {
 			"#domain": ["./src/domain"],

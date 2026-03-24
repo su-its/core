@@ -1,6 +1,6 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
-import type { DiscordAccount } from "./DiscordAccount";
-import type { DiscordId } from "./DiscordId";
+import type { DiscordAccount } from "./DiscordAccount.ts";
+import type { DiscordId } from "./DiscordId.ts";
 
 export interface DiscordAccountRepository {
 	findByDiscordId(discordId: DiscordId): Promise<DiscordAccount | null>;

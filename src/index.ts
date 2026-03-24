@@ -1,2 +1,2 @@
-export * from "./executable";
-export * from "./domain";
+export * from "./executable/index.ts";
+export * from "./domain/index.ts";

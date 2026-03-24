@@ -12,8 +12,8 @@ import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
-import { getDb } from "./client";
-import { members } from "./schema";
+import { getDb } from "./client.ts";
+import { members } from "./schema.ts";
 
 // ============================================================================
 // Type Definitions

@@ -3,18 +3,18 @@ import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import type { NonEmptyString } from "#domain/base/NonEmptyString";
 import type { CompleteAffiliation } from "#domain/shared";
 import type { StudentId } from "#domain/shared";
-import type { Assignee } from "./Assignee";
-import type { Client } from "./Client";
-import type { Consent } from "./Consent";
-import type { Consultation } from "./Consultation";
-import type { ConsultationCategory } from "./ConsultationCategory";
-import type { ConsultedAt } from "./ConsultedAt";
-import type { FollowUp } from "./FollowUp";
-import type { KarteId } from "./KarteId";
-import { type Recorded, recorded } from "./Recorded";
-import type { Resolution } from "./Resolution";
-import type { SupportRecord } from "./SupportRecord";
-import type { WorkDuration } from "./WorkDuration";
+import type { Assignee } from "./Assignee.ts";
+import type { Client } from "./Client.ts";
+import type { Consent } from "./Consent.ts";
+import type { Consultation } from "./Consultation.ts";
+import type { ConsultationCategory } from "./ConsultationCategory.ts";
+import type { ConsultedAt } from "./ConsultedAt.ts";
+import type { FollowUp } from "./FollowUp.ts";
+import type { KarteId } from "./KarteId.ts";
+import { type Recorded, recorded } from "./Recorded.ts";
+import type { Resolution } from "./Resolution.ts";
+import type { SupportRecord } from "./SupportRecord.ts";
+import type { WorkDuration } from "./WorkDuration.ts";
 
 /** 新規作成・訂正時の解決ステータス — 後処理は必須 */
 export type CompleteResolution =

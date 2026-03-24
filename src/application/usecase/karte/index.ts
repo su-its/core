@@ -2,24 +2,24 @@ export {
 	CreateKarteUseCase,
 	type CreateKarteInput,
 	type CreateKarteOutput,
-} from "./CreateKarte";
+} from "./CreateKarte.ts";
 export {
 	CorrectKarteUseCase,
 	type CorrectKarteInput,
 	type CorrectKarteOutput,
-} from "./CorrectKarte";
+} from "./CorrectKarte.ts";
 export {
 	GetKarteUseCase,
 	type GetKarteInput,
 	type GetKarteOutput,
-} from "./GetKarte";
+} from "./GetKarte.ts";
 export {
 	ImportKarteUseCase,
 	type ImportKarteInput,
 	type ImportKarteOutput,
-} from "./ImportKarte";
+} from "./ImportKarte.ts";
 export {
 	ListKartesUseCase,
 	type ListKartesInput,
 	type ListKartesOutput,
-} from "./ListKartes";
+} from "./ListKartes.ts";

@@ -1,8 +1,8 @@
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import type { Assignee } from "./Assignee";
-import type { Recorded } from "./Recorded";
-import type { Resolution } from "./Resolution";
-import type { WorkDuration } from "./WorkDuration";
+import type { Assignee } from "./Assignee.ts";
+import type { Recorded } from "./Recorded.ts";
+import type { Resolution } from "./Resolution.ts";
+import type { WorkDuration } from "./WorkDuration.ts";
 
 /**
  * 対応記録

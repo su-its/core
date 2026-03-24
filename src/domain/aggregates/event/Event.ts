@@ -4,11 +4,11 @@ import {
 	ExhibitHasMemberException,
 	ExhibitNotFoundException,
 } from "#domain/exceptions";
-import type { EventId } from "./EventId";
-import type { Exhibit } from "./Exhibit";
-import type { ExhibitId } from "./ExhibitId";
-import type { LightningTalkDuration } from "./LightningTalkDuration";
-import type { Url } from "./Url";
+import type { EventId } from "./EventId.ts";
+import type { Exhibit } from "./Exhibit.ts";
+import type { ExhibitId } from "./ExhibitId.ts";
+import type { LightningTalkDuration } from "./LightningTalkDuration.ts";
+import type { Url } from "./Url.ts";
 
 export class Event {
 	private exhibits: Exhibit[] = [];

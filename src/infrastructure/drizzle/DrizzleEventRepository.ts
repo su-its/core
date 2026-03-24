@@ -14,14 +14,14 @@ import {
 	exhibitId,
 	memberId,
 } from "#domain";
-import { type DrizzleDb, getDb } from "./client";
+import { type DrizzleDb, getDb } from "./client.ts";
 import {
 	events,
 	exhibits,
 	lightningTalks,
 	memberEvents,
 	memberExhibits,
-} from "./schema";
+} from "./schema.ts";
 
 // ============================================================================
 // Type Definitions - Using $inferSelect for schema-derived types

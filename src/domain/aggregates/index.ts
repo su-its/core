@@ -1,3 +1,3 @@
-export * from "./discord-account";
-export * from "./event";
-export * from "./member";
+export * from "./discord-account/index.ts";
+export * from "./event/index.ts";
+export * from "./member/index.ts";

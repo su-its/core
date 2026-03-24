@@ -1,6 +1,6 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { DomainEvent } from "#domain/base/DomainEvent";
-import type { DiscordId } from "./DiscordId";
+import type { DiscordId } from "./DiscordId.ts";
 
 /** Discordアカウント紐付けイベント */
 export class DiscordAccountLinked implements DomainEvent {

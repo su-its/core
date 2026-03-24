@@ -19,8 +19,8 @@ import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { memberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
 import { StudentId } from "#domain/shared";
-import { getDb } from "./client";
-import { karteAssignees, kartes } from "./schema";
+import { getDb } from "./client.ts";
+import { karteAssignees, kartes } from "./schema.ts";
 
 // ============================================================================
 // Type Definitions

@@ -1,1 +1,1 @@
-export * from "./ApplicationExceptions";
+export * from "./ApplicationExceptions.ts";

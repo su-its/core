@@ -1,3 +1,3 @@
-export * from "./member";
-export * from "./event";
-export * from "./karte";
+export * from "./member.ts";
+export * from "./event.ts";
+export * from "./karte.ts";

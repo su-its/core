@@ -8,9 +8,9 @@ import type {
 	CompleteProfessionalAffiliation,
 	CompleteUndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
-import type { Email } from "./Email";
-import type { MemberId } from "./MemberId";
-import type { UniversityEmail } from "./UniversityEmail";
+import type { Email } from "./Email.ts";
+import type { MemberId } from "./MemberId.ts";
+import type { UniversityEmail } from "./UniversityEmail.ts";
 
 /** 除籍理由 */
 export type RemovalReason =

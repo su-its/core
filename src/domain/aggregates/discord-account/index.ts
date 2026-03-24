@@ -1,3 +1,3 @@
-export * from "./DiscordAccount";
-export * from "./DiscordAccountRepository";
-export * from "./DiscordId";
+export * from "./DiscordAccount.ts";
+export * from "./DiscordAccountRepository.ts";
+export * from "./DiscordId.ts";

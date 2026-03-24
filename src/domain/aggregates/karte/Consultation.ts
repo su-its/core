@@ -1,6 +1,6 @@
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import type { ConsultationCategory } from "./ConsultationCategory";
-import type { Recorded } from "./Recorded";
+import type { ConsultationCategory } from "./ConsultationCategory.ts";
+import type { Recorded } from "./Recorded.ts";
 
 /**
  * 相談事

@@ -1,6 +1,6 @@
-import type { ExhibitId } from "./ExhibitId";
-import type { LightningTalkDuration } from "./LightningTalkDuration";
-import type { Url } from "./Url";
+import type { ExhibitId } from "./ExhibitId.ts";
+import type { LightningTalkDuration } from "./LightningTalkDuration.ts";
+import type { Url } from "./Url.ts";
 
 export class LightningTalk {
 	constructor(

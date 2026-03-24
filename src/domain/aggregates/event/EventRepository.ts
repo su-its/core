@@ -1,7 +1,7 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
-import type { Event } from "./Event";
-import type { EventId } from "./EventId";
-import type { ExhibitId } from "./ExhibitId";
+import type { Event } from "./Event.ts";
+import type { EventId } from "./EventId.ts";
+import type { ExhibitId } from "./ExhibitId.ts";
 
 export interface EventRepository {
 	findById(id: EventId): Promise<Event | null>;

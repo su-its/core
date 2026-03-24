@@ -1,3 +1,3 @@
-export * from "./affiliation";
-export * from "./Recorded";
-export * from "./StudentId";
+export * from "./affiliation/index.ts";
+export * from "./Recorded.ts";
+export * from "./StudentId.ts";

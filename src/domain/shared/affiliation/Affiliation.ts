@@ -7,7 +7,7 @@ import type {
 	PartialUndergraduateAffiliationValue,
 	ProfessionalAffiliationValue,
 	UndergraduateAffiliationValue,
-} from "./universityStructure";
+} from "./universityStructure.ts";
 
 // ── 完全な所属（全フィールド既知） ──
 

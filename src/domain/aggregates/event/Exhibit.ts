@@ -3,10 +3,10 @@ import {
 	LightningTalkExhibitIdMismatchException,
 	LightningTalkNotFoundException,
 } from "#domain/exceptions";
-import type { ExhibitId } from "./ExhibitId";
-import type { LightningTalk } from "./LightningTalk";
-import type { LightningTalkDuration } from "./LightningTalkDuration";
-import type { Url } from "./Url";
+import type { ExhibitId } from "./ExhibitId.ts";
+import type { LightningTalk } from "./LightningTalk.ts";
+import type { LightningTalkDuration } from "./LightningTalkDuration.ts";
+import type { Url } from "./Url.ts";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
 	private memberIds: Set<MemberId> = new Set();

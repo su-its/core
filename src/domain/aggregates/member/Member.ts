@@ -9,7 +9,7 @@ import {
 	type CompleteUndergraduateAffiliation,
 	affiliationTypeNames,
 } from "#domain/shared/affiliation/Affiliation";
-import type { Email } from "./Email";
+import type { Email } from "./Email.ts";
 import {
 	DepartmentTransferred,
 	FacultyTransferred,
@@ -23,10 +23,10 @@ import {
 	NameChanged,
 	PersonalEmailChanged,
 	StudentIdChanged,
-} from "./MemberEvent";
-import type { MemberDomainEvent, RemovalReason } from "./MemberEvent";
-import type { MemberId } from "./MemberId";
-import type { UniversityEmail } from "./UniversityEmail";
+} from "./MemberEvent.ts";
+import type { MemberDomainEvent, RemovalReason } from "./MemberEvent.ts";
+import type { MemberId } from "./MemberId.ts";
+import type { UniversityEmail } from "./UniversityEmail.ts";
 
 // ── ActiveMember（室員） ──
 

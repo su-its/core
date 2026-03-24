@@ -3,16 +3,15 @@
 	"version": "2.1.2",
 	"description": "ITS core library",
 	"type": "module",
-	"main": "dist/index.cjs",
-	"module": "dist/index.js",
+	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
+			"import": "./dist/index.js"
 		}
 	},
+	"sideEffects": false,
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/su-its/core.git"
@@ -22,7 +21,8 @@
 	},
 	"files": ["dist"],
 	"scripts": {
-		"build": "tsup && tsc-alias -p tsconfig.json --outDir dist",
+		"prebuild": "rm -rf dist",
+		"build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --outDir dist --resolve-full-paths",
 		"prepare": "npm run build",
 		"test": "vitest run",
 		"test:watch": "vitest",
@@ -53,7 +53,6 @@
 		"@types/pg": "^8.16.0",
 		"drizzle-kit": "^0.31.8",
 		"tsc-alias": "^1.8.16",
-		"tsup": "^8.5.1",
 		"typescript": "^6.0.2",
 		"vitest": "^4.0.18"
 	},

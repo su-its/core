@@ -1,2 +1,2 @@
-export * from "./DomainEvent";
-export * from "./ValueObject";
+export * from "./DomainEvent.ts";
+export * from "./ValueObject.ts";

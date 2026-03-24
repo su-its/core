@@ -5,8 +5,8 @@ import type { DiscordId } from "#domain/aggregates/discord-account/DiscordId";
 import { discordId } from "#domain/aggregates/discord-account/DiscordId";
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import { memberId } from "#domain/aggregates/member/MemberId";
-import { getDb } from "./client";
-import { discordAccounts } from "./schema";
+import { getDb } from "./client.ts";
+import { discordAccounts } from "./schema.ts";
 
 type DiscordAccountRow = typeof discordAccounts.$inferSelect;
 
