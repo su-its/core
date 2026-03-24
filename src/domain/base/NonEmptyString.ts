@@ -6,10 +6,13 @@ import { EmptyStringException } from "#domain/exceptions";
 export type NonEmptyString = string & { readonly __brand: unique symbol };
 
 /** 空でない文字列を生成する — 空文字・空白のみなら例外 */
-export function nonEmptyString(value: string): NonEmptyString {
+export function nonEmptyString(
+	value: string,
+	fieldName?: string,
+): NonEmptyString {
 	const trimmed = value.trim();
 	if (trimmed.length === 0) {
-		throw new EmptyStringException();
+		throw new EmptyStringException(fieldName);
 	}
 	return trimmed as NonEmptyString;
 }

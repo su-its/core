@@ -107,8 +107,9 @@ export class InvalidConsultedAtException extends DomainException {
 }
 
 export class EmptyStringException extends DomainException {
-	constructor() {
-		super("空文字は許可されていません");
+	constructor(fieldName?: string) {
+		const detail = fieldName ? ` (${fieldName})` : "";
+		super(`空文字は許可されていません${detail}`);
 		this.name = "EmptyStringException";
 	}
 }

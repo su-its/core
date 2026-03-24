@@ -14,10 +14,7 @@ import type { SupportRecord } from "#domain/aggregates/karte/SupportRecord";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { memberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import {
-	type Affiliation,
-	StudentId,
-} from "#domain/shared";
+import { StudentId } from "#domain/shared";
 import { getDb } from "./client";
 import { karteAssignees, kartes } from "./schema";
 
@@ -56,7 +53,7 @@ function toRecordedClient(row: KarteRow): Recorded<Client> {
 				type: "student",
 				name,
 				studentId: StudentId.fromString(row.clientStudentId),
-				affiliation: deserializeAffiliation(row.clientAffiliation),
+				affiliation: row.clientAffiliation,
 			} as Client);
 		}
 		case "teacher":
@@ -66,23 +63,6 @@ function toRecordedClient(row: KarteRow): Recorded<Client> {
 		case "other":
 			return recorded({ type: "other", name });
 	}
-}
-
-/**
- * JSONBからAffiliationを復元する。
- *
- * DB由来のJSONBデータのため、キャストで型を絞り込む。
- */
-function deserializeAffiliation(
-	json: Affiliation,
-): Affiliation {
-	return { type: json.type, value: json.value } as Affiliation;
-}
-
-function serializeAffiliation(
-	affiliation: Affiliation,
-): Affiliation {
-	return { type: affiliation.type, value: affiliation.value } as Affiliation;
 }
 
 /**
@@ -206,7 +186,7 @@ function clientToColumns(
 		clientStudentId: c.type === "student" ? c.studentId.getValue() : null,
 		clientAffiliation:
 			c.type === "student"
-				? (serializeAffiliation(c.affiliation) as Affiliation)
+				? c.affiliation
 				: null,
 	};
 }
@@ -260,7 +240,7 @@ function consultedAtToDate(r: Recorded<ConsultedAt>): Date | null {
 	switch (ca.precision) {
 		case "datetime":
 		case "date":
-			return ca.value instanceof Date ? ca.value : new Date(ca.value);
+			return ca.value;
 		case "yearMonth":
 			return new Date(ca.year, ca.month - 1, 1);
 		case "year":
@@ -349,18 +329,19 @@ export class DrizzleKarteRepository implements KarteRepository {
 			.where(eq(karteAssignees.karteId, karte.id as string));
 
 		if (karte.supportRecord.assignees.type === "recorded") {
-			for (const assignee of karte.supportRecord.assignees.value) {
-				await db.insert(karteAssignees).values({
+			const assigneeRows = karte.supportRecord.assignees.value.map(
+				(assignee) => ({
 					karteId: karte.id as string,
-					assigneeType: assignee.type,
+					assigneeType: assignee.type as "resolved" | "unresolved",
 					memberId:
 						assignee.type === "resolved"
 							? (assignee.memberId as string)
 							: null,
 					assigneeName:
 						assignee.type === "unresolved" ? assignee.name : null,
-				});
-			}
+				}),
+			);
+			await db.insert(karteAssignees).values(assigneeRows);
 		}
 	}
 }
