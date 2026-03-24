@@ -299,6 +299,8 @@ export const kartes = pgTable("kartes", {
 	clientAffiliation: jsonb("client_affiliation").$type<SerializedAffiliation>(),
 	liabilityConsent: boolean("liability_consent").notNull(),
 	disclosureConsent: boolean("disclosure_consent").notNull(),
+	/** 空配列 = notRecorded */
+	categoryIds: consultationCategoryEnum("category_ids").array().notNull().default([]),
 	/** NULL = notRecorded */
 	troubleDetails: text("trouble_details"),
 	/** NULL = notRecorded */
@@ -312,27 +314,6 @@ export const kartes = pgTable("kartes", {
 	/** NULL = notRecorded */
 	workDurationMinutes: integer("work_duration_minutes"),
 });
-
-export const karteConsultationCategories = pgTable(
-	"karte_consultation_categories",
-	{
-		karteId: text("karte_id").notNull(),
-		categoryId: consultationCategoryEnum("category_id").notNull(),
-	},
-	(table) => [
-		primaryKey({
-			columns: [table.karteId, table.categoryId],
-			name: "karte_consultation_categories_pkey",
-		}),
-		foreignKey({
-			columns: [table.karteId],
-			foreignColumns: [kartes.id],
-			name: "karte_consultation_categories_karte_id_fkey",
-		})
-			.onUpdate("cascade")
-			.onDelete("cascade"),
-	],
-);
 
 export const assigneeTypeEnum = pgEnum("assignee_type", [
 	"resolved",
@@ -438,19 +419,8 @@ export const memberExhibitsRelations = relations(memberExhibits, ({ one }) => ({
 // ============================================================================
 
 export const kartesRelations = relations(kartes, ({ many }) => ({
-	karteConsultationCategories: many(karteConsultationCategories),
 	karteAssignees: many(karteAssignees),
 }));
-
-export const karteConsultationCategoriesRelations = relations(
-	karteConsultationCategories,
-	({ one }) => ({
-		karte: one(kartes, {
-			fields: [karteConsultationCategories.karteId],
-			references: [kartes.id],
-		}),
-	}),
-);
 
 export const karteAssigneesRelations = relations(
 	karteAssignees,

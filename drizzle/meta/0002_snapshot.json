@@ -1,5 +1,5 @@
 {
-  "id": "a024b48f-3599-4db0-bfa8-94fad4510a2f",
+  "id": "02304ede-1862-4131-a73f-b776203cd15a",
   "prevId": "6ee0ec84-eec9-452f-ab00-a04e557a9d62",
   "version": "7",
   "dialect": "postgresql",
@@ -247,54 +247,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.karte_consultation_categories": {
-      "name": "karte_consultation_categories",
-      "schema": "",
-      "columns": {
-        "karte_id": {
-          "name": "karte_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "category_id": {
-          "name": "category_id",
-          "type": "consultation_category",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "karte_consultation_categories_karte_id_fkey": {
-          "name": "karte_consultation_categories_karte_id_fkey",
-          "tableFrom": "karte_consultation_categories",
-          "tableTo": "kartes",
-          "columnsFrom": [
-            "karte_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {
-        "karte_consultation_categories_pkey": {
-          "name": "karte_consultation_categories_pkey",
-          "columns": [
-            "karte_id",
-            "category_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.kartes": {
       "name": "kartes",
       "schema": "",
@@ -359,6 +311,14 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": true
+        },
+        "category_ids": {
+          "name": "category_ids",
+          "type": "consultation_category[]",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
         },
         "trouble_details": {
           "name": "trouble_details",

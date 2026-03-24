@@ -10,12 +10,6 @@ CREATE TABLE "karte_assignees" (
 	"assignee_name" text
 );
 --> statement-breakpoint
-CREATE TABLE "karte_consultation_categories" (
-	"karte_id" text NOT NULL,
-	"category_id" "consultation_category" NOT NULL,
-	CONSTRAINT "karte_consultation_categories_pkey" PRIMARY KEY("karte_id","category_id")
-);
---> statement-breakpoint
 CREATE TABLE "kartes" (
 	"id" text PRIMARY KEY NOT NULL,
 	"recorded_at" timestamp NOT NULL,
@@ -27,6 +21,7 @@ CREATE TABLE "kartes" (
 	"client_affiliation" jsonb,
 	"liability_consent" boolean NOT NULL,
 	"disclosure_consent" boolean NOT NULL,
+	"category_ids" "consultation_category"[] DEFAULT '{}' NOT NULL,
 	"trouble_details" text,
 	"target_device" text,
 	"support_content" text,
@@ -36,5 +31,4 @@ CREATE TABLE "kartes" (
 );
 --> statement-breakpoint
 ALTER TABLE "karte_assignees" ADD CONSTRAINT "karte_assignees_karte_id_fkey" FOREIGN KEY ("karte_id") REFERENCES "public"."kartes"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "karte_assignees" ADD CONSTRAINT "karte_assignees_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "public"."members"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "karte_consultation_categories" ADD CONSTRAINT "karte_consultation_categories_karte_id_fkey" FOREIGN KEY ("karte_id") REFERENCES "public"."kartes"("id") ON DELETE cascade ON UPDATE cascade;
+ALTER TABLE "karte_assignees" ADD CONSTRAINT "karte_assignees_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "public"."members"("id") ON DELETE restrict ON UPDATE cascade;

@@ -20,11 +20,7 @@ import {
 } from "#domain/shared";
 import { getDb } from "./client";
 import type { SerializedAffiliation } from "./schema";
-import {
-	karteAssignees,
-	karteConsultationCategories,
-	kartes,
-} from "./schema";
+import { karteAssignees, kartes } from "./schema";
 
 // ============================================================================
 // Type Definitions
@@ -33,7 +29,6 @@ import {
 type KarteRow = typeof kartes.$inferSelect;
 
 type KarteWithRelations = KarteRow & {
-	karteConsultationCategories: (typeof karteConsultationCategories.$inferSelect)[];
 	karteAssignees: (typeof karteAssignees.$inferSelect)[];
 };
 
@@ -103,14 +98,13 @@ function toNonEmptyArray<T>(arr: T[]): NonEmptyArray<T> {
 	return [first, ...rest];
 }
 
-function toConsultation(row: KarteWithRelations): Consultation {
+function toConsultation(row: KarteRow): Consultation {
 	return {
 		categories:
-			row.karteConsultationCategories.length > 0
+			row.categoryIds.length > 0
 				? recorded(
 						toNonEmptyArray(
-							row.karteConsultationCategories.map((kcc) => {
-								const id = kcc.categoryId;
+							row.categoryIds.map((id) => {
 								const master = CONSULTATION_CATEGORIES.find((c) => c.id === id);
 								return { id, displayName: master?.displayName ?? id };
 							}),
@@ -268,7 +262,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 		const row = await db.query.kartes.findFirst({
 			where: eq(kartes.id, id as string),
 			with: {
-				karteConsultationCategories: true,
 				karteAssignees: true,
 			},
 		});
@@ -281,7 +274,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 		const db = getDb();
 		const rows = await db.query.kartes.findMany({
 			with: {
-				karteConsultationCategories: true,
 				karteAssignees: true,
 			},
 			orderBy: (kartes, { desc }) => [desc(kartes.recordedAt)],
@@ -307,6 +299,10 @@ export class DrizzleKarteRepository implements KarteRepository {
 			clientAffiliation: clientCols.clientAffiliation,
 			liabilityConsent: karte.consent.liabilityConsent,
 			disclosureConsent: karte.consent.disclosureConsent,
+			categoryIds:
+				karte.consultation.categories.type === "recorded"
+					? karte.consultation.categories.value.map((c) => c.id)
+					: [],
 			troubleDetails: recordedToNullable(karte.consultation.troubleDetails),
 			targetDevice: recordedToNullable(karte.consultation.targetDevice),
 			supportContent: recordedToNullable(karte.supportRecord.content),
@@ -323,20 +319,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 				target: kartes.id,
 				set: { ...values, id: undefined },
 			});
-
-		// Sync consultation categories (delete-all-then-insert)
-		await db
-			.delete(karteConsultationCategories)
-			.where(eq(karteConsultationCategories.karteId, karte.id as string));
-
-		if (karte.consultation.categories.type === "recorded") {
-			for (const cat of karte.consultation.categories.value) {
-				await db.insert(karteConsultationCategories).values({
-					karteId: karte.id as string,
-					categoryId: cat.id,
-				});
-			}
-		}
 
 		// Sync assignees (delete-all-then-insert)
 		await db
