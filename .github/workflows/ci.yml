@@ -43,6 +43,22 @@ jobs:
       - uses: ./.github/actions/setup-node
       - run: npm test
 
+  drizzle-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ./.github/actions/setup-node
+      - run: npm run db:generate
+      - name: Check for uncommitted schema changes
+        run: |
+          if [ -n "$(git status --porcelain drizzle/)" ]; then
+            echo "::error::Drizzle schema and generated files are out of sync. Run 'npm run db:generate' and commit the result."
+            git diff drizzle/
+            git status drizzle/
+            exit 1
+          fi
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
