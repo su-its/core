@@ -14,3 +14,9 @@ export type Resolution =
 			/** 後処理 */
 			readonly followUp: Recorded<FollowUp>;
 	  };
+
+/** 解決ステータスの選択肢一覧 */
+export const RESOLUTION_TYPES = [
+	"resolved",
+	"unresolved",
+] as const satisfies readonly Resolution["type"][];

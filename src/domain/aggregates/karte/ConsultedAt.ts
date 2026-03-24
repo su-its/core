@@ -36,6 +36,14 @@ export type DateTime = {
 /** 精度付き日時 */
 export type ConsultedAt = YearOnly | YearMonth | DateOnly | DateTime;
 
+/** 精度の選択肢一覧 */
+export const CONSULTED_AT_PRECISIONS = [
+	"year",
+	"yearMonth",
+	"date",
+	"datetime",
+] as const satisfies readonly ConsultedAt["precision"][];
+
 // ============================================================================
 // Factory functions
 // ============================================================================

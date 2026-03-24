@@ -46,3 +46,6 @@ export const clientTypeNames = {
 
 /** 相談者種別 */
 export type ClientType = keyof typeof clientTypeNames;
+
+/** 相談者種別の選択肢一覧 */
+export const CLIENT_TYPES = Object.keys(clientTypeNames) as ClientType[];

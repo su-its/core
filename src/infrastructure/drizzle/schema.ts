@@ -13,16 +13,23 @@ import {
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
-import type { ClientType } from "#domain/aggregates/karte/Client";
-import type { ConsultationCategoryId } from "#domain/aggregates/karte/ConsultationCategory";
+import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
 import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
-import { type FollowUp, FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
-import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
+import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
+import { FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
+import { RESOLUTION_TYPES } from "#domain/aggregates/karte/Resolution";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 
 // ============================================================================
 // Enums
 // ============================================================================
+
+/** readonly配列をpgEnumが要求するmutableタプルに変換する */
+function toEnumValues<T extends string>(
+	values: readonly T[],
+): [T, ...T[]] {
+	return [...values] as [T, ...T[]];
+}
 
 export const memberStatus = pgEnum("member_status", [
 	"active",
@@ -30,40 +37,23 @@ export const memberStatus = pgEnum("member_status", [
 	"former",
 ]);
 
-const CLIENT_TYPES: [ClientType, ...ClientType[]] = [
-	"student",
-	"teacher",
-	"staff",
-	"other",
-];
-export const clientTypeEnum = pgEnum("client_type", CLIENT_TYPES);
+export const clientTypeEnum = pgEnum("client_type", toEnumValues(CLIENT_TYPES));
 
-export const resolutionTypeEnum = pgEnum("resolution_type", [
-	"resolved",
-	"unresolved",
-]);
-
-const FOLLOW_UP_VALUES: [FollowUp, ...FollowUp[]] = [...FOLLOW_UP_OPTIONS];
-export const followUpEnum = pgEnum("follow_up", FOLLOW_UP_VALUES);
-
-type ConsultedAtPrecision = ConsultedAt["precision"];
-const CONSULTED_AT_PRECISIONS: [
-	ConsultedAtPrecision,
-	...ConsultedAtPrecision[],
-] = ["year", "yearMonth", "date", "datetime"];
-export const consultedAtPrecisionEnum = pgEnum(
-	"consulted_at_precision",
-	CONSULTED_AT_PRECISIONS,
+export const resolutionTypeEnum = pgEnum(
+	"resolution_type",
+	toEnumValues(RESOLUTION_TYPES),
 );
 
-const CATEGORY_IDS: [ConsultationCategoryId, ...ConsultationCategoryId[]] =
-	CONSULTATION_CATEGORIES.map((c) => c.id) as [
-		ConsultationCategoryId,
-		...ConsultationCategoryId[],
-	];
+export const followUpEnum = pgEnum("follow_up", toEnumValues(FOLLOW_UP_OPTIONS));
+
+export const consultedAtPrecisionEnum = pgEnum(
+	"consulted_at_precision",
+	toEnumValues(CONSULTED_AT_PRECISIONS),
+);
+
 export const consultationCategoryEnum = pgEnum(
 	"consultation_category",
-	CATEGORY_IDS,
+	toEnumValues(CONSULTATION_CATEGORIES.map((c) => c.id)),
 );
 
 // ============================================================================
