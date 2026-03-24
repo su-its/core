@@ -8,12 +8,16 @@ import {
 	jsonb,
 	pgEnum,
 	pgTable,
-	primaryKey,
 	text,
 	timestamp,
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
+import type { ClientType } from "#domain/aggregates/karte/Client";
+import type { ConsultationCategoryId } from "#domain/aggregates/karte/ConsultationCategory";
+import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
+import { type FollowUp, FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
+import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 
 // ============================================================================
@@ -26,54 +30,41 @@ export const memberStatus = pgEnum("member_status", [
 	"former",
 ]);
 
-export const clientTypeEnum = pgEnum("client_type", [
+const CLIENT_TYPES: [ClientType, ...ClientType[]] = [
 	"student",
 	"teacher",
 	"staff",
 	"other",
-]);
+];
+export const clientTypeEnum = pgEnum("client_type", CLIENT_TYPES);
 
 export const resolutionTypeEnum = pgEnum("resolution_type", [
 	"resolved",
 	"unresolved",
 ]);
 
-export const followUpEnum = pgEnum("follow_up", [
-	"技術部",
-	"生協",
-	"情報基盤センター",
-	"見送り",
-	"その他",
-]);
+const FOLLOW_UP_VALUES: [FollowUp, ...FollowUp[]] = [...FOLLOW_UP_OPTIONS];
+export const followUpEnum = pgEnum("follow_up", FOLLOW_UP_VALUES);
 
-export const consultedAtPrecisionEnum = pgEnum("consulted_at_precision", [
-	"year",
-	"yearMonth",
-	"date",
-	"datetime",
-]);
+type ConsultedAtPrecision = ConsultedAt["precision"];
+const CONSULTED_AT_PRECISIONS: [
+	ConsultedAtPrecision,
+	...ConsultedAtPrecision[],
+] = ["year", "yearMonth", "date", "datetime"];
+export const consultedAtPrecisionEnum = pgEnum(
+	"consulted_at_precision",
+	CONSULTED_AT_PRECISIONS,
+);
 
-export const consultationCategoryEnum = pgEnum("consultation_category", [
-	"wifi_eduroam",
-	"wifi_success",
-	"wifi_smartphone",
-	"usage_mac",
-	"usage_fs",
-	"usage_vpn",
-	"usage_mail",
-	"usage_gakujo",
-	"usage_onedrive",
-	"usage_printer",
-	"usage_vm",
-	"usage_ms_software",
-	"hardware_pc",
-	"problem_credential",
-	"problem_windows",
-	"problem_linux",
-	"programming",
-	"rent",
-	"other",
-]);
+const CATEGORY_IDS: [ConsultationCategoryId, ...ConsultationCategoryId[]] =
+	CONSULTATION_CATEGORIES.map((c) => c.id) as [
+		ConsultationCategoryId,
+		...ConsultationCategoryId[],
+	];
+export const consultationCategoryEnum = pgEnum(
+	"consultation_category",
+	CATEGORY_IDS,
+);
 
 // ============================================================================
 // Tables (introspected from production database)

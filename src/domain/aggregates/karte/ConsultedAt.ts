@@ -85,16 +85,37 @@ export function parseConsultedAt(input: string): ConsultedAt {
 		return yearMonth(y, m);
 	}
 
-	// YYYY-MM-DD（時刻なし）
-	if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(trimmed)) {
-		return dateOnly(new Date(`${trimmed}T00:00:00`));
+	// YYYY-MM-DD（時刻なし）— ゼロ埋め無しを正規化してからDateに渡す
+	const dateMatch = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+	if (dateMatch) {
+		const isoDate = toIsoDateString(dateMatch[1], dateMatch[2], dateMatch[3]);
+		return dateOnly(new Date(`${isoDate}T00:00:00`));
 	}
 
-	// 時刻を含む（ISO形式 or スペース区切り）
+	// 時刻を含む（ISO形式 or スペース区切り）— ゼロ埋め無しを正規化
 	const normalized = trimmed.replace(" ", "T");
+	const dtMatch = normalized.match(
+		/^(\d{4})-(\d{1,2})-(\d{1,2})T(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/,
+	);
+	if (dtMatch) {
+		const isoDate = toIsoDateString(dtMatch[1], dtMatch[2], dtMatch[3]);
+		const isoTime = [
+			dtMatch[4].padStart(2, "0"),
+			dtMatch[5].padStart(2, "0"),
+			(dtMatch[6] ?? "00").padStart(2, "0"),
+		].join(":");
+		return dateTime(new Date(`${isoDate}T${isoTime}`));
+	}
+
+	// その他の形式はDateに委譲
 	const parsed = new Date(normalized);
 	if (Number.isNaN(parsed.getTime())) {
 		throw new InvalidConsultedAtException(`日時のパースに失敗: "${input}"`);
 	}
 	return dateTime(parsed);
+}
+
+/** 年・月・日の文字列をゼロ埋めしてISO 8601形式に正規化する */
+function toIsoDateString(y: string, m: string, d: string): string {
+	return `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
 }

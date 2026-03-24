@@ -3,7 +3,11 @@ import type { Assignee } from "#domain/aggregates/karte/Assignee";
 import type { Client } from "#domain/aggregates/karte/Client";
 import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
 import type { Consultation } from "#domain/aggregates/karte/Consultation";
-import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
+import {
+	CONSULTATION_CATEGORIES,
+	type ConsultationCategoryId,
+} from "#domain/aggregates/karte/ConsultationCategory";
+import type { FollowUp } from "#domain/aggregates/karte/FollowUp";
 import { Karte } from "#domain/aggregates/karte/Karte";
 import { type KarteId, karteId } from "#domain/aggregates/karte/KarteId";
 import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
@@ -84,8 +88,9 @@ function toConsultation(row: KarteRow): Consultation {
 				? recorded(
 						toNonEmptyArray(
 							row.categoryIds.map((id) => {
-								const master = CONSULTATION_CATEGORIES.find((c) => c.id === id);
-								return { id, displayName: master?.displayName ?? id };
+								const categoryId = id as ConsultationCategoryId;
+								const master = CONSULTATION_CATEGORIES.find((c) => c.id === categoryId);
+								return { id: categoryId, displayName: master?.displayName ?? id };
 							}),
 						),
 					)
@@ -107,7 +112,9 @@ function toResolution(row: KarteRow): Recorded<Resolution> {
 			return recorded({
 				type: "unresolved",
 				followUp:
-					row.followUp !== null ? recorded(row.followUp) : notRecorded(),
+					row.followUp !== null
+						? recorded(row.followUp as FollowUp)
+						: notRecorded(),
 			});
 	}
 }
@@ -227,9 +234,9 @@ function deserializeConsultedAt(
 				month: date.getMonth() + 1,
 			});
 		case "date":
-			return recorded({ precision: "date", value: date });
+			return recorded({ precision: "date", value: new Date(date) });
 		case "datetime":
-			return recorded({ precision: "datetime", value: date });
+			return recorded({ precision: "datetime", value: new Date(date) });
 	}
 }
 
@@ -314,34 +321,38 @@ export class DrizzleKarteRepository implements KarteRepository {
 			workDurationMinutes: recordedToNullable(karte.supportRecord.workDuration),
 		};
 
-		// Upsert karte
-		await db
-			.insert(kartes)
-			.values(values)
-			.onConflictDoUpdate({
-				target: kartes.id,
-				set: { ...values, id: undefined },
-			});
+		const { id: _, ...updateValues } = values;
 
-		// Sync assignees (delete-all-then-insert)
-		await db
-			.delete(karteAssignees)
-			.where(eq(karteAssignees.karteId, karte.id as string));
+		await db.transaction(async (tx) => {
+			// Upsert karte
+			await tx
+				.insert(kartes)
+				.values(values)
+				.onConflictDoUpdate({
+					target: kartes.id,
+					set: updateValues,
+				});
 
-		if (karte.supportRecord.assignees.type === "recorded") {
-			const assigneeRows = karte.supportRecord.assignees.value.map(
-				(assignee) => ({
-					karteId: karte.id as string,
-					assigneeType: assignee.type as "resolved" | "unresolved",
-					memberId:
-						assignee.type === "resolved"
-							? (assignee.memberId as string)
-							: null,
-					assigneeName:
-						assignee.type === "unresolved" ? assignee.name : null,
-				}),
-			);
-			await db.insert(karteAssignees).values(assigneeRows);
-		}
+			// Sync assignees (delete-all-then-insert)
+			await tx
+				.delete(karteAssignees)
+				.where(eq(karteAssignees.karteId, karte.id as string));
+
+			if (karte.supportRecord.assignees.type === "recorded") {
+				const assigneeRows = karte.supportRecord.assignees.value.map(
+					(assignee) => ({
+						karteId: karte.id as string,
+						assigneeType: assignee.type as "resolved" | "unresolved",
+						memberId:
+							assignee.type === "resolved"
+								? (assignee.memberId as string)
+								: null,
+						assigneeName:
+							assignee.type === "unresolved" ? assignee.name : null,
+					}),
+				);
+				await tx.insert(karteAssignees).values(assigneeRows);
+			}
+		});
 	}
 }
