@@ -1,6 +1,5 @@
-import { IUseCase } from "#application/usecase/base";
-import type { Karte } from "#domain/aggregates/karte/Karte";
-import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
+import type { Karte, KarteRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export type ListKartesInput = Record<string, never>;
 

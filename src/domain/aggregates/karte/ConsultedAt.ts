@@ -6,7 +6,7 @@
  * わかっている粒度を型で明示し、不明な部分を推定値で埋めない。
  */
 
-import { InvalidConsultedAtException } from "#domain/exceptions";
+import { InvalidConsultedAtException } from "../../exceptions";
 
 /** 年のみ判明 */
 export type YearOnly = {

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { InvalidStudentIdException } from "#domain/exceptions";
-import { StudentId } from "#domain/shared/StudentId";
+import { InvalidStudentIdException, StudentId } from "#domain";
 
 describe("StudentId", () => {
 	describe("fromString", () => {

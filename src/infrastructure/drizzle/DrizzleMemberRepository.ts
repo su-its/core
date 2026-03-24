@@ -1,18 +1,21 @@
 import { v4 as uuid } from "uuid";
 import { eq } from "drizzle-orm";
 import {
-  ActiveMember,
-  FormerMember,
-  type Member,
-  type MemberRepository,
-  UnconfirmedMember,
-} from "#domain/aggregates/member";
-import { Email } from "#domain/aggregates/member/Email";
-import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
-import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
-import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
-import { StudentId } from "#domain/shared/StudentId";
-import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
+	ActiveMember,
+	Email,
+	FormerMember,
+	StudentId,
+	UnconfirmedMember,
+	UniversityEmail,
+	memberId,
+	notRecorded,
+	recorded,
+	type CompleteAffiliation,
+	type Member,
+	type MemberId,
+	type MemberRepository,
+	type Recorded,
+} from "#domain";
 import { getDb } from "./client";
 import { memberDomainEvents, members } from "./schema";
 import { serializeMemberEventPayload } from "./serializeMemberEvent";

@@ -1,16 +1,16 @@
 import {
-	DiscordAccountAlreadyLinkedException,
-	DiscordAccountAlreadyLinkedToSameMemberException,
-	MemberNotFoundException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import {
 	DiscordAccount,
 	type DiscordAccountRepository,
 	type DiscordId,
 	type MemberId,
 	type MemberRepository,
 } from "#domain";
+import {
+	DiscordAccountAlreadyLinkedException,
+	DiscordAccountAlreadyLinkedToSameMemberException,
+	MemberNotFoundException,
+} from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ConnectDiscordAccountInput {
 	memberId: MemberId;
