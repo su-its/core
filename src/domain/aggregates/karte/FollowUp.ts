@@ -4,7 +4,6 @@ export const FOLLOW_UP_OPTIONS = [
 	"生協",
 	"情報基盤センター",
 	"見送り",
-	"学務課",
 	"その他",
 ] as const;
 
