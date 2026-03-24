@@ -15,6 +15,7 @@ export type KarteUseCases = {
 	listKartes: ListKartesUseCase;
 };
 
+/** @deprecated createKarteService() を使用してください */
 export function createKarteUseCases(): KarteUseCases {
 	const karteRepo = new DrizzleKarteRepository();
 
