@@ -1,4 +1,4 @@
-import type { MemberId } from "#domain/aggregates/member/MemberId";
+import type { MemberId } from "#domain";
 import type { DiscordAccount } from "./DiscordAccount";
 import type { DiscordId } from "./DiscordId";
 

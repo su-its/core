@@ -1,8 +1,3 @@
-import {
-	EventNotFoundException,
-	MemberNotFoundException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 import type {
 	Event,
 	EventId,
@@ -10,6 +5,11 @@ import type {
 	MemberId,
 	MemberRepository,
 } from "#domain";
+import {
+	EventNotFoundException,
+	MemberNotFoundException,
+} from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RegisterMemberToEventInput {
 	memberId: MemberId;

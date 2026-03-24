@@ -1,8 +1,8 @@
-import { ValueObject } from "#domain/base/ValueObject";
+import { ValueObject } from "../../base";
 import {
 	InvalidUrlException,
 	InvalidUrlProtocolException,
-} from "#domain/exceptions";
+} from "../../exceptions";
 
 export class Url extends ValueObject<string> {
 	protected validate(): void {

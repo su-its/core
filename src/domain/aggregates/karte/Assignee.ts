@@ -1,4 +1,4 @@
-import type { MemberId } from "#domain/aggregates/member/MemberId";
+import type { MemberId } from "#domain";
 
 /** システム上のメンバーに紐づく対応者 */
 type ResolvedAssignee = {

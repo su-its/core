@@ -1,19 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
 	ActiveMember,
+	type CompleteDoctoralAffiliation,
+	type CompleteMasterAffiliation,
+	type CompleteUndergraduateAffiliation,
 	FormerMember,
+	InvalidAffiliationOperationException,
+	StudentId,
 	UnconfirmedMember,
-} from "#domain/aggregates/member/Member";
-import { memberId } from "#domain/aggregates/member/MemberId";
-import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
-import { InvalidAffiliationOperationException } from "#domain/exceptions";
-import { notRecorded } from "#domain/shared/Recorded";
-import { StudentId } from "#domain/shared/StudentId";
-import type {
-	CompleteDoctoralAffiliation,
-	CompleteMasterAffiliation,
-	CompleteUndergraduateAffiliation,
-} from "#domain/shared/affiliation/Affiliation";
+	UniversityEmail,
+	memberId,
+	notRecorded,
+} from "#domain";
 
 function createEmail() {
 	return new UniversityEmail("test@shizuoka.ac.jp");

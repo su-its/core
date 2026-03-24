@@ -1,13 +1,13 @@
-import type { DomainEvent } from "#domain/base/DomainEvent";
-import type { Recorded } from "#domain/shared/Recorded";
-import type { StudentId } from "#domain/shared/StudentId";
+import type { DomainEvent } from "../../base";
+import type { Recorded } from "../../shared";
+import type { StudentId } from "../../shared";
 import type {
 	CompleteAffiliation,
 	CompleteDoctoralAffiliation,
 	CompleteMasterAffiliation,
 	CompleteProfessionalAffiliation,
 	CompleteUndergraduateAffiliation,
-} from "#domain/shared/affiliation/Affiliation";
+} from "../../shared";
 import type { Email } from "./Email";
 import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";

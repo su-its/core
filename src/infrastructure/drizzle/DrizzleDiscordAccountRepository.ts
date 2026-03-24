@@ -1,10 +1,12 @@
 import { eq } from "drizzle-orm";
-import { DiscordAccount } from "#domain/aggregates/discord-account/DiscordAccount";
-import type { DiscordAccountRepository } from "#domain/aggregates/discord-account/DiscordAccountRepository";
-import type { DiscordId } from "#domain/aggregates/discord-account/DiscordId";
-import { discordId } from "#domain/aggregates/discord-account/DiscordId";
-import type { MemberId } from "#domain/aggregates/member/MemberId";
-import { memberId } from "#domain/aggregates/member/MemberId";
+import {
+	DiscordAccount,
+	type DiscordAccountRepository,
+	type DiscordId,
+	type MemberId,
+	discordId,
+	memberId,
+} from "#domain";
 import { getDb } from "./client";
 import { discordAccounts } from "./schema";
 
