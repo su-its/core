@@ -1,6 +1,17 @@
 import type { Affiliation } from "#domain/shared";
 import type { StudentId } from "#domain/shared";
 
+/** 相談者種別の表示名 */
+export const clientTypeNames = {
+	student: "学生",
+	teacher: "教員",
+	staff: "職員",
+	other: "その他",
+} as const;
+
+/** 相談者種別 */
+export type ClientType = keyof typeof clientTypeNames;
+
 /** 学生の相談者 */
 type StudentClient = {
 	readonly type: "student";
