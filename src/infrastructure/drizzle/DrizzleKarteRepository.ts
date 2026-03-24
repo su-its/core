@@ -169,10 +169,7 @@ function toDomain(row: KarteWithRelations): Karte {
 	return Karte.reconstruct({
 		id: karteId(row.id),
 		recordedAt: row.recordedAt,
-		consultedAt:
-			row.consultedAt !== null
-				? recorded({ precision: "date" as const, value: row.consultedAt })
-				: notRecorded(),
+		consultedAt: deserializeConsultedAt(row.consultedAt, row.consultedAtPrecision),
 		lastUpdatedAt: row.lastUpdatedAt,
 		client: toRecordedClient(row),
 		consent: {
@@ -236,10 +233,30 @@ function recordedToNullable<T>(r: Recorded<T>): T | null {
 	return r.type === "recorded" ? r.value : null;
 }
 
+/** DB → ConsultedAt の復元（精度情報を使って正確に復元する） */
+function deserializeConsultedAt(
+	date: Date | null,
+	precision: "year" | "yearMonth" | "date" | "datetime" | null,
+): Recorded<ConsultedAt> {
+	if (date === null || precision === null) return notRecorded();
+	switch (precision) {
+		case "year":
+			return recorded({ precision: "year", year: date.getFullYear() });
+		case "yearMonth":
+			return recorded({
+				precision: "yearMonth",
+				year: date.getFullYear(),
+				month: date.getMonth() + 1,
+			});
+		case "date":
+			return recorded({ precision: "date", value: date });
+		case "datetime":
+			return recorded({ precision: "datetime", value: date });
+	}
+}
+
 /** ConsultedAt → DBのtimestampカラム用Date | null */
-function consultedAtToDate(
-	r: Recorded<ConsultedAt>,
-): Date | null {
+function consultedAtToDate(r: Recorded<ConsultedAt>): Date | null {
 	if (r.type === "notRecorded") return null;
 	const ca = r.value;
 	switch (ca.precision) {
@@ -251,6 +268,13 @@ function consultedAtToDate(
 		case "year":
 			return new Date(ca.year, 0, 1);
 	}
+}
+
+/** ConsultedAt → 精度enum値 | null */
+function consultedAtToPrecision(
+	r: Recorded<ConsultedAt>,
+): "year" | "yearMonth" | "date" | "datetime" | null {
+	return r.type === "recorded" ? r.value.precision : null;
 }
 
 // ============================================================================
@@ -292,6 +316,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 			id: karte.id as string,
 			recordedAt: karte.recordedAt,
 			consultedAt: consultedAtToDate(karte.consultedAt),
+			consultedAtPrecision: consultedAtToPrecision(karte.consultedAt),
 			lastUpdatedAt: karte.lastUpdatedAt,
 			clientType: clientCols.clientType,
 			clientName: clientCols.clientName,

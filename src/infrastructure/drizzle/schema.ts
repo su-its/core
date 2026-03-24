@@ -56,6 +56,13 @@ export const followUpEnum = pgEnum("follow_up", [
 	"その他",
 ]);
 
+export const consultedAtPrecisionEnum = pgEnum("consulted_at_precision", [
+	"year",
+	"yearMonth",
+	"date",
+	"datetime",
+]);
+
 export const consultationCategoryEnum = pgEnum("consultation_category", [
 	"wifi_eduroam",
 	"wifi_success",
@@ -288,6 +295,8 @@ export const kartes = pgTable("kartes", {
 	recordedAt: timestamp("recorded_at").notNull(),
 	/** NULL = notRecorded */
 	consultedAt: timestamp("consulted_at"),
+	/** consultedAtの精度。consultedAtがNULLならNULL */
+	consultedAtPrecision: consultedAtPrecisionEnum("consulted_at_precision"),
 	lastUpdatedAt: timestamp("last_updated_at").notNull(),
 	/** NULL = notRecorded */
 	clientType: clientTypeEnum("client_type"),

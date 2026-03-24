@@ -1,5 +1,5 @@
 {
-  "id": "02304ede-1862-4131-a73f-b776203cd15a",
+  "id": "3a23de87-ffc7-4718-bff0-1fc36e0f4053",
   "prevId": "6ee0ec84-eec9-452f-ab00-a04e557a9d62",
   "version": "7",
   "dialect": "postgresql",
@@ -266,6 +266,13 @@
         "consulted_at": {
           "name": "consulted_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consulted_at_precision": {
+          "name": "consulted_at_precision",
+          "type": "consulted_at_precision",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
         },
@@ -814,6 +821,16 @@
         "programming",
         "rent",
         "other"
+      ]
+    },
+    "public.consulted_at_precision": {
+      "name": "consulted_at_precision",
+      "schema": "public",
+      "values": [
+        "year",
+        "yearMonth",
+        "date",
+        "datetime"
       ]
     },
     "public.follow_up": {

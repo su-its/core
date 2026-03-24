@@ -1,6 +1,7 @@
 CREATE TYPE "public"."assignee_type" AS ENUM('resolved', 'unresolved');--> statement-breakpoint
 CREATE TYPE "public"."client_type" AS ENUM('student', 'teacher', 'staff', 'other');--> statement-breakpoint
 CREATE TYPE "public"."consultation_category" AS ENUM('wifi_eduroam', 'wifi_success', 'wifi_smartphone', 'usage_mac', 'usage_fs', 'usage_vpn', 'usage_mail', 'usage_gakujo', 'usage_onedrive', 'usage_printer', 'usage_vm', 'usage_ms_software', 'hardware_pc', 'problem_credential', 'problem_windows', 'problem_linux', 'programming', 'rent', 'other');--> statement-breakpoint
+CREATE TYPE "public"."consulted_at_precision" AS ENUM('year', 'yearMonth', 'date', 'datetime');--> statement-breakpoint
 CREATE TYPE "public"."follow_up" AS ENUM('技術部', '生協', '情報基盤センター', '見送り', 'その他');--> statement-breakpoint
 CREATE TYPE "public"."resolution_type" AS ENUM('resolved', 'unresolved');--> statement-breakpoint
 CREATE TABLE "karte_assignees" (
@@ -14,6 +15,7 @@ CREATE TABLE "kartes" (
 	"id" text PRIMARY KEY NOT NULL,
 	"recorded_at" timestamp NOT NULL,
 	"consulted_at" timestamp,
+	"consulted_at_precision" "consulted_at_precision",
 	"last_updated_at" timestamp NOT NULL,
 	"client_type" "client_type",
 	"client_name" text,
