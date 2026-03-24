@@ -1,7 +1,10 @@
 import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
+	boolean,
+	char,
 	foreignKey,
+	index,
 	integer,
 	jsonb,
 	pgEnum,
@@ -9,15 +12,90 @@ import {
 	text,
 	timestamp,
 	uniqueIndex,
+	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
-import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
+import { DISCORD_ACCOUNT_EVENT_NAMES } from "#domain/aggregates/discord-account/DiscordAccount";
+import { ASSIGNEE_TYPES } from "#domain/aggregates/karte/Assignee";
+import { CLIENT_TYPES } from "#domain/aggregates/karte/Client";
+import { CONSULTATION_CATEGORIES } from "#domain/aggregates/karte/ConsultationCategory";
+import { CONSULTED_AT_PRECISIONS } from "#domain/aggregates/karte/ConsultedAt";
+import { FOLLOW_UP_OPTIONS } from "#domain/aggregates/karte/FollowUp";
+import { RESOLUTION_TYPES } from "#domain/aggregates/karte/Resolution";
+import { MEMBER_EVENT_NAMES } from "#domain/aggregates/member/MemberEvent";
+import type { Affiliation, CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
+import type { Recorded } from "#domain/shared/Recorded";
+
+// ============================================================================
+// Event Payload Types
+// ============================================================================
+
+/** Member集約ドメインイベントのpayload型（共通カラム以外の固有データ） */
+export type MemberEventPayload =
+	| {
+			name: string;
+			personalEmail: Recorded<string>;
+			studentId: string;
+			affiliation: CompleteAffiliation;
+	  }
+	| { reason: string }
+	| { studentId: string; affiliation: CompleteAffiliation }
+	| Record<string, never>
+	| {
+			previousAffiliation: CompleteAffiliation;
+			newAffiliation: CompleteAffiliation;
+			previousStudentId: string;
+			newStudentId: string;
+	  }
+	| {
+			previousAffiliation: CompleteAffiliation;
+			newAffiliation: CompleteAffiliation;
+	  }
+	| { previousStudentId: string; newStudentId: string }
+	| { previousName: string; newName: string }
+	| {
+			previousPersonalEmail: Recorded<string>;
+			newPersonalEmail: Recorded<string>;
+	  };
+
+/** DiscordAccount集約ドメインイベントのpayload型 */
+export type DiscordAccountEventPayload =
+	| { nickName: string }
+	| { previousNickName: string; newNickName: string };
 
 // ============================================================================
 // Enums
 // ============================================================================
 
+/** readonly配列をpgEnumが要求するmutableタプルに変換する */
+function toEnumValues<T extends string>(values: readonly T[]): [T, ...T[]] {
+	return [...values] as [T, ...T[]];
+}
+
 export const memberStatus = pgEnum("member_status", ["active", "unconfirmed", "former"]);
+
+export const clientTypeEnum = pgEnum("client_type", toEnumValues(CLIENT_TYPES));
+
+export const resolutionTypeEnum = pgEnum("resolution_type", toEnumValues(RESOLUTION_TYPES));
+
+export const followUpEnum = pgEnum("follow_up", toEnumValues(FOLLOW_UP_OPTIONS));
+
+export const consultedAtPrecisionEnum = pgEnum(
+	"consulted_at_precision",
+	toEnumValues(CONSULTED_AT_PRECISIONS),
+);
+
+export const consultationCategoryEnum = pgEnum(
+	"consultation_category",
+	toEnumValues(CONSULTATION_CATEGORIES.map((c) => c.id)),
+);
+
+export const memberEventNameEnum = pgEnum("member_event_name", toEnumValues(MEMBER_EVENT_NAMES));
+
+export const discordAccountEventNameEnum = pgEnum(
+	"discord_account_event_name",
+	toEnumValues(DISCORD_ACCOUNT_EVENT_NAMES),
+);
 
 // ============================================================================
 // Tables (introspected from production database)
@@ -209,6 +287,112 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 });
 
 // ============================================================================
+// Karte Tables
+// ============================================================================
+
+export const kartes = pgTable("kartes", {
+	id: text().primaryKey(),
+	recordedAt: timestamp("recorded_at").notNull(),
+	/** NULL = notRecorded */
+	consultedAt: timestamp("consulted_at"),
+	/** consultedAtの精度。consultedAtがNULLならNULL */
+	consultedAtPrecision: consultedAtPrecisionEnum("consulted_at_precision"),
+	lastUpdatedAt: timestamp("last_updated_at").notNull(),
+	/** NULL = notRecorded */
+	clientType: clientTypeEnum("client_type"),
+	/** NULL when client is notRecorded */
+	clientName: text("client_name"),
+	/** Only for student clients; 学籍番号は8文字固定 */
+	clientStudentId: char("client_student_id", { length: 8 }),
+	/** Only for student clients; Affiliation as JSONB */
+	clientAffiliation: jsonb("client_affiliation").$type<Affiliation>(),
+	liabilityConsent: boolean("liability_consent").notNull(),
+	disclosureConsent: boolean("disclosure_consent").notNull(),
+	/** 空配列 = notRecorded */
+	categoryIds: consultationCategoryEnum("category_ids").array().notNull().default([]),
+	/** NULL = notRecorded */
+	troubleDetails: text("trouble_details"),
+	/** NULL = notRecorded */
+	targetDevice: text("target_device"),
+	/** NULL = notRecorded */
+	supportContent: text("support_content"),
+	/** NULL = notRecorded */
+	resolutionType: resolutionTypeEnum("resolution_type"),
+	/** Only for unresolved; NULL = notRecorded or N/A */
+	followUp: followUpEnum("follow_up"),
+	/** NULL = notRecorded */
+	workDurationMinutes: integer("work_duration_minutes"),
+});
+
+export const assigneeTypeEnum = pgEnum("assignee_type", toEnumValues(ASSIGNEE_TYPES));
+
+export const karteAssignees = pgTable(
+	"karte_assignees",
+	{
+		karteId: text("karte_id").notNull(),
+		assigneeType: assigneeTypeEnum("assignee_type").notNull(),
+		/** resolved の場合のみ。メンバーID */
+		memberId: text("member_id"),
+		/** unresolved の場合のみ。対応者名 */
+		assigneeName: text("assignee_name"),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.karteId],
+			foreignColumns: [kartes.id],
+			name: "karte_assignees_karte_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.memberId],
+			foreignColumns: [members.id],
+			name: "karte_assignees_member_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
+
+// ============================================================================
+// Domain Event Tables
+// ============================================================================
+
+export const memberDomainEvents = pgTable(
+	"member_domain_events",
+	{
+		id: uuid().primaryKey(),
+		memberId: text("member_id").notNull(),
+		email: text().notNull(),
+		eventName: memberEventNameEnum("event_name").notNull(),
+		payload: jsonb().notNull().$type<MemberEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("member_domain_events_member_id_idx").on(table.memberId),
+		index("member_domain_events_event_name_idx").on(table.eventName),
+		index("member_domain_events_occurred_at_idx").on(table.occurredAt),
+	],
+);
+
+export const discordAccountDomainEvents = pgTable(
+	"discord_account_domain_events",
+	{
+		id: uuid().primaryKey(),
+		discordId: text("discord_id").notNull(),
+		memberId: text("member_id").notNull(),
+		eventName: discordAccountEventNameEnum("event_name").notNull(),
+		payload: jsonb().notNull().$type<DiscordAccountEventPayload>(),
+		occurredAt: timestamp("occurred_at", { mode: "string" }).notNull(),
+	},
+	(table) => [
+		index("discord_account_domain_events_discord_id_idx").on(table.discordId),
+		index("discord_account_domain_events_member_id_idx").on(table.memberId),
+		index("discord_account_domain_events_occurred_at_idx").on(table.occurredAt),
+	],
+);
+
+// ============================================================================
 // Relations
 // ============================================================================
 
@@ -268,5 +452,24 @@ export const memberExhibitsRelations = relations(memberExhibits, ({ one }) => ({
 	exhibit: one(exhibits, {
 		fields: [memberExhibits.exhibitId],
 		references: [exhibits.id],
+	}),
+}));
+
+// ============================================================================
+// Karte Relations
+// ============================================================================
+
+export const kartesRelations = relations(kartes, ({ many }) => ({
+	karteAssignees: many(karteAssignees),
+}));
+
+export const karteAssigneesRelations = relations(karteAssignees, ({ one }) => ({
+	karte: one(kartes, {
+		fields: [karteAssignees.karteId],
+		references: [kartes.id],
+	}),
+	member: one(members, {
+		fields: [karteAssignees.memberId],
+		references: [members.id],
 	}),
 }));

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import { InvalidStudentIdException } from "#domain/exceptions";
 import { StudentId } from "#domain/shared/StudentId";
 
@@ -48,6 +48,31 @@ describe("StudentId", () => {
 
 		it("新形式で英字の位置が異なると無効", () => {
 			expect(() => StudentId.fromString("7A251061")).toThrow(InvalidStudentIdException);
+		});
+	});
+
+	describe("isValid", () => {
+		it("旧形式（8桁数字）はtrue", () => {
+			expect(StudentId.isValid("70312031")).toBe(true);
+		});
+
+		it("新形式（3桁数字+英字+4桁数字）はtrue", () => {
+			expect(StudentId.isValid("725A1061")).toBe(true);
+		});
+
+		it("小文字の英字を正規化して判定する", () => {
+			expect(StudentId.isValid("725a1061")).toBe(true);
+		});
+
+		it("前後の空白をトリムして判定する", () => {
+			expect(StudentId.isValid("  70312031  ")).toBe(true);
+		});
+
+		it("不正な形式はfalse", () => {
+			expect(StudentId.isValid("")).toBe(false);
+			expect(StudentId.isValid("7031203")).toBe(false);
+			expect(StudentId.isValid("ABCDEFGH")).toBe(false);
+			expect(StudentId.isValid("72AB1061")).toBe(false);
 		});
 	});
 

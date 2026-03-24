@@ -1,10 +1,5 @@
-/**
- * ドメインイベントの基底インターフェース
- *
- * 集約内で発生した出来事を表現する。
- * 集約のメソッドがイベントを生成し、ユースケース層で取り出して利用する。
- */
-export interface DomainEvent {
+/** ドメインイベントの基底型 — 全イベントが持つ共通フィールド */
+export type DomainEvent = {
 	readonly eventName: string;
 	readonly occurredAt: Date;
-}
+};

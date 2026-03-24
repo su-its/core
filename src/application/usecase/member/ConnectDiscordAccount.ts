@@ -1,5 +1,6 @@
 import {
 	DiscordAccountAlreadyLinkedException,
+	DiscordAccountAlreadyLinkedToSameMemberException,
 	MemberNotFoundException,
 } from "#application/exceptions";
 import { IUseCase } from "#application/usecase/base";
@@ -39,7 +40,13 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 		}
 
 		const existing = await this.discordRepo.findByDiscordId(input.discordAccountId);
-		if (existing && existing.memberId !== input.memberId) {
+		if (existing) {
+			if (existing.memberId === input.memberId) {
+				throw new DiscordAccountAlreadyLinkedToSameMemberException(
+					input.discordAccountId,
+					input.memberId,
+				);
+			}
 			throw new DiscordAccountAlreadyLinkedException(input.discordAccountId, existing.memberId);
 		}
 

@@ -3,37 +3,9 @@
  *
  * IDと表示名のペアで構成され、追加はできるが削除はできない（履歴整合性のため）。
  */
-export type ConsultationCategory = {
-	/** カテゴリID */
-	readonly id: ConsultationCategoryId;
-	/** 表示名 */
-	readonly displayName: string;
-};
 
-/** 定義済みカテゴリID */
-export type ConsultationCategoryId =
-	| "wifi_eduroam"
-	| "wifi_success"
-	| "wifi_smartphone"
-	| "usage_mac"
-	| "usage_fs"
-	| "usage_vpn"
-	| "usage_mail"
-	| "usage_gakujo"
-	| "usage_onedrive"
-	| "usage_printer"
-	| "usage_vm"
-	| "usage_ms_software"
-	| "hardware_pc"
-	| "problem_credential"
-	| "problem_windows"
-	| "problem_linux"
-	| "programming"
-	| "rent"
-	| "other";
-
-/** 定義済みカテゴリ一覧 */
-export const CONSULTATION_CATEGORIES: readonly ConsultationCategory[] = [
+/** 定義済みカテゴリ一覧（単一の情報源） */
+export const CONSULTATION_CATEGORIES = [
 	{ id: "wifi_eduroam", displayName: "eduroamに対する接続方法の相談" },
 	{ id: "wifi_success", displayName: "SUCCESSに対する接続方法の相談" },
 	{
@@ -60,3 +32,12 @@ export const CONSULTATION_CATEGORIES: readonly ConsultationCategory[] = [
 	{ id: "rent", displayName: "貸し出しに関する相談" },
 	{ id: "other", displayName: "その他の相談" },
 ] as const;
+
+/** 定義済みカテゴリID — CONSULTATION_CATEGORIESから導出 */
+export type ConsultationCategoryId = (typeof CONSULTATION_CATEGORIES)[number]["id"];
+
+/** カテゴリ型 */
+export type ConsultationCategory = {
+	readonly id: ConsultationCategoryId;
+	readonly displayName: string;
+};

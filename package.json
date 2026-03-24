@@ -1,68 +1,69 @@
 {
-	"name": "@shizuoka-its/core",
-	"version": "2.1.2",
-	"description": "ITS core library",
-	"keywords": [],
-	"license": "ISC",
-	"author": "",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/su-its/core.git"
-	},
-	"files": [
-		"dist"
-	],
-	"type": "module",
-	"main": "dist/index.cjs",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"build": "vp pack",
-		"prepare": "npm run build",
-		"test": "vp test",
-		"test:watch": "vp test watch",
-		"typecheck": "tsc --noEmit",
-		"check": "vp check",
-		"lint": "vp lint",
-		"lint:ci": "vp lint",
-		"format": "vp fmt",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
-		"db:push": "drizzle-kit push",
-		"version:patch": "npm version patch && npm run publish:latest",
-		"version:minor": "npm version minor && npm run publish:latest",
-		"version:major": "npm version major && npm run publish:latest",
-		"version:alpha": "npm version prerelease --preid=alpha && npm run publish:alpha",
-		"version:beta": "npm version prerelease --preid=beta && npm run publish:beta",
-		"version:rc": "npm version prerelease --preid=rc && npm run publish:rc",
-		"publish:latest": "npm publish --tag latest",
-		"publish:alpha": "npm publish --tag alpha",
-		"publish:beta": "npm publish --tag beta",
-		"publish:rc": "npm publish --tag rc"
-	},
-	"dependencies": {
-		"drizzle-orm": "^0.45.1",
-		"pg": "^8.17.2",
-		"uuid": "^11.1.0"
-	},
-	"devDependencies": {
-		"@types/node": "^22.9.0",
-		"@types/pg": "^8.16.0",
-		"drizzle-kit": "^0.31.8",
-		"typescript": "^5.6.3",
-		"vite-plus": "^0.1.13"
-	},
-	"overrides": {
-		"esbuild": "^0.27.4"
-	}
+  "name": "@shizuoka-its/core",
+  "version": "2.1.2",
+  "description": "ITS core library",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/su-its/core.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "prepare": "npm run build",
+    "test": "vp test",
+    "test:watch": "vp test watch",
+    "typecheck": "tsc --noEmit",
+    "check": "vp check",
+    "lint": "vp lint",
+    "lint:ci": "vp lint",
+    "format": "vp fmt",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "version:patch": "npm version patch && npm run publish:latest",
+    "version:minor": "npm version minor && npm run publish:latest",
+    "version:major": "npm version major && npm run publish:latest",
+    "version:alpha": "npm version prerelease --preid=alpha && npm run publish:alpha",
+    "version:beta": "npm version prerelease --preid=beta && npm run publish:beta",
+    "version:rc": "npm version prerelease --preid=rc && npm run publish:rc",
+    "publish:latest": "npm publish --tag latest",
+    "publish:alpha": "npm publish --tag alpha",
+    "publish:beta": "npm publish --tag beta",
+    "publish:rc": "npm publish --tag rc"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.17.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/pg": "^8.16.0",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "^5.6.3",
+    "vite-plus": "^0.1.13"
+  },
+  "overrides": {
+    "esbuild": "^0.27.4"
+  },
+  "packageManager": "npm@11.12.0"
 }

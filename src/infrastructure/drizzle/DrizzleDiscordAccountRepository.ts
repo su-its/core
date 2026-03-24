@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { eq } from "drizzle-orm";
 import { DiscordAccount } from "#domain/aggregates/discord-account/DiscordAccount";
 import type { DiscordAccountRepository } from "#domain/aggregates/discord-account/DiscordAccountRepository";
@@ -6,7 +7,8 @@ import { discordId } from "#domain/aggregates/discord-account/DiscordId";
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import { memberId } from "#domain/aggregates/member/MemberId";
 import { getDb } from "./client";
-import { discordAccounts } from "./schema";
+import { discordAccountDomainEvents, discordAccounts } from "./schema";
+import { serializeDiscordAccountEventPayload } from "./serializeDiscordAccountEvent";
 
 type DiscordAccountRow = typeof discordAccounts.$inferSelect;
 
@@ -35,22 +37,38 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	async save(account: DiscordAccount): Promise<void> {
 		const db = getDb();
 		const now = new Date().toISOString();
+		const events = account.getDomainEvents();
 
-		await db
-			.insert(discordAccounts)
-			.values({
-				discordId: account.discordId as string,
-				nickName: account.nickName,
-				memberId: account.memberId as string,
-				updatedAt: now,
-			})
-			.onConflictDoUpdate({
-				target: discordAccounts.discordId,
-				set: {
+		await db.transaction(async (tx) => {
+			await tx
+				.insert(discordAccounts)
+				.values({
+					discordId: account.discordId as string,
 					nickName: account.nickName,
+					memberId: account.memberId as string,
 					updatedAt: now,
-				},
-			});
+				})
+				.onConflictDoUpdate({
+					target: discordAccounts.discordId,
+					set: {
+						nickName: account.nickName,
+						updatedAt: now,
+					},
+				});
+
+			if (events.length > 0) {
+				await tx.insert(discordAccountDomainEvents).values(
+					events.map((event) => ({
+						id: uuid(),
+						discordId: event.discordId as string,
+						memberId: event.memberId as string,
+						eventName: event.eventName,
+						payload: serializeDiscordAccountEventPayload(event),
+						occurredAt: event.occurredAt.toISOString(),
+					})),
+				);
+			}
+		});
 	}
 
 	async delete(id: DiscordId): Promise<void> {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vite-plus/test";
+import { describe, expect, it } from "vitest";
 import { workDuration } from "#domain/aggregates/karte/WorkDuration";
 import { InvalidWorkDurationException } from "#domain/exceptions";
 

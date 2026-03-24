@@ -19,14 +19,18 @@ export class StudentId extends ValueObject<string> {
 		super(value);
 	}
 
+	/** 学籍番号として妥当な文字列かを検証する */
+	static isValid(value: string): boolean {
+		const normalized = value.trim().toUpperCase();
+		return StudentId.NUMERIC_ONLY.test(normalized) || StudentId.ALPHANUMERIC.test(normalized);
+	}
+
 	static fromString(value: string): StudentId {
 		return new StudentId(value.trim().toUpperCase());
 	}
 
 	protected validate(): void {
-		const isValid =
-			StudentId.NUMERIC_ONLY.test(this.value) || StudentId.ALPHANUMERIC.test(this.value);
-		if (!isValid) {
+		if (!StudentId.isValid(this.value)) {
 			throw new InvalidStudentIdException(this.value);
 		}
 	}

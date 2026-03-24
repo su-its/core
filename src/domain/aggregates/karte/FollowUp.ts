@@ -1,2 +1,11 @@
+/** 後処理の選択肢一覧 */
+export const FOLLOW_UP_OPTIONS = [
+	"技術部",
+	"生協",
+	"情報基盤センター",
+	"見送り",
+	"その他",
+] as const;
+
 /** 後処理 — 相談対応後のアクション */
-export type FollowUp = "技術部" | "生協" | "情報基盤センター" | "見送り" | "その他";
+export type FollowUp = (typeof FOLLOW_UP_OPTIONS)[number];
