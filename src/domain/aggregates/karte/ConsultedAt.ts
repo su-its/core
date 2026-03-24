@@ -6,6 +6,8 @@
  * わかっている粒度を型で明示し、不明な部分を推定値で埋めない。
  */
 
+import { InvalidConsultedAtException } from "#domain/exceptions";
+
 /** 年のみ判明 */
 export type YearOnly = {
 	readonly precision: "year";
@@ -44,7 +46,7 @@ export function yearOnly(year: number): ConsultedAt {
 
 export function yearMonth(year: number, month: number): ConsultedAt {
 	if (month < 1 || month > 12) {
-		throw new Error(`月は1〜12の範囲: ${month}`);
+		throw new InvalidConsultedAtException(`月は1〜12の範囲: ${month}`);
 	}
 	return { precision: "yearMonth", year, month };
 }
@@ -92,7 +94,7 @@ export function parseConsultedAt(input: string): ConsultedAt {
 	const normalized = trimmed.replace(" ", "T");
 	const parsed = new Date(normalized);
 	if (Number.isNaN(parsed.getTime())) {
-		throw new Error(`日時のパースに失敗: "${input}"`);
+		throw new InvalidConsultedAtException(`日時のパースに失敗: "${input}"`);
 	}
 	return dateTime(parsed);
 }
