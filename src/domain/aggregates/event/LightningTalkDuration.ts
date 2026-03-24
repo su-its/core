@@ -1,5 +1,5 @@
-import { ValueObject } from "../../base";
-import { InvalidLightningTalkDurationException } from "../../exceptions";
+import { ValueObject } from "#domain/base/ValueObject";
+import { InvalidLightningTalkDurationException } from "#domain/exceptions";
 
 export class LightningTalkDuration extends ValueObject<number> {
 	protected validate(): void {

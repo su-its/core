@@ -1,4 +1,4 @@
-import { EmptyStringException } from "../exceptions";
+import { EmptyStringException } from "#domain/exceptions";
 
 /**
  * 空でない文字列 — 空文字・空白のみの文字列を型レベルで禁止する

@@ -1,5 +1,5 @@
+import { IUseCase } from "#application/usecase/base";
 import type { EventRepository, Exhibit, MemberId } from "#domain";
-import { IUseCase } from "../base";
 
 export interface GetExhibitsByMemberInput {
 	memberId: MemberId;

@@ -1,10 +1,10 @@
+import { IUseCase } from "#application/usecase/base";
 import type {
 	DiscordAccountRepository,
 	DiscordId,
 	Member,
 	MemberRepository,
 } from "#domain";
-import { IUseCase } from "../base";
 
 export interface GetMemberByDiscordIdInput {
 	discordId: DiscordId;

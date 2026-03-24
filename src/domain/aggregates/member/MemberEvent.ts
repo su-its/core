@@ -1,13 +1,13 @@
-import type { DomainEvent } from "../../base";
-import type { Recorded } from "../../shared";
-import type { StudentId } from "../../shared";
+import type { DomainEvent } from "#domain/base/DomainEvent";
+import type { Recorded } from "#domain/shared/Recorded";
+import type { StudentId } from "#domain/shared/StudentId";
 import type {
 	CompleteAffiliation,
 	CompleteDoctoralAffiliation,
 	CompleteMasterAffiliation,
 	CompleteProfessionalAffiliation,
 	CompleteUndergraduateAffiliation,
-} from "../../shared";
+} from "#domain/shared/affiliation/Affiliation";
 import type { Email } from "./Email";
 import type { MemberId } from "./MemberId";
 import type { UniversityEmail } from "./UniversityEmail";
@@ -20,157 +20,121 @@ export type RemovalReason =
 	| "voluntaryLeave";
 
 /** 室員登録 */
-export class MemberRegistered implements DomainEvent {
-	readonly eventName = "MemberRegistered" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly name: string,
-		readonly personalEmail: Recorded<Email>,
-		readonly studentId: StudentId,
-		readonly affiliation: CompleteAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MemberRegistered = DomainEvent & {
+	readonly eventName: "MemberRegistered";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly name: string;
+	readonly personalEmail: Recorded<Email>;
+	readonly studentId: StudentId;
+	readonly affiliation: CompleteAffiliation;
+};
 
 /** 除籍 */
-export class MemberRemoved implements DomainEvent {
-	readonly eventName = "MemberRemoved" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly reason: RemovalReason,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MemberRemoved = DomainEvent & {
+	readonly eventName: "MemberRemoved";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly reason: RemovalReason;
+};
 
 /** 再登録 */
-export class MemberReregistered implements DomainEvent {
-	readonly eventName = "MemberReregistered" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly studentId: StudentId,
-		readonly affiliation: CompleteAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MemberReregistered = DomainEvent & {
+	readonly eventName: "MemberReregistered";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly studentId: StudentId;
+	readonly affiliation: CompleteAffiliation;
+};
 
 /** 年次確認未返答による未確認状態への移行 */
-export class MemberUnconfirmed implements DomainEvent {
-	readonly eventName = "MemberUnconfirmed" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MemberUnconfirmed = DomainEvent & {
+	readonly eventName: "MemberUnconfirmed";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+};
 
 /** 未確認状態からの復帰 */
-export class MemberConfirmed implements DomainEvent {
-	readonly eventName = "MemberConfirmed" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly studentId: StudentId,
-		readonly affiliation: CompleteAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MemberConfirmed = DomainEvent & {
+	readonly eventName: "MemberConfirmed";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly studentId: StudentId;
+	readonly affiliation: CompleteAffiliation;
+};
 
 /** 内部進学 */
-export class InternallyAdvanced implements DomainEvent {
-	readonly eventName = "InternallyAdvanced" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousAffiliation: CompleteAffiliation,
-		readonly newAffiliation:
-			| CompleteMasterAffiliation
-			| CompleteDoctoralAffiliation,
-		readonly previousStudentId: StudentId,
-		readonly newStudentId: StudentId,
-		readonly occurredAt: Date,
-	) {}
-}
+export type InternallyAdvanced = DomainEvent & {
+	readonly eventName: "InternallyAdvanced";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousAffiliation: CompleteAffiliation;
+	readonly newAffiliation:
+		| CompleteMasterAffiliation
+		| CompleteDoctoralAffiliation;
+	readonly previousStudentId: StudentId;
+	readonly newStudentId: StudentId;
+};
 
 /** 転学部 */
-export class FacultyTransferred implements DomainEvent {
-	readonly eventName = "FacultyTransferred" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousAffiliation: CompleteUndergraduateAffiliation,
-		readonly newAffiliation: CompleteUndergraduateAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type FacultyTransferred = DomainEvent & {
+	readonly eventName: "FacultyTransferred";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousAffiliation: CompleteUndergraduateAffiliation;
+	readonly newAffiliation: CompleteUndergraduateAffiliation;
+};
 
 /** 転学科 */
-export class DepartmentTransferred implements DomainEvent {
-	readonly eventName = "DepartmentTransferred" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousAffiliation: CompleteUndergraduateAffiliation,
-		readonly newAffiliation: CompleteUndergraduateAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type DepartmentTransferred = DomainEvent & {
+	readonly eventName: "DepartmentTransferred";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousAffiliation: CompleteUndergraduateAffiliation;
+	readonly newAffiliation: CompleteUndergraduateAffiliation;
+};
 
 /** 転専攻 */
-export class MajorTransferred implements DomainEvent {
-	readonly eventName = "MajorTransferred" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousAffiliation:
-			| CompleteMasterAffiliation
-			| CompleteDoctoralAffiliation
-			| CompleteProfessionalAffiliation,
-		readonly newAffiliation:
-			| CompleteMasterAffiliation
-			| CompleteDoctoralAffiliation
-			| CompleteProfessionalAffiliation,
-		readonly occurredAt: Date,
-	) {}
-}
+export type MajorTransferred = DomainEvent & {
+	readonly eventName: "MajorTransferred";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousAffiliation:
+		| CompleteMasterAffiliation
+		| CompleteDoctoralAffiliation
+		| CompleteProfessionalAffiliation;
+	readonly newAffiliation:
+		| CompleteMasterAffiliation
+		| CompleteDoctoralAffiliation
+		| CompleteProfessionalAffiliation;
+};
 
 /** 学籍番号変更 */
-export class StudentIdChanged implements DomainEvent {
-	readonly eventName = "StudentIdChanged" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousStudentId: StudentId,
-		readonly newStudentId: StudentId,
-		readonly occurredAt: Date,
-	) {}
-}
+export type StudentIdChanged = DomainEvent & {
+	readonly eventName: "StudentIdChanged";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousStudentId: StudentId;
+	readonly newStudentId: StudentId;
+};
 
 /** 名前変更 */
-export class NameChanged implements DomainEvent {
-	readonly eventName = "NameChanged" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousName: string,
-		readonly newName: string,
-		readonly occurredAt: Date,
-	) {}
-}
+export type NameChanged = DomainEvent & {
+	readonly eventName: "NameChanged";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousName: string;
+	readonly newName: string;
+};
 
 /** 個人メールアドレス変更 */
-export class PersonalEmailChanged implements DomainEvent {
-	readonly eventName = "PersonalEmailChanged" as const;
-	constructor(
-		readonly id: MemberId,
-		readonly email: UniversityEmail,
-		readonly previousPersonalEmail: Recorded<Email>,
-		readonly newPersonalEmail: Recorded<Email>,
-		readonly occurredAt: Date,
-	) {}
-}
+export type PersonalEmailChanged = DomainEvent & {
+	readonly eventName: "PersonalEmailChanged";
+	readonly id: MemberId;
+	readonly email: UniversityEmail;
+	readonly previousPersonalEmail: Recorded<Email>;
+	readonly newPersonalEmail: Recorded<Email>;
+};
 
 /** Member集約で発生しうるすべてのドメインイベント */
 export type MemberDomainEvent =
@@ -186,3 +150,19 @@ export type MemberDomainEvent =
 	| StudentIdChanged
 	| NameChanged
 	| PersonalEmailChanged;
+
+/** Memberイベント名の選択肢一覧 */
+export const MEMBER_EVENT_NAMES = [
+	"MemberRegistered",
+	"MemberRemoved",
+	"MemberReregistered",
+	"MemberUnconfirmed",
+	"MemberConfirmed",
+	"InternallyAdvanced",
+	"FacultyTransferred",
+	"DepartmentTransferred",
+	"MajorTransferred",
+	"StudentIdChanged",
+	"NameChanged",
+	"PersonalEmailChanged",
+] as const satisfies readonly MemberDomainEvent["eventName"][];
