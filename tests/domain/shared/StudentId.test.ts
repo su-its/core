@@ -61,6 +61,31 @@ describe("StudentId", () => {
 		});
 	});
 
+	describe("isValid", () => {
+		it("旧形式（8桁数字）はtrue", () => {
+			expect(StudentId.isValid("70312031")).toBe(true);
+		});
+
+		it("新形式（3桁数字+英字+4桁数字）はtrue", () => {
+			expect(StudentId.isValid("725A1061")).toBe(true);
+		});
+
+		it("小文字の英字を正規化して判定する", () => {
+			expect(StudentId.isValid("725a1061")).toBe(true);
+		});
+
+		it("前後の空白をトリムして判定する", () => {
+			expect(StudentId.isValid("  70312031  ")).toBe(true);
+		});
+
+		it("不正な形式はfalse", () => {
+			expect(StudentId.isValid("")).toBe(false);
+			expect(StudentId.isValid("7031203")).toBe(false);
+			expect(StudentId.isValid("ABCDEFGH")).toBe(false);
+			expect(StudentId.isValid("72AB1061")).toBe(false);
+		});
+	});
+
 	describe("equals", () => {
 		it("同じ学籍番号は等しい", () => {
 			const a = StudentId.fromString("725A1061");

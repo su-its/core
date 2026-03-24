@@ -35,3 +35,14 @@ type OtherClient = {
 
 /** 相談者 — PC相談室に相談を持ち込んだ人 */
 export type Client = StudentClient | TeacherClient | StaffClient | OtherClient;
+
+/** 相談者種別の表示名 */
+export const clientTypeNames = {
+	student: "学生",
+	teacher: "教員",
+	staff: "職員",
+	other: "その他",
+} as const satisfies Record<Client["type"], string>;
+
+/** 相談者種別 */
+export type ClientType = keyof typeof clientTypeNames;
