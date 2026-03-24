@@ -1,8 +1,6 @@
-import { MemberNotActiveException, MemberNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Email, Member, MemberId, MemberRepository } from "#domain";
-import type { Recorded } from "#domain/shared/Recorded";
-import type { StudentId } from "#domain/shared/StudentId";
+import type { Email, Member, MemberId, MemberRepository, Recorded, StudentId } from "#domain";
+import { MemberNotActiveException, MemberNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface UpdateMemberInput {
 	memberId: MemberId;

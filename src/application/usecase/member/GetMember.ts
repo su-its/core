@@ -1,5 +1,5 @@
-import { IUseCase } from "#application/usecase/base";
 import type { Member, MemberId, MemberRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export interface GetMemberInput {
 	id: MemberId;

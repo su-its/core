@@ -1,6 +1,6 @@
-import { DiscordAccountNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 import type { DiscordAccount, DiscordAccountRepository, DiscordId } from "#domain";
+import { DiscordAccountNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeDiscordNickNameInput {
 	discordAccountId: DiscordId;

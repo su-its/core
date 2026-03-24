@@ -1,4 +1,4 @@
-import { InvalidWorkDurationException } from "#domain/exceptions";
+import { InvalidWorkDurationException } from "../../exceptions";
 
 /** 作業時間（分） — 0以上の整数であることを保証する */
 export type WorkDuration = number & { readonly __brand: unique symbol };

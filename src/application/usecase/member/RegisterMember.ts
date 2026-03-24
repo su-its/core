@@ -1,17 +1,17 @@
 import { v4 as uuid } from "uuid";
-import { MemberEmailAlreadyExistsException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 import {
 	ActiveMember,
+	type CompleteAffiliation,
 	type Email,
 	type Member,
 	type MemberRepository,
+	type Recorded,
+	type StudentId,
 	type UniversityEmail,
 	memberId,
 } from "#domain";
-import type { Recorded } from "#domain/shared/Recorded";
-import type { StudentId } from "#domain/shared/StudentId";
-import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
+import { MemberEmailAlreadyExistsException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {
 	name: string;

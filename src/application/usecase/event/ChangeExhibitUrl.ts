@@ -1,6 +1,6 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 import type { Event, EventId, EventRepository, ExhibitId, Url } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeExhibitUrlInput {
 	eventId: EventId;

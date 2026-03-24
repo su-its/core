@@ -1,15 +1,17 @@
 import { describe, expect, it } from "vite-plus/test";
-import { ActiveMember, FormerMember, UnconfirmedMember } from "#domain/aggregates/member/Member";
-import { memberId } from "#domain/aggregates/member/MemberId";
-import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
-import { InvalidAffiliationOperationException } from "#domain/exceptions";
-import { notRecorded } from "#domain/shared/Recorded";
-import { StudentId } from "#domain/shared/StudentId";
-import type {
-	CompleteDoctoralAffiliation,
-	CompleteMasterAffiliation,
-	CompleteUndergraduateAffiliation,
-} from "#domain/shared/affiliation/Affiliation";
+import {
+	ActiveMember,
+	type CompleteDoctoralAffiliation,
+	type CompleteMasterAffiliation,
+	type CompleteUndergraduateAffiliation,
+	FormerMember,
+	InvalidAffiliationOperationException,
+	StudentId,
+	UnconfirmedMember,
+	UniversityEmail,
+	memberId,
+	notRecorded,
+} from "#domain";
 
 function createEmail() {
 	return new UniversityEmail("test@shizuoka.ac.jp");

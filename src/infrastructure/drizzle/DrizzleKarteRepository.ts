@@ -1,24 +1,26 @@
 import { eq } from "drizzle-orm";
-import type { Assignee } from "#domain/aggregates/karte/Assignee";
-import type { Client } from "#domain/aggregates/karte/Client";
-import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
-import type { Consultation } from "#domain/aggregates/karte/Consultation";
 import {
 	CONSULTATION_CATEGORIES,
+	Karte,
+	StudentId,
+	karteId,
+	memberId,
+	notRecorded,
+	recorded,
+	workDuration,
+	type Assignee,
+	type Client,
+	type Consultation,
 	type ConsultationCategoryId,
-} from "#domain/aggregates/karte/ConsultationCategory";
-import type { FollowUp } from "#domain/aggregates/karte/FollowUp";
-import { Karte } from "#domain/aggregates/karte/Karte";
-import { type KarteId, karteId } from "#domain/aggregates/karte/KarteId";
-import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
-import type { Recorded } from "#domain/aggregates/karte/Recorded";
-import { notRecorded, recorded } from "#domain/aggregates/karte/Recorded";
-import type { Resolution } from "#domain/aggregates/karte/Resolution";
-import type { SupportRecord } from "#domain/aggregates/karte/SupportRecord";
-import { workDuration } from "#domain/aggregates/karte/WorkDuration";
-import { memberId } from "#domain/aggregates/member/MemberId";
-import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
-import { StudentId } from "#domain/shared";
+	type ConsultedAt,
+	type FollowUp,
+	type KarteId,
+	type KarteRepository,
+	type NonEmptyArray,
+	type Recorded,
+	type Resolution,
+	type SupportRecord,
+} from "#domain";
 import { getDb } from "./client";
 import { karteAssignees, kartes } from "./schema";
 
