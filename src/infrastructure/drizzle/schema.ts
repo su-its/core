@@ -1,17 +1,32 @@
 import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
+	boolean,
+	char,
 	foreignKey,
 	integer,
 	jsonb,
 	pgEnum,
 	pgTable,
+	primaryKey,
 	text,
 	timestamp,
 	uniqueIndex,
 	varchar,
 } from "drizzle-orm/pg-core";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
+import type {
+	PartialDoctoralAffiliationValue,
+	PartialMasterAffiliationValue,
+	PartialProfessionalAffiliationValue,
+	PartialUndergraduateAffiliationValue,
+} from "#domain/shared/affiliation/partialUniversityStructure";
+import type {
+	DoctoralAffiliationValue,
+	MasterAffiliationValue,
+	ProfessionalAffiliationValue,
+	UndergraduateAffiliationValue,
+} from "#domain/shared/affiliation/universityStructure";
 
 // ============================================================================
 // Enums
@@ -21,6 +36,26 @@ export const memberStatus = pgEnum("member_status", [
 	"active",
 	"unconfirmed",
 	"former",
+]);
+
+export const clientTypeEnum = pgEnum("client_type", [
+	"student",
+	"teacher",
+	"staff",
+	"other",
+]);
+
+export const resolutionTypeEnum = pgEnum("resolution_type", [
+	"resolved",
+	"unresolved",
+]);
+
+export const followUpEnum = pgEnum("follow_up", [
+	"技術部",
+	"生協",
+	"情報基盤センター",
+	"見送り",
+	"その他",
 ]);
 
 // ============================================================================
@@ -218,6 +253,115 @@ export const prismaMigrations = pgTable("_prisma_migrations", {
 });
 
 // ============================================================================
+// Karte Tables
+// ============================================================================
+
+/** Affiliationのシリアライズ形式 — ドメインの値型で判別共用体にする */
+export type SerializedAffiliation =
+	| { type: "undergraduate"; value: UndergraduateAffiliationValue | PartialUndergraduateAffiliationValue }
+	| { type: "master"; value: MasterAffiliationValue | PartialMasterAffiliationValue }
+	| { type: "doctoral"; value: DoctoralAffiliationValue | PartialDoctoralAffiliationValue }
+	| { type: "professional"; value: ProfessionalAffiliationValue | PartialProfessionalAffiliationValue };
+
+export const kartes = pgTable("kartes", {
+	id: text().primaryKey(),
+	recordedAt: timestamp("recorded_at").notNull(),
+	/** NULL = notRecorded */
+	consultedAt: timestamp("consulted_at"),
+	lastUpdatedAt: timestamp("last_updated_at").notNull(),
+	/** NULL = notRecorded */
+	clientType: clientTypeEnum("client_type"),
+	/** NULL when client is notRecorded */
+	clientName: text("client_name"),
+	/** Only for student clients; 学籍番号は8文字固定 */
+	clientStudentId: char("client_student_id", { length: 8 }),
+	/** Only for student clients; Affiliation as JSONB */
+	clientAffiliation: jsonb("client_affiliation").$type<SerializedAffiliation>(),
+	liabilityConsent: boolean("liability_consent").notNull(),
+	disclosureConsent: boolean("disclosure_consent").notNull(),
+	/** NULL = notRecorded */
+	troubleDetails: text("trouble_details"),
+	/** NULL = notRecorded */
+	targetDevice: text("target_device"),
+	/** NULL = notRecorded */
+	supportContent: text("support_content"),
+	/** NULL = notRecorded */
+	resolutionType: resolutionTypeEnum("resolution_type"),
+	/** Only for unresolved; NULL = notRecorded or N/A */
+	followUp: followUpEnum("follow_up"),
+	/** NULL = notRecorded */
+	workDurationMinutes: integer("work_duration_minutes"),
+});
+
+export const consultationCategories = pgTable("consultation_categories", {
+	id: text().primaryKey(),
+	displayName: text("display_name").notNull(),
+	createdAt: timestamp().default(sql`CURRENT_TIMESTAMP`).notNull(),
+	updatedAt: timestamp().notNull(),
+});
+
+export const karteConsultationCategories = pgTable(
+	"karte_consultation_categories",
+	{
+		karteId: text("karte_id").notNull(),
+		categoryId: text("category_id").notNull(),
+	},
+	(table) => [
+		primaryKey({
+			columns: [table.karteId, table.categoryId],
+			name: "karte_consultation_categories_pkey",
+		}),
+		foreignKey({
+			columns: [table.karteId],
+			foreignColumns: [kartes.id],
+			name: "karte_consultation_categories_karte_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.categoryId],
+			foreignColumns: [consultationCategories.id],
+			name: "karte_consultation_categories_category_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
+
+export const assigneeTypeEnum = pgEnum("assignee_type", [
+	"resolved",
+	"unresolved",
+]);
+
+export const karteAssignees = pgTable(
+	"karte_assignees",
+	{
+		karteId: text("karte_id").notNull(),
+		assigneeType: assigneeTypeEnum("assignee_type").notNull(),
+		/** resolved の場合のみ。メンバーID */
+		memberId: text("member_id"),
+		/** unresolved の場合のみ。対応者名 */
+		assigneeName: text("assignee_name"),
+	},
+	(table) => [
+		foreignKey({
+			columns: [table.karteId],
+			foreignColumns: [kartes.id],
+			name: "karte_assignees_karte_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("cascade"),
+		foreignKey({
+			columns: [table.memberId],
+			foreignColumns: [members.id],
+			name: "karte_assignees_member_id_fkey",
+		})
+			.onUpdate("cascade")
+			.onDelete("restrict"),
+	],
+);
+
+// ============================================================================
 // Relations
 // ============================================================================
 
@@ -282,3 +426,47 @@ export const memberExhibitsRelations = relations(memberExhibits, ({ one }) => ({
 		references: [exhibits.id],
 	}),
 }));
+
+// ============================================================================
+// Karte Relations
+// ============================================================================
+
+export const kartesRelations = relations(kartes, ({ many }) => ({
+	karteConsultationCategories: many(karteConsultationCategories),
+	karteAssignees: many(karteAssignees),
+}));
+
+export const consultationCategoriesRelations = relations(
+	consultationCategories,
+	({ many }) => ({
+		karteConsultationCategories: many(karteConsultationCategories),
+	}),
+);
+
+export const karteConsultationCategoriesRelations = relations(
+	karteConsultationCategories,
+	({ one }) => ({
+		karte: one(kartes, {
+			fields: [karteConsultationCategories.karteId],
+			references: [kartes.id],
+		}),
+		category: one(consultationCategories, {
+			fields: [karteConsultationCategories.categoryId],
+			references: [consultationCategories.id],
+		}),
+	}),
+);
+
+export const karteAssigneesRelations = relations(
+	karteAssignees,
+	({ one }) => ({
+		karte: one(kartes, {
+			fields: [karteAssignees.karteId],
+			references: [kartes.id],
+		}),
+		member: one(members, {
+			fields: [karteAssignees.memberId],
+			references: [members.id],
+		}),
+	}),
+);

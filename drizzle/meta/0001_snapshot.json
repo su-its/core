@@ -1,9 +1,47 @@
 {
-	"id": "6ee0ec84-eec9-452f-ab00-a04e557a9d62",
+	"id": "a73a2891-5dff-4f49-a071-a9eaf6e0452a",
 	"prevId": "7655ab7d-9419-4f96-9097-4e57b180d3b5",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
+		"public.consultation_categories": {
+			"name": "consultation_categories",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "CURRENT_TIMESTAMP"
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
 		"public.discord_accounts": {
 			"name": "discord_accounts",
 			"schema": "",
@@ -168,6 +206,216 @@
 					"onUpdate": "cascade"
 				}
 			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.karte_assigned_members": {
+			"name": "karte_assigned_members",
+			"schema": "",
+			"columns": {
+				"karte_id": {
+					"name": "karte_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"member_id": {
+					"name": "member_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"karte_assigned_members_karte_id_fkey": {
+					"name": "karte_assigned_members_karte_id_fkey",
+					"tableFrom": "karte_assigned_members",
+					"tableTo": "kartes",
+					"columnsFrom": ["karte_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "cascade"
+				},
+				"karte_assigned_members_member_id_fkey": {
+					"name": "karte_assigned_members_member_id_fkey",
+					"tableFrom": "karte_assigned_members",
+					"tableTo": "members",
+					"columnsFrom": ["member_id"],
+					"columnsTo": ["id"],
+					"onDelete": "restrict",
+					"onUpdate": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {
+				"karte_assigned_members_pkey": {
+					"name": "karte_assigned_members_pkey",
+					"columns": ["karte_id", "member_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.karte_consultation_categories": {
+			"name": "karte_consultation_categories",
+			"schema": "",
+			"columns": {
+				"karte_id": {
+					"name": "karte_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"category_id": {
+					"name": "category_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"karte_consultation_categories_karte_id_fkey": {
+					"name": "karte_consultation_categories_karte_id_fkey",
+					"tableFrom": "karte_consultation_categories",
+					"tableTo": "kartes",
+					"columnsFrom": ["karte_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "cascade"
+				},
+				"karte_consultation_categories_category_id_fkey": {
+					"name": "karte_consultation_categories_category_id_fkey",
+					"tableFrom": "karte_consultation_categories",
+					"tableTo": "consultation_categories",
+					"columnsFrom": ["category_id"],
+					"columnsTo": ["id"],
+					"onDelete": "restrict",
+					"onUpdate": "cascade"
+				}
+			},
+			"compositePrimaryKeys": {
+				"karte_consultation_categories_pkey": {
+					"name": "karte_consultation_categories_pkey",
+					"columns": ["karte_id", "category_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.kartes": {
+			"name": "kartes",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"recorded_at": {
+					"name": "recorded_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"consulted_at": {
+					"name": "consulted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"last_updated_at": {
+					"name": "last_updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"client_type": {
+					"name": "client_type",
+					"type": "client_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"client_name": {
+					"name": "client_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"client_student_id": {
+					"name": "client_student_id",
+					"type": "char(8)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"client_affiliation": {
+					"name": "client_affiliation",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"liability_consent": {
+					"name": "liability_consent",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"disclosure_consent": {
+					"name": "disclosure_consent",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"trouble_details": {
+					"name": "trouble_details",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"target_device": {
+					"name": "target_device",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"support_content": {
+					"name": "support_content",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"resolution_type": {
+					"name": "resolution_type",
+					"type": "resolution_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"follow_up": {
+					"name": "follow_up",
+					"type": "follow_up",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"work_duration_minutes": {
+					"name": "work_duration_minutes",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
 			"policies": {},
@@ -426,9 +674,15 @@
 				},
 				"student_id": {
 					"name": "student_id",
-					"type": "varchar(8)",
+					"type": "text",
 					"primaryKey": false,
-					"notNull": false
+					"notNull": true
+				},
+				"department": {
+					"name": "department",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
 				},
 				"email": {
 					"name": "email",
@@ -442,30 +696,16 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"status": {
-					"name": "status",
-					"type": "member_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'active'"
-				},
-				"affiliation": {
-					"name": "affiliation",
-					"type": "jsonb",
-					"primaryKey": false,
-					"notNull": false
-				},
 				"createdAt": {
 					"name": "createdAt",
-					"type": "timestamp",
+					"type": "timestamp(3)",
 					"primaryKey": false,
 					"notNull": true,
 					"default": "CURRENT_TIMESTAMP"
 				},
 				"updatedAt": {
 					"name": "updatedAt",
-					"type": "timestamp",
+					"type": "timestamp(3)",
 					"primaryKey": false,
 					"notNull": true
 				}
@@ -560,10 +800,20 @@
 		}
 	},
 	"enums": {
-		"public.member_status": {
-			"name": "member_status",
+		"public.client_type": {
+			"name": "client_type",
 			"schema": "public",
-			"values": ["active", "unconfirmed", "former"]
+			"values": ["student", "teacher", "staff", "other"]
+		},
+		"public.follow_up": {
+			"name": "follow_up",
+			"schema": "public",
+			"values": ["技術部", "生協", "情報基盤センター", "見送り", "その他"]
+		},
+		"public.resolution_type": {
+			"name": "resolution_type",
+			"schema": "public",
+			"values": ["resolved", "unresolved"]
 		}
 	},
 	"schemas": {},
