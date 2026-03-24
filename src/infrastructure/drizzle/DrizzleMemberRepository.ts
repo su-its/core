@@ -1,168 +1,162 @@
+import { v4 as uuid } from "uuid";
 import { eq } from "drizzle-orm";
 import {
-	Department,
-	DiscordAccount,
+	ActiveMember,
 	Email,
-	Member,
-	type MemberRepository,
+	FormerMember,
+	StudentId,
+	UnconfirmedMember,
 	UniversityEmail,
+	memberId,
+	notRecorded,
+	recorded,
+	type CompleteAffiliation,
+	type Member,
+	type MemberId,
+	type MemberRepository,
+	type Recorded,
 } from "#domain";
 import { getDb } from "./client";
-import { discordAccounts, members } from "./schema";
+import { memberDomainEvents, members } from "./schema";
+import { serializeMemberEventPayload } from "./serializeMemberEvent";
+
+// ============================================================================
+// Type Definitions
+// ============================================================================
+
+type MemberRow = typeof members.$inferSelect;
+
+// ============================================================================
+// Domain ↔ DB Mapping
+// ============================================================================
+
+function toDomain(row: MemberRow): Member {
+	const id = memberId(row.id);
+	const email = new UniversityEmail(row.email);
+	const name = row.name;
+	const personalEmail: Recorded<Email> =
+		row.personalEmail !== null ? recorded(new Email(row.personalEmail)) : notRecorded();
+
+	switch (row.status) {
+		case "active": {
+			if (row.affiliation === null || row.studentId === null) {
+				throw new Error(
+					`データ不整合: status=active だが affiliation または studentId が null (id=${row.id})`,
+				);
+			}
+			return ActiveMember.reconstruct({
+				id,
+				email,
+				name,
+				personalEmail,
+				studentId: StudentId.fromString(row.studentId),
+				affiliation: row.affiliation as CompleteAffiliation,
+			});
+		}
+		case "unconfirmed":
+			return UnconfirmedMember.reconstruct({ id, email, name, personalEmail });
+		case "former":
+			return FormerMember.reconstruct({ id, email, name, personalEmail });
+	}
+}
+
+// ============================================================================
+// Persistence Helpers
+// ============================================================================
+
+type MemberInsert = typeof members.$inferInsert;
+
+function toInsertValues(member: Member): MemberInsert {
+	const base = {
+		id: member.id as string,
+		name: member.name,
+		email: member.email.getValue(),
+		personalEmail:
+			member.personalEmail.type === "recorded" ? member.personalEmail.value.getValue() : null,
+		status: member.status,
+		updatedAt: new Date().toISOString(),
+	};
+
+	switch (member.status) {
+		case "active":
+			return {
+				...base,
+				studentId: member.studentId.getValue(),
+				affiliation: member.affiliation,
+			};
+		case "unconfirmed":
+		case "former":
+			return {
+				...base,
+				studentId: null,
+				affiliation: null,
+			};
+	}
+}
 
 // ============================================================================
 // Repository Implementation
 // ============================================================================
 
 export class DrizzleMemberRepository implements MemberRepository {
-	/**
-	 * Converts a database record to a domain Member entity.
-	 * Accepts the exact type returned by Drizzle's relational query.
-	 */
-	private toDomain(
-		record: typeof members.$inferSelect & {
-			discordAccounts: (typeof discordAccounts.$inferSelect)[];
-		},
-	): Member {
-		const member = new Member(
-			record.id,
-			record.name,
-			record.studentId,
-			Department.fromString(record.department),
-			new UniversityEmail(record.email),
-			record.personalEmail ? new Email(record.personalEmail) : undefined,
-		);
-
-		for (const discordAccount of record.discordAccounts) {
-			member.addDiscordAccount(
-				new DiscordAccount(
-					discordAccount.discordId,
-					discordAccount.nickName,
-					discordAccount.memberId,
-				),
-			);
-		}
-
-		return member;
+	async findById(id: MemberId): Promise<Member | null> {
+		const db = getDb();
+		const row = await db.query.members.findFirst({
+			where: eq(members.id, id as string),
+		});
+		if (!row) return null;
+		return toDomain(row);
 	}
 
-	// ==========================================================================
-	// Query Methods
-	// ==========================================================================
-
-	async findByDiscordAccountId(
-		discordAccountId: string,
-	): Promise<Member | null> {
+	async findByEmail(email: UniversityEmail): Promise<Member | null> {
 		const db = getDb();
-		const discordAccount = await db.query.discordAccounts.findFirst({
-			where: eq(discordAccounts.discordId, discordAccountId),
+		const row = await db.query.members.findFirst({
+			where: eq(members.email, email.getValue()),
 		});
-
-		if (!discordAccount) return null;
-		return this.findById(discordAccount.memberId);
-	}
-
-	async findById(id: string): Promise<Member | null> {
-		const db = getDb();
-		const record = await db.query.members.findFirst({
-			where: eq(members.id, id),
-			with: { discordAccounts: true },
-		});
-
-		if (!record) return null;
-		return this.toDomain(record);
-	}
-
-	async findByEmail(email: string): Promise<Member | null> {
-		const db = getDb();
-		const record = await db.query.members.findFirst({
-			where: eq(members.email, email),
-			with: { discordAccounts: true },
-		});
-
-		if (!record) return null;
-		return this.toDomain(record);
-	}
-
-	async findByStudentId(studentId: string): Promise<Member | null> {
-		const db = getDb();
-		const record = await db.query.members.findFirst({
-			where: eq(members.studentId, studentId),
-			with: { discordAccounts: true },
-		});
-
-		if (!record) return null;
-		return this.toDomain(record);
+		if (!row) return null;
+		return toDomain(row);
 	}
 
 	async findAll(): Promise<Member[]> {
 		const db = getDb();
-		const records = await db.query.members.findMany({
-			with: { discordAccounts: true },
-		});
-
-		return records.map((record) => this.toDomain(record));
+		const rows = await db.query.members.findMany();
+		return rows.map(toDomain);
 	}
-
-	// ==========================================================================
-	// Persistence Methods
-	// ==========================================================================
 
 	async save(member: Member): Promise<void> {
 		const db = getDb();
-		const snapshot = member.toSnapshot();
+		const values = toInsertValues(member);
+		const events = member.getDomainEvents();
 
-		// Upsert member
-		const now = new Date().toISOString();
-		await db
-			.insert(members)
-			.values({
-				id: snapshot.id,
-				name: snapshot.name,
-				studentId: snapshot.studentId,
-				department: snapshot.department.getValue(),
-				email: snapshot.email.getValue(),
-				personalEmail: snapshot.personalEmail?.getValue() ?? null,
-				updatedAt: now,
-			})
-			.onConflictDoUpdate({
-				target: members.id,
-				set: {
-					name: snapshot.name,
-					studentId: snapshot.studentId,
-					department: snapshot.department.getValue(),
-					email: snapshot.email.getValue(),
-					personalEmail: snapshot.personalEmail?.getValue() ?? null,
-					updatedAt: now,
-				},
-			});
-
-		// Upsert discord accounts
-		for (const discordAccount of snapshot.discordAccounts) {
-			await db
-				.insert(discordAccounts)
-				.values({
-					discordId: discordAccount.id,
-					nickName: discordAccount.nickName,
-					memberId: discordAccount.memberId,
-					updatedAt: now,
-				})
+		await db.transaction(async (tx) => {
+			await tx
+				.insert(members)
+				.values(values)
 				.onConflictDoUpdate({
-					target: discordAccounts.discordId,
+					target: members.id,
 					set: {
-						nickName: discordAccount.nickName,
-						updatedAt: now,
+						name: values.name,
+						email: values.email,
+						personalEmail: values.personalEmail,
+						status: values.status,
+						studentId: values.studentId,
+						affiliation: values.affiliation,
+						updatedAt: values.updatedAt,
 					},
 				});
-		}
-	}
 
-	async delete(memberId: string): Promise<void> {
-		const db = getDb();
-
-		await db
-			.delete(discordAccounts)
-			.where(eq(discordAccounts.memberId, memberId));
-		await db.delete(members).where(eq(members.id, memberId));
+			if (events.length > 0) {
+				await tx.insert(memberDomainEvents).values(
+					events.map((event) => ({
+						id: uuid(),
+						memberId: event.id as string,
+						email: event.email.getValue(),
+						eventName: event.eventName,
+						payload: serializeMemberEventPayload(event),
+						occurredAt: event.occurredAt.toISOString(),
+					})),
+				);
+			}
+		});
 	}
 }

@@ -1,35 +1,31 @@
 import { v4 as uuid } from "uuid";
-import { MemberEmailAlreadyExistsException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
 import {
-	Department,
-	DiscordAccount,
-	Email,
-	Member,
+	ActiveMember,
+	type CompleteAffiliation,
+	type Email,
+	type Member,
 	type MemberRepository,
-	UniversityEmail,
+	type Recorded,
+	type StudentId,
+	type UniversityEmail,
+	memberId,
 } from "#domain";
+import { MemberEmailAlreadyExistsException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RegisterMemberInput {
 	name: string;
-	studentId: string;
-	department: string;
-	email: string;
-	personalEmail?: string;
-	discordInfo?: {
-		accountId: string;
-		nickName: string;
-	};
+	studentId: StudentId;
+	email: UniversityEmail;
+	personalEmail: Recorded<Email>;
+	affiliation: CompleteAffiliation;
 }
 
 export interface RegisterMemberOutput {
 	member: Member;
 }
 
-export class RegisterMemberUseCase extends IUseCase<
-	RegisterMemberInput,
-	RegisterMemberOutput
-> {
+export class RegisterMemberUseCase extends IUseCase<RegisterMemberInput, RegisterMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}
@@ -37,31 +33,17 @@ export class RegisterMemberUseCase extends IUseCase<
 	async execute(input: RegisterMemberInput): Promise<RegisterMemberOutput> {
 		const existingMember = await this.memberRepo.findByEmail(input.email);
 		if (existingMember) {
-			throw new MemberEmailAlreadyExistsException(input.email);
+			throw new MemberEmailAlreadyExistsException(input.email.getValue());
 		}
 
-		const universityEmail = new UniversityEmail(input.email);
-		const personalEmail = input.personalEmail
-			? new Email(input.personalEmail)
-			: undefined;
-
-		const member = new Member(
-			uuid(),
-			input.name,
-			input.studentId,
-			Department.fromString(input.department),
-			universityEmail,
-			personalEmail,
-		);
-
-		if (input.discordInfo) {
-			const discordAccount = new DiscordAccount(
-				input.discordInfo.accountId,
-				input.discordInfo.nickName,
-				member.id,
-			);
-			member.addDiscordAccount(discordAccount);
-		}
+		const member = ActiveMember.register({
+			id: memberId(uuid()),
+			email: input.email,
+			name: input.name,
+			personalEmail: input.personalEmail,
+			studentId: input.studentId,
+			affiliation: input.affiliation,
+		});
 
 		await this.memberRepo.save(member);
 

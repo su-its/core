@@ -1,10 +1,13 @@
+import type { MemberId } from "#domain";
 import type { Event } from "./Event";
+import type { EventId } from "./EventId";
+import type { ExhibitId } from "./ExhibitId";
 
 export interface EventRepository {
-	findById(id: string): Promise<Event | null>;
-	findByParticipantMemberId(memberId: string): Promise<Event[]>;
-	findByExhibitId(exhibitId: string): Promise<Event | null>;
+	findById(id: EventId): Promise<Event | null>;
+	findByParticipantMemberId(memberId: MemberId): Promise<Event[]>;
+	findByExhibitId(exhibitId: ExhibitId): Promise<Event | null>;
 	findAll(): Promise<Event[]>;
 	save(event: Event): Promise<void>;
-	delete(eventId: string): Promise<void>;
+	delete(eventId: EventId): Promise<void>;
 }

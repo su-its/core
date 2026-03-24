@@ -1,18 +1,15 @@
-import { IUseCase } from "#application/usecase/base";
-import type { Member, MemberRepository } from "#domain";
+import type { Member, MemberId, MemberRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export interface GetMemberInput {
-	id: string;
+	id: MemberId;
 }
 
 export interface GetMemberOutput {
 	member: Member | null;
 }
 
-export class GetMemberUseCase extends IUseCase<
-	GetMemberInput,
-	GetMemberOutput
-> {
+export class GetMemberUseCase extends IUseCase<GetMemberInput, GetMemberOutput> {
 	constructor(private readonly memberRepo: MemberRepository) {
 		super();
 	}

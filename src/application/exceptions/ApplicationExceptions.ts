@@ -53,10 +53,48 @@ export class MemberNotFoundFromDiscordAccountIdException extends ApplicationExce
 	}
 }
 
+export class KarteNotFoundException extends ApplicationException {
+	constructor(karteId: string) {
+		const message = `カルテが見つかりません: ${karteId}`;
+		super(message);
+		this.name = "KarteNotFoundException";
+	}
+}
+
 export class DiscordAccountNotConnectedException extends ApplicationException {
 	constructor(userId: string, discordUserId: string) {
 		const message = `ユーザー: ${userId} のDiscordアカウントは紐づいていません: ${discordUserId}`;
 		super(message);
 		this.name = "DiscordAccountNotConnectedException";
+	}
+}
+
+export class DiscordAccountNotFoundException extends ApplicationException {
+	constructor(discordAccountId: string) {
+		super(`Discordアカウントが見つかりません: ${discordAccountId}`);
+		this.name = "DiscordAccountNotFoundException";
+	}
+}
+
+export class DiscordAccountAlreadyLinkedException extends ApplicationException {
+	constructor(discordAccountId: string, existingMemberId: string) {
+		super(
+			`Discordアカウント ${discordAccountId} は既にメンバー ${existingMemberId} に紐付いています`,
+		);
+		this.name = "DiscordAccountAlreadyLinkedException";
+	}
+}
+
+export class DiscordAccountAlreadyLinkedToSameMemberException extends ApplicationException {
+	constructor(discordAccountId: string, memberId: string) {
+		super(`Discordアカウント ${discordAccountId} は既にこのメンバー ${memberId} に紐付いています`);
+		this.name = "DiscordAccountAlreadyLinkedToSameMemberException";
+	}
+}
+
+export class MemberNotActiveException extends ApplicationException {
+	constructor(memberId: string, currentStatus: string) {
+		super(`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`);
+		this.name = "MemberNotActiveException";
 	}
 }

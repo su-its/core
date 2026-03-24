@@ -1,11 +1,18 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import { type Event, type EventRepository, Exhibit, type Url } from "#domain";
+import {
+	type Event,
+	type EventId,
+	type EventRepository,
+	Exhibit,
+	type ExhibitId,
+	type Url,
+} from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface AddExhibitToEventInput {
-	eventId: string;
+	eventId: EventId;
 	exhibit: {
-		id: string;
+		id: ExhibitId;
 		name: string;
 		description?: string;
 		markdownContent?: string;
@@ -20,17 +27,12 @@ export interface AddExhibitToEventOutput {
 /**
  * イベントに展示を追加するユースケース
  */
-export class AddExhibitToEvent extends IUseCase<
-	AddExhibitToEventInput,
-	AddExhibitToEventOutput
-> {
+export class AddExhibitToEvent extends IUseCase<AddExhibitToEventInput, AddExhibitToEventOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}
 
-	async execute(
-		input: AddExhibitToEventInput,
-	): Promise<AddExhibitToEventOutput> {
+	async execute(input: AddExhibitToEventInput): Promise<AddExhibitToEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

@@ -11,19 +11,6 @@ export class InvalidEmailFormatException extends DomainException {
 		this.name = "InvalidEmailFormatException";
 	}
 }
-export class DiscordAccountAlreadyConnectedException extends DomainException {
-	constructor() {
-		super("同じDiscordアカウントがすでにユーザーに紐づいています");
-		this.name = "DiscordAccountAlreadyConnectedException";
-	}
-}
-
-export class DiscordAccountNotConnectedException extends DomainException {
-	constructor() {
-		super("指定されたDiscordアカウントがユーザーに紐づいていません");
-		this.name = "DiscordAccountNotConnectedException";
-	}
-}
 
 export class InvalidUniversityEmailException extends DomainException {
 	constructor(email: string) {
@@ -32,20 +19,9 @@ export class InvalidUniversityEmailException extends DomainException {
 	}
 }
 
-export class InvalidDepartmentException extends DomainException {
-	constructor(department: string) {
-		super(
-			`無効な学部識別子です: ${department} (有効値: CS, BI, IA, GRADUATE, ALUMNI, OTHERS)`,
-		);
-		this.name = "InvalidDepartmentException";
-	}
-}
-
 export class InvalidLightningTalkDurationException extends DomainException {
 	constructor(duration: number) {
-		super(
-			`無効なライトニングトークの長さです: ${duration}分 (正の数値で指定してください)`,
-		);
+		super(`無効なライトニングトークの長さです: ${duration}分 (正の数値で指定してください)`);
 		this.name = "InvalidLightningTalkDurationException";
 	}
 }
@@ -59,9 +35,7 @@ export class InvalidUrlException extends DomainException {
 
 export class InvalidUrlProtocolException extends DomainException {
 	constructor(url: string, protocol: string) {
-		super(
-			`指定されたURLのプロトコルは許可されていません: ${url} (プロトコル: ${protocol})`,
-		);
+		super(`指定されたURLのプロトコルは許可されていません: ${url} (プロトコル: ${protocol})`);
 		this.name = "InvalidUrlProtocolException";
 	}
 }
@@ -102,5 +76,45 @@ export class ExhibitHasMemberException extends DomainException {
 			`イベントに紐づいた展示に当該メンバーがいるため、Eventから削除できません: 展示ID ${exhibitId}, メンバーID ${memberId}`,
 		);
 		this.name = "ExhibitHasMemberException";
+	}
+}
+
+export class InvalidStudentIdException extends DomainException {
+	constructor(studentId: string) {
+		super(`無効な学籍番号です: ${studentId} (8桁数字 または 3桁数字+英大文字1文字+4桁数字)`);
+		this.name = "InvalidStudentIdException";
+	}
+}
+
+export class InvalidWorkDurationException extends DomainException {
+	constructor(minutes: number) {
+		super(`無効な作業時間です: ${minutes}分 (0以上の整数で指定してください)`);
+		this.name = "InvalidWorkDurationException";
+	}
+}
+
+export class InvalidConsultedAtException extends DomainException {
+	constructor(reason: string) {
+		super(`無効な相談日時: ${reason}`);
+		this.name = "InvalidConsultedAtException";
+	}
+}
+
+export class EmptyStringException extends DomainException {
+	constructor(fieldName?: string) {
+		const detail = fieldName ? ` (${fieldName})` : "";
+		super(`空文字は許可されていません${detail}`);
+		this.name = "EmptyStringException";
+	}
+}
+
+export class InvalidAffiliationOperationException extends DomainException {
+	constructor(
+		readonly operation: string,
+		readonly currentAffiliationType: string,
+		readonly reason: string,
+	) {
+		super(`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`);
+		this.name = "InvalidAffiliationOperationException";
 	}
 }

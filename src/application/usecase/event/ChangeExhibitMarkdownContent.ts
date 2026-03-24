@@ -1,10 +1,10 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository } from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeExhibitMarkdownContentInput {
-	eventId: string;
-	exhibitId: string;
+	eventId: EventId;
+	exhibitId: ExhibitId;
 	newMarkdownContent: string;
 }
 
@@ -30,10 +30,7 @@ export class ChangeExhibitMarkdownContent extends IUseCase<
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
-		event.changeExhibitMarkdownContent(
-			input.exhibitId,
-			input.newMarkdownContent,
-		);
+		event.changeExhibitMarkdownContent(input.exhibitId, input.newMarkdownContent);
 		await this.eventRepository.save(event);
 		return { event };
 	}

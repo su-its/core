@@ -8,7 +8,7 @@ import {
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "#application";
-import { DrizzleMemberRepository } from "#infrastructure";
+import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
 
 export type MemberUseCases = {
 	registerMember: RegisterMemberUseCase;
@@ -21,17 +21,19 @@ export type MemberUseCases = {
 	connectDiscordAccount: ConnectDiscordAccountUseCase;
 };
 
+/** @deprecated createMemberService() を使用してください */
 export function createMemberUseCases(): MemberUseCases {
 	const memberRepo = new DrizzleMemberRepository();
+	const discordRepo = new DrizzleDiscordAccountRepository();
 
 	return {
 		registerMember: new RegisterMemberUseCase(memberRepo),
 		updateMember: new UpdateMemberUseCase(memberRepo),
 		getMember: new GetMemberUseCase(memberRepo),
-		getMemberByDiscordId: new GetMemberByDiscordIdUseCase(memberRepo),
 		getMemberByEmail: new GetMemberByEmailUseCase(memberRepo),
+		getMemberByDiscordId: new GetMemberByDiscordIdUseCase(discordRepo, memberRepo),
 		getMemberList: new GetMemberListUseCase(memberRepo),
-		changeDiscordNickName: new ChangeDiscordNickNameUseCase(memberRepo),
-		connectDiscordAccount: new ConnectDiscordAccountUseCase(memberRepo),
+		changeDiscordNickName: new ChangeDiscordNickNameUseCase(discordRepo),
+		connectDiscordAccount: new ConnectDiscordAccountUseCase(memberRepo, discordRepo),
 	};
 }

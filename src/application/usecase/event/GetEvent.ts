@@ -1,8 +1,8 @@
-import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository } from "#domain";
+import type { Event, EventId, EventRepository } from "#domain";
+import { IUseCase } from "../base";
 
 export interface GetEventInput {
-	eventId: string;
+	eventId: EventId;
 }
 
 export interface GetEventOutput {

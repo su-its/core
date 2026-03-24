@@ -1,9 +1,6 @@
 import * as eventUsecases from "#application";
 import * as eventParticipationUsecases from "#application";
-import {
-	DrizzleEventRepository,
-	DrizzleMemberRepository,
-} from "#infrastructure";
+import { DrizzleEventRepository, DrizzleMemberRepository } from "#infrastructure";
 
 export type EventUseCases = {
 	createEvent: eventUsecases.CreateEvent;
@@ -31,6 +28,7 @@ export type EventUseCases = {
 };
 
 /**
+ * @deprecated createEventService() を使用してください
  * @beta 将来的にAPIが変更される可能性があります。
  */
 export function createEventUseCases(): EventUseCases {
@@ -44,21 +42,13 @@ export function createEventUseCases(): EventUseCases {
 		getEvent: new eventUsecases.GetEvent(eventRepo),
 		getEventList: new eventUsecases.GetEventList(eventRepo),
 		addExhibitToEvent: new eventUsecases.AddExhibitToEvent(eventRepo),
-		changeExhibitDescription: new eventUsecases.ChangeExhibitDescription(
-			eventRepo,
-		),
-		changeExhibitMarkdownContent:
-			new eventUsecases.ChangeExhibitMarkdownContent(eventRepo),
+		changeExhibitDescription: new eventUsecases.ChangeExhibitDescription(eventRepo),
+		changeExhibitMarkdownContent: new eventUsecases.ChangeExhibitMarkdownContent(eventRepo),
 		changeExhibitName: new eventUsecases.ChangeExhibitName(eventRepo),
 		changeExhibitUrl: new eventUsecases.ChangeExhibitUrl(eventRepo),
-		changeLightningTalkDuration: new eventUsecases.ChangeLightningTalkDuration(
-			eventRepo,
-		),
-		changeLightningTalkSlideUrl: new eventUsecases.ChangeLightningTalkSlideUrl(
-			eventRepo,
-		),
-		changeLightningTalkStartTime:
-			new eventUsecases.ChangeLightningTalkStartTime(eventRepo),
+		changeLightningTalkDuration: new eventUsecases.ChangeLightningTalkDuration(eventRepo),
+		changeLightningTalkSlideUrl: new eventUsecases.ChangeLightningTalkSlideUrl(eventRepo),
+		changeLightningTalkStartTime: new eventUsecases.ChangeLightningTalkStartTime(eventRepo),
 		removeExhibitFromEvent: new eventUsecases.RemoveExhibitFromEvent(eventRepo),
 		registerMemberToEvent: new eventParticipationUsecases.RegisterMemberToEvent(
 			eventRepo,
@@ -68,29 +58,17 @@ export function createEventUseCases(): EventUseCases {
 			eventRepo,
 			memberRepo,
 		),
-		getEventsByMember: new eventParticipationUsecases.GetEventsByMember(
-			eventRepo,
-		),
-		getMembersByEvent: new eventParticipationUsecases.GetMembersByEvent(
+		getEventsByMember: new eventParticipationUsecases.GetEventsByMember(eventRepo),
+		getMembersByEvent: new eventParticipationUsecases.GetMembersByEvent(eventRepo, memberRepo),
+		registerMemberToExhibit: new eventParticipationUsecases.RegisterMemberToExhibit(
 			eventRepo,
 			memberRepo,
 		),
-		registerMemberToExhibit:
-			new eventParticipationUsecases.RegisterMemberToExhibit(
-				eventRepo,
-				memberRepo,
-			),
-		removeMemberFromExhibit:
-			new eventParticipationUsecases.RemoveMemberFromExhibit(
-				memberRepo,
-				eventRepo,
-			),
-		getExhibitsByMember: new eventParticipationUsecases.GetExhibitsByMember(
-			eventRepo,
-		),
-		getMembersByExhibit: new eventParticipationUsecases.GetMembersByExhibit(
+		removeMemberFromExhibit: new eventParticipationUsecases.RemoveMemberFromExhibit(
 			memberRepo,
 			eventRepo,
 		),
+		getExhibitsByMember: new eventParticipationUsecases.GetExhibitsByMember(eventRepo),
+		getMembersByExhibit: new eventParticipationUsecases.GetMembersByExhibit(memberRepo, eventRepo),
 	};
 }

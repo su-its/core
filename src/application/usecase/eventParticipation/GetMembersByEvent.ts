@@ -1,19 +1,16 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { EventRepository, Member, MemberRepository } from "#domain";
+import type { EventId, EventRepository, Member, MemberRepository } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface GetMembersByEventInput {
-	eventId: string;
+	eventId: EventId;
 }
 
 export interface GetMembersByEventOutput {
 	members: Member[];
 }
 
-export class GetMembersByEvent extends IUseCase<
-	GetMembersByEventInput,
-	GetMembersByEventOutput
-> {
+export class GetMembersByEvent extends IUseCase<GetMembersByEventInput, GetMembersByEventOutput> {
 	constructor(
 		private readonly eventRepository: EventRepository,
 		private readonly memberRepository: MemberRepository,
@@ -21,18 +18,14 @@ export class GetMembersByEvent extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: GetMembersByEventInput,
-	): Promise<GetMembersByEventOutput> {
+	async execute(input: GetMembersByEventInput): Promise<GetMembersByEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);
 		}
 		const members = (
 			await Promise.all(
-				event
-					.getMemberIds()
-					.map((memberId) => this.memberRepository.findById(memberId)),
+				event.getMemberIds().map((memberId) => this.memberRepository.findById(memberId)),
 			)
 		).filter((member) => member !== null);
 		return { members };

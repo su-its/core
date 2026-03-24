@@ -1,9 +1,9 @@
-import { ExhibitNotFoundFromExhibitIdException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { EventRepository, Member, MemberRepository } from "#domain";
+import type { EventRepository, ExhibitId, Member, MemberRepository } from "#domain";
+import { ExhibitNotFoundFromExhibitIdException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface GetMembersByExhibitInput {
-	exhibitId: string;
+	exhibitId: ExhibitId;
 }
 
 export interface GetMembersByExhibitOutput {
@@ -21,17 +21,13 @@ export class GetMembersByExhibit extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: GetMembersByExhibitInput,
-	): Promise<GetMembersByExhibitOutput> {
+	async execute(input: GetMembersByExhibitInput): Promise<GetMembersByExhibitOutput> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
 		if (!event) {
 			throw new ExhibitNotFoundFromExhibitIdException(input.exhibitId);
 		}
 		const memberResults = await Promise.all(
-			event
-				.getMemberIds()
-				.map((memberId) => this.memberRepository.findById(memberId)),
+			event.getMemberIds().map((memberId) => this.memberRepository.findById(memberId)),
 		);
 		const members = memberResults.filter((m): m is Member => m !== null);
 		return { members };

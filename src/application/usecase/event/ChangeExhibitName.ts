@@ -1,10 +1,10 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository } from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeExhibitNameInput {
-	eventId: string;
-	exhibitId: string;
+	eventId: EventId;
+	exhibitId: ExhibitId;
 	newName: string;
 }
 
@@ -15,17 +15,12 @@ export interface ChangeExhibitNameOutput {
 /**
  * 展示名変更ユースケース
  */
-export class ChangeExhibitName extends IUseCase<
-	ChangeExhibitNameInput,
-	ChangeExhibitNameOutput
-> {
+export class ChangeExhibitName extends IUseCase<ChangeExhibitNameInput, ChangeExhibitNameOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}
 
-	async execute(
-		input: ChangeExhibitNameInput,
-	): Promise<ChangeExhibitNameOutput> {
+	async execute(input: ChangeExhibitNameInput): Promise<ChangeExhibitNameOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

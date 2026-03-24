@@ -1,8 +1,8 @@
-import { IUseCase } from "#application/usecase/base";
-import type { EventRepository, Exhibit } from "#domain";
+import type { EventRepository, Exhibit, MemberId } from "#domain";
+import { IUseCase } from "../base";
 
 export interface GetExhibitsByMemberInput {
-	memberId: string;
+	memberId: MemberId;
 }
 
 export interface GetExhibitsByMemberOutput {
@@ -17,12 +17,8 @@ export class GetExhibitsByMember extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: GetExhibitsByMemberInput,
-	): Promise<GetExhibitsByMemberOutput> {
-		const events = await this.eventRepository.findByParticipantMemberId(
-			input.memberId,
-		);
+	async execute(input: GetExhibitsByMemberInput): Promise<GetExhibitsByMemberOutput> {
+		const events = await this.eventRepository.findByParticipantMemberId(input.memberId);
 		const exhibits: Exhibit[] = [];
 		for (const event of events) {
 			for (const exhibit of event.getExhibits()) {

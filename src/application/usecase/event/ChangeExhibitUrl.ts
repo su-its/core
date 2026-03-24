@@ -1,10 +1,10 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository, Url } from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId, Url } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeExhibitUrlInput {
-	eventId: string;
-	exhibitId: string;
+	eventId: EventId;
+	exhibitId: ExhibitId;
 	newUrl: Url;
 }
 
@@ -15,10 +15,7 @@ export interface ChangeExhibitUrlOutput {
 /**
  * 展示URL変更ユースケース
  */
-export class ChangeExhibitUrl extends IUseCase<
-	ChangeExhibitUrlInput,
-	ChangeExhibitUrlOutput
-> {
+export class ChangeExhibitUrl extends IUseCase<ChangeExhibitUrlInput, ChangeExhibitUrlOutput> {
 	constructor(private readonly eventRepository: EventRepository) {
 		super();
 	}

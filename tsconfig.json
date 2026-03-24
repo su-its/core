@@ -7,7 +7,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"baseUrl": ".",
 		"paths": {
 			"#domain": ["./src/domain"],
 			"#domain/*": ["./src/domain/*"],
@@ -17,6 +16,6 @@
 			"#infrastructure/*": ["./src/infrastructure/*"]
 		}
 	},
-	"include": ["src"],
+	"include": ["src", "tests"],
 	"exclude": ["node_modules", "dist"]
 }

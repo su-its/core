@@ -1,16 +1,19 @@
+import type { MemberId } from "#domain";
 import {
 	LightningTalkExhibitIdMismatchException,
 	LightningTalkNotFoundException,
-} from "#domain/exceptions";
-import type { LightningTalkDuration, Url } from "#domain/value-objects";
+} from "../../exceptions";
+import type { ExhibitId } from "./ExhibitId";
 import type { LightningTalk } from "./LightningTalk";
+import type { LightningTalkDuration } from "./LightningTalkDuration";
+import type { Url } from "./Url";
 export class Exhibit {
 	private lightningTalk?: LightningTalk;
-	private memberIds: Set<string> = new Set();
+	private memberIds: Set<MemberId> = new Set();
 
 	// NOTE: LightningTalkのExhibitコンストラクタ(TypeScriptは2つのコンストラクタを持てないため)
 	static createWithLightningTalk(
-		id: string,
+		id: ExhibitId,
 		name: string,
 		lt: LightningTalk,
 		description?: string,
@@ -18,7 +21,6 @@ export class Exhibit {
 		url?: Url,
 	) {
 		const exhibit = new Exhibit(id, name, description, markdownContent, url);
-		// NOTE: ここで例外を投げるのは、Exhibit の id と LightningTalk の exhibitId が一致しているかどうかをチェックしているため
 		if (lt.exhibitId !== id) {
 			throw new LightningTalkExhibitIdMismatchException(id, lt.exhibitId);
 		}
@@ -27,7 +29,7 @@ export class Exhibit {
 	}
 
 	constructor(
-		public readonly id: string,
+		public readonly id: ExhibitId,
 		private name: string,
 		private description?: string,
 		private markdownContent?: string,
@@ -54,7 +56,7 @@ export class Exhibit {
 		return this.lightningTalk;
 	}
 
-	getMemberIds(): string[] {
+	getMemberIds(): MemberId[] {
 		return Array.from(this.memberIds);
 	}
 
@@ -86,12 +88,16 @@ export class Exhibit {
 		this.getLightningTalkOrThrow().changeSlideUrl(newSlideUrl);
 	}
 
-	public addMemberId(memberId: string): void {
+	public addMemberId(memberId: MemberId): void {
 		this.memberIds.add(memberId);
 	}
 
-	public removeMemberId(memberId: string): void {
+	public removeMemberId(memberId: MemberId): void {
 		this.memberIds.delete(memberId);
+	}
+
+	public hasMemberId(memberId: MemberId): boolean {
+		return this.memberIds.has(memberId);
 	}
 
 	private getLightningTalkOrThrow(): LightningTalk {
@@ -111,6 +117,7 @@ export class Exhibit {
 			markdownContent: this.markdownContent,
 			url: this.url,
 			lightningTalk: this.lightningTalk?.toSnapshot(),
+			memberIds: Array.from(this.memberIds),
 		};
 	}
 }

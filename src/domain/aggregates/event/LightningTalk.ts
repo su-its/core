@@ -1,8 +1,10 @@
-import type { LightningTalkDuration, Url } from "#domain/value-objects";
+import type { ExhibitId } from "./ExhibitId";
+import type { LightningTalkDuration } from "./LightningTalkDuration";
+import type { Url } from "./Url";
 
 export class LightningTalk {
 	constructor(
-		public readonly exhibitId: string,
+		public readonly exhibitId: ExhibitId,
 		private startTime: Date,
 		private durationMinutes: LightningTalkDuration,
 		private slideUrl?: Url,

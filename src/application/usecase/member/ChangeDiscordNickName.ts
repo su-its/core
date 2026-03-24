@@ -1,51 +1,33 @@
-import {
-	DiscordAccountNotConnectedException,
-	MemberNotFoundFromDiscordAccountIdException,
-} from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Member, MemberRepository } from "#domain";
+import type { DiscordAccount, DiscordAccountRepository, DiscordId } from "#domain";
+import { DiscordAccountNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ChangeDiscordNickNameInput {
-	discordAccountId: string;
+	discordAccountId: DiscordId;
 	discordNickName: string;
 }
 
 export interface ChangeDiscordNickNameOutput {
-	member: Member;
+	discordAccount: DiscordAccount;
 }
 
 export class ChangeDiscordNickNameUseCase extends IUseCase<
 	ChangeDiscordNickNameInput,
 	ChangeDiscordNickNameOutput
 > {
-	constructor(private readonly memberRepo: MemberRepository) {
+	constructor(private readonly discordRepo: DiscordAccountRepository) {
 		super();
 	}
 
-	async execute(
-		input: ChangeDiscordNickNameInput,
-	): Promise<ChangeDiscordNickNameOutput> {
-		const member = await this.memberRepo.findByDiscordAccountId(
-			input.discordAccountId,
-		);
-		if (!member) {
-			throw new MemberNotFoundFromDiscordAccountIdException(
-				input.discordAccountId,
-			);
+	async execute(input: ChangeDiscordNickNameInput): Promise<ChangeDiscordNickNameOutput> {
+		const account = await this.discordRepo.findByDiscordId(input.discordAccountId);
+		if (!account) {
+			throw new DiscordAccountNotFoundException(input.discordAccountId);
 		}
 
-		const discordAccount = member.getDiscordAccountById(input.discordAccountId);
-		if (!discordAccount) {
-			throw new DiscordAccountNotConnectedException(
-				member.id,
-				input.discordAccountId,
-			);
-		}
+		const updated = account.changeNickName(input.discordNickName);
+		await this.discordRepo.save(updated);
 
-		discordAccount.setNickName(input.discordNickName);
-
-		await this.memberRepo.save(member);
-
-		return { member };
+		return { discordAccount: updated };
 	}
 }

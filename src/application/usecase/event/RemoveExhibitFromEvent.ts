@@ -1,10 +1,10 @@
-import { EventNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import type { Event, EventRepository } from "#domain";
+import type { Event, EventId, EventRepository, ExhibitId } from "#domain";
+import { EventNotFoundException } from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface RemoveExhibitFromEventInput {
-	eventId: string;
-	exhibitId: string;
+	eventId: EventId;
+	exhibitId: ExhibitId;
 }
 
 export interface RemoveExhibitFromEventOutput {
@@ -22,9 +22,7 @@ export class RemoveExhibitFromEvent extends IUseCase<
 		super();
 	}
 
-	async execute(
-		input: RemoveExhibitFromEventInput,
-	): Promise<RemoveExhibitFromEventOutput> {
+	async execute(input: RemoveExhibitFromEventInput): Promise<RemoveExhibitFromEventOutput> {
 		const event = await this.eventRepository.findById(input.eventId);
 		if (!event) {
 			throw new EventNotFoundException(input.eventId);

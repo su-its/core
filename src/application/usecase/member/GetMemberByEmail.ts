@@ -1,8 +1,8 @@
-import { IUseCase } from "#application/usecase/base";
-import type { Member, MemberRepository } from "#domain";
+import type { Member, MemberRepository, UniversityEmail } from "#domain";
+import { IUseCase } from "../base";
 
 export interface GetMemberByEmailInput {
-	email: string;
+	email: UniversityEmail;
 }
 
 export interface GetMemberByEmailOutput {

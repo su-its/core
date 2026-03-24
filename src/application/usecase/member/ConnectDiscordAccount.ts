@@ -1,43 +1,63 @@
-import { MemberNotFoundException } from "#application/exceptions";
-import { IUseCase } from "#application/usecase/base";
-import { DiscordAccount, type Member, type MemberRepository } from "#domain";
+import {
+	DiscordAccount,
+	type DiscordAccountRepository,
+	type DiscordId,
+	type MemberId,
+	type MemberRepository,
+} from "#domain";
+import {
+	DiscordAccountAlreadyLinkedException,
+	DiscordAccountAlreadyLinkedToSameMemberException,
+	MemberNotFoundException,
+} from "../../exceptions";
+import { IUseCase } from "../base";
 
 export interface ConnectDiscordAccountInput {
-	memberId: string;
-	discordAccountId: string;
-	discordNickName?: string;
+	memberId: MemberId;
+	discordAccountId: DiscordId;
+	discordNickName: string;
 }
 
 export interface ConnectDiscordAccountOutput {
-	member: Member;
+	discordAccount: DiscordAccount;
 }
 
 export class ConnectDiscordAccountUseCase extends IUseCase<
 	ConnectDiscordAccountInput,
 	ConnectDiscordAccountOutput
 > {
-	constructor(private readonly memberRepo: MemberRepository) {
+	constructor(
+		private readonly memberRepo: MemberRepository,
+		private readonly discordRepo: DiscordAccountRepository,
+	) {
 		super();
 	}
 
-	async execute(
-		input: ConnectDiscordAccountInput,
-	): Promise<ConnectDiscordAccountOutput> {
+	async execute(input: ConnectDiscordAccountInput): Promise<ConnectDiscordAccountOutput> {
 		const member = await this.memberRepo.findById(input.memberId);
 		if (!member) {
 			throw new MemberNotFoundException(input.memberId);
 		}
 
-		const discordAccount = new DiscordAccount(
+		const existing = await this.discordRepo.findByDiscordId(input.discordAccountId);
+		if (existing) {
+			if (existing.memberId === input.memberId) {
+				throw new DiscordAccountAlreadyLinkedToSameMemberException(
+					input.discordAccountId,
+					input.memberId,
+				);
+			}
+			throw new DiscordAccountAlreadyLinkedException(input.discordAccountId, existing.memberId);
+		}
+
+		const discordAccount = DiscordAccount.link(
 			input.discordAccountId,
-			input.discordNickName ?? "",
-			member.id,
+			input.memberId,
+			input.discordNickName,
 		);
 
-		member.addDiscordAccount(discordAccount);
+		await this.discordRepo.save(discordAccount);
 
-		await this.memberRepo.save(member);
-
-		return { member };
+		return { discordAccount };
 	}
 }
