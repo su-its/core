@@ -66,7 +66,7 @@ function toRecordedClient(row: KarteRow): Recorded<Client> {
 				name,
 				studentId: StudentId.fromString(row.clientStudentId),
 				affiliation: deserializeAffiliation(row.clientAffiliation),
-			});
+			} as Client);
 		}
 		case "teacher":
 			return recorded({ type: "teacher", name });
@@ -177,7 +177,9 @@ function toDomain(row: KarteWithRelations): Karte {
 		id: karteId(row.id),
 		recordedAt: row.recordedAt,
 		consultedAt:
-			row.consultedAt !== null ? recorded(row.consultedAt) : notRecorded(),
+			row.consultedAt !== null
+				? recorded({ precision: "date" as const, value: row.consultedAt })
+				: notRecorded(),
 		lastUpdatedAt: row.lastUpdatedAt,
 		client: toRecordedClient(row),
 		consent: {
@@ -241,6 +243,23 @@ function recordedToNullable<T>(r: Recorded<T>): T | null {
 	return r.type === "recorded" ? r.value : null;
 }
 
+/** ConsultedAt → DBのtimestampカラム用Date | null */
+function consultedAtToDate(
+	r: Recorded<import("#domain/aggregates/karte/ConsultedAt").ConsultedAt>,
+): Date | null {
+	if (r.type === "notRecorded") return null;
+	const ca = r.value;
+	switch (ca.precision) {
+		case "datetime":
+		case "date":
+			return ca.value instanceof Date ? ca.value : new Date(ca.value);
+		case "yearMonth":
+			return new Date(ca.year, ca.month - 1, 1);
+		case "year":
+			return new Date(ca.year, 0, 1);
+	}
+}
+
 // ============================================================================
 // Repository Implementation
 // ============================================================================
@@ -286,7 +305,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 		const values = {
 			id: karte.id as string,
 			recordedAt: karte.recordedAt,
-			consultedAt: recordedToNullable(karte.consultedAt),
+			consultedAt: consultedAtToDate(karte.consultedAt),
 			lastUpdatedAt: karte.lastUpdatedAt,
 			clientType: clientCols.clientType,
 			clientName: clientCols.clientName,

@@ -16,14 +16,12 @@ import {
 } from "drizzle-orm/pg-core";
 import type { Affiliation } from "#domain/shared/affiliation/Affiliation";
 import type {
+	DoctoralAffiliationValue,
+	MasterAffiliationValue,
 	PartialDoctoralAffiliationValue,
 	PartialMasterAffiliationValue,
 	PartialProfessionalAffiliationValue,
 	PartialUndergraduateAffiliationValue,
-} from "#domain/shared/affiliation/partialUniversityStructure";
-import type {
-	DoctoralAffiliationValue,
-	MasterAffiliationValue,
 	ProfessionalAffiliationValue,
 	UndergraduateAffiliationValue,
 } from "#domain/shared/affiliation/universityStructure";

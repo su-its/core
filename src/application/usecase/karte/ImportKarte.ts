@@ -1,8 +1,8 @@
 import { IUseCase } from "#application/usecase/base";
 import type { Client } from "#domain/aggregates/karte/Client";
-import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
 import type { Consent } from "#domain/aggregates/karte/Consent";
 import type { Consultation } from "#domain/aggregates/karte/Consultation";
+import type { ConsultedAt } from "#domain/aggregates/karte/ConsultedAt";
 import { Karte } from "#domain/aggregates/karte/Karte";
 import type { KarteId } from "#domain/aggregates/karte/KarteId";
 import type { KarteRepository } from "#domain/aggregates/karte/KarteRepository";
@@ -16,28 +16,31 @@ import type { SupportRecord } from "#domain/aggregates/karte/SupportRecord";
  * Karte.reconstruct() を使用して不変条件をバイパスする。
  */
 export type ImportKarteInput = {
-  readonly id: KarteId;
-  readonly recordedAt: Date;
-  readonly consultedAt: Recorded<ConsultedAt>;
-  readonly lastUpdatedAt: Date;
-  readonly client: Recorded<Client>;
-  readonly consent: Consent;
-  readonly consultation: Consultation;
-  readonly supportRecord: SupportRecord;
+	readonly id: KarteId;
+	readonly recordedAt: Date;
+	readonly consultedAt: Recorded<ConsultedAt>;
+	readonly lastUpdatedAt: Date;
+	readonly client: Recorded<Client>;
+	readonly consent: Consent;
+	readonly consultation: Consultation;
+	readonly supportRecord: SupportRecord;
 };
 
 export type ImportKarteOutput = {
-  readonly karte: Karte;
+	readonly karte: Karte;
 };
 
-export class ImportKarteUseCase extends IUseCase<ImportKarteInput, ImportKarteOutput> {
-  constructor(private readonly karteRepository: KarteRepository) {
-    super();
-  }
+export class ImportKarteUseCase extends IUseCase<
+	ImportKarteInput,
+	ImportKarteOutput
+> {
+	constructor(private readonly karteRepository: KarteRepository) {
+		super();
+	}
 
-  async execute(input: ImportKarteInput): Promise<ImportKarteOutput> {
-    const karte = Karte.reconstruct(input);
-    await this.karteRepository.save(karte);
-    return { karte };
-  }
+	async execute(input: ImportKarteInput): Promise<ImportKarteOutput> {
+		const karte = Karte.reconstruct(input);
+		await this.karteRepository.save(karte);
+		return { karte };
+	}
 }
