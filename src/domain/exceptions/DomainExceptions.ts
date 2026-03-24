@@ -99,6 +99,21 @@ export class InvalidWorkDurationException extends DomainException {
 	}
 }
 
+export class InvalidConsultedAtException extends DomainException {
+	constructor(reason: string) {
+		super(`無効な相談日時: ${reason}`);
+		this.name = "InvalidConsultedAtException";
+	}
+}
+
+export class EmptyStringException extends DomainException {
+	constructor(fieldName?: string) {
+		const detail = fieldName ? ` (${fieldName})` : "";
+		super(`空文字は許可されていません${detail}`);
+		this.name = "EmptyStringException";
+	}
+}
+
 export class InvalidAffiliationOperationException extends DomainException {
 	constructor(
 		readonly operation: string,

@@ -1,3 +1,5 @@
+export * from "./Assignee";
+export * from "./ConsultedAt";
 export * from "./Karte";
 export * from "./KarteId";
 export * from "./KarteRepository";

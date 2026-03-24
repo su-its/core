@@ -11,6 +11,7 @@ import { type MemberId, memberId } from "#domain/aggregates/member/MemberId";
 import { UniversityEmail } from "#domain/aggregates/member/UniversityEmail";
 import { type Recorded, notRecorded, recorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
+import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 import { getDb } from "./client";
 import { members } from "./schema";
 
@@ -44,7 +45,7 @@ function toDomain(row: MemberRow): Member {
         name,
         personalEmail,
         studentId: StudentId.fromString(row.studentId),
-        affiliation: row.affiliation,
+        affiliation: row.affiliation as CompleteAffiliation,
       });
     }
     case "unconfirmed":

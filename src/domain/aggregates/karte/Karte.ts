@@ -1,9 +1,14 @@
 import type { MemberId } from "#domain/aggregates/member/MemberId";
 import type { NonEmptyArray } from "#domain/base/NonEmptyArray";
+import type { NonEmptyString } from "#domain/base/NonEmptyString";
+import type { CompleteAffiliation } from "#domain/shared";
+import type { StudentId } from "#domain/shared";
+import type { Assignee } from "./Assignee";
 import type { Client } from "./Client";
 import type { Consent } from "./Consent";
 import type { Consultation } from "./Consultation";
 import type { ConsultationCategory } from "./ConsultationCategory";
+import type { ConsultedAt } from "./ConsultedAt";
 import type { FollowUp } from "./FollowUp";
 import type { KarteId } from "./KarteId";
 import { type Recorded, recorded } from "./Recorded";
@@ -11,8 +16,8 @@ import type { Resolution } from "./Resolution";
 import type { SupportRecord } from "./SupportRecord";
 import type { WorkDuration } from "./WorkDuration";
 
-/** 新規作成時の解決ステータス — 後処理は必須 */
-type CompleteResolution =
+/** 新規作成・訂正時の解決ステータス — 後処理は必須 */
+export type CompleteResolution =
 	| { readonly type: "resolved" }
 	| {
 			readonly type: "unresolved";
@@ -20,23 +25,39 @@ type CompleteResolution =
 	  };
 
 /**
+ * 新規作成・訂正時の相談者
+ *
+ * 完全なAffiliationのみ受け付ける。PartialAffiliationは不可。
+ */
+export type CompleteClient =
+	| {
+			readonly type: "student";
+			readonly studentId: StudentId;
+			readonly name: string;
+			readonly affiliation: CompleteAffiliation;
+	  }
+	| { readonly type: "teacher"; readonly name: string }
+	| { readonly type: "staff"; readonly name: string }
+	| { readonly type: "other"; readonly name: string };
+
+/**
  * カルテの内容を表す入力型
  *
  * create/correctの共通部分。全フィールドが完全に揃った状態を要求する。
  * Recorded型は使わず、生の値を受け取る。
  */
-type KarteContentProps = {
-	readonly consultedAt: Date;
-	readonly client: Client;
+export type KarteContentProps = {
+	readonly consultedAt: ConsultedAt;
+	readonly client: CompleteClient;
 	readonly consent: Consent;
 	readonly consultation: {
 		readonly categories: NonEmptyArray<ConsultationCategory>;
-		readonly targetDevice: string;
-		readonly troubleDetails: string;
+		readonly targetDevice: NonEmptyString;
+		readonly troubleDetails: NonEmptyString;
 	};
 	readonly supportRecord: {
 		readonly assignedMemberIds: NonEmptyArray<MemberId>;
-		readonly content: string;
+		readonly content: NonEmptyString;
 		readonly resolution: CompleteResolution;
 		readonly workDuration: WorkDuration;
 	};
@@ -49,7 +70,7 @@ type KarteCreationProps = KarteContentProps & { readonly id: KarteId };
 type KarteReconstructProps = {
 	readonly id: KarteId;
 	readonly recordedAt: Date;
-	readonly consultedAt: Recorded<Date>;
+	readonly consultedAt: Recorded<ConsultedAt>;
 	readonly lastUpdatedAt: Date;
 	readonly client: Recorded<Client>;
 	readonly consent: Consent;
@@ -80,7 +101,7 @@ export class Karte {
 		public readonly id: KarteId,
 		recordedAt: Date,
 		/** 相談日時 */
-		public readonly consultedAt: Recorded<Date>,
+		public readonly consultedAt: Recorded<ConsultedAt>,
 		lastUpdatedAt: Date,
 		/** 相談者 */
 		public readonly client: Recorded<Client>,
@@ -160,15 +181,21 @@ function toConsultation(props: KarteContentProps): Consultation {
 	return {
 		categories: recorded(props.consultation.categories),
 		targetDevice: recorded(props.consultation.targetDevice),
-		troubleDetails: props.consultation.troubleDetails,
+		troubleDetails: recorded(props.consultation.troubleDetails),
 	};
 }
 
 /** 生の入力から SupportRecord（Recorded付き）を構築する */
 function toSupportRecord(props: KarteContentProps): SupportRecord {
+	const [first, ...rest] = props.supportRecord.assignedMemberIds;
+	const assignees: NonEmptyArray<Assignee> = [
+		{ type: "resolved", memberId: first },
+		...rest.map((memberId): Assignee => ({ type: "resolved", memberId })),
+	];
+
 	return {
-		assignedMemberIds: recorded(props.supportRecord.assignedMemberIds),
-		content: props.supportRecord.content,
+		assignees: recorded(assignees),
+		content: recorded(props.supportRecord.content),
 		resolution: recorded(toRecordedResolution(props.supportRecord.resolution)),
 		workDuration: recorded(props.supportRecord.workDuration),
 	};

@@ -10,9 +10,9 @@ import { InvalidAffiliationOperationException } from "#domain/exceptions";
 import { notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import type {
-	DoctoralAffiliation,
-	MasterAffiliation,
-	UndergraduateAffiliation,
+	CompleteDoctoralAffiliation,
+	CompleteMasterAffiliation,
+	CompleteUndergraduateAffiliation,
 } from "#domain/shared/affiliation/Affiliation";
 
 function createEmail() {
@@ -23,14 +23,14 @@ function createStudentId() {
 	return StudentId.fromString("725A0001");
 }
 
-function createUndergraduateAffiliation(): UndergraduateAffiliation {
+function createCompleteUndergraduateAffiliation(): CompleteUndergraduateAffiliation {
 	return {
 		type: "undergraduate",
 		value: { faculty: "情報学部", department: "情報科学科", year: 3 },
 	};
 }
 
-function createMasterAffiliation(): MasterAffiliation {
+function createCompleteMasterAffiliation(): CompleteMasterAffiliation {
 	return {
 		type: "master",
 		value: {
@@ -42,7 +42,7 @@ function createMasterAffiliation(): MasterAffiliation {
 	};
 }
 
-function createDoctoralAffiliation(): DoctoralAffiliation {
+function createCompleteDoctoralAffiliation(): CompleteDoctoralAffiliation {
 	return {
 		type: "doctoral",
 		value: { school: "創造科学技術大学院", major: "情報科学専攻", year: 1 },
@@ -58,7 +58,7 @@ function registerMember() {
 		name: "テスト太郎",
 		personalEmail: notRecorded(),
 		studentId: createStudentId(),
-		affiliation: createUndergraduateAffiliation(),
+		affiliation: createCompleteUndergraduateAffiliation(),
 	});
 }
 
@@ -90,7 +90,7 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 
 			expect(member.getDomainEvents()).toHaveLength(0);
@@ -114,7 +114,7 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const former = active.remove("voluntaryLeave");
 			const events = former.getDomainEvents();
@@ -132,7 +132,7 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const unconfirmed = active.unconfirm();
 
@@ -147,7 +147,7 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const unconfirmed = active.unconfirm();
 			const events = unconfirmed.getDomainEvents();
@@ -165,7 +165,7 @@ describe("ActiveMember", () => {
 				name: "変更前",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const updated = original.changeName("変更後");
 
@@ -182,7 +182,7 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: StudentId.fromString("70312031"),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const newId = StudentId.fromString("725A0002");
 			const updated = original.changeStudentId(newId);
@@ -200,11 +200,11 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 			const newStudentId = StudentId.fromString("725A0099");
 			const master = undergrad.advanceInternally(
-				createMasterAffiliation(),
+				createCompleteMasterAffiliation(),
 				newStudentId,
 			);
 
@@ -220,11 +220,11 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createMasterAffiliation(),
+				affiliation: createCompleteMasterAffiliation(),
 			});
 			const newStudentId = StudentId.fromString("725A0100");
 			const doctoral = masterMember.advanceInternally(
-				createDoctoralAffiliation(),
+				createCompleteDoctoralAffiliation(),
 				newStudentId,
 			);
 
@@ -238,12 +238,12 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 
 			expect(() =>
 				undergrad.advanceInternally(
-					createDoctoralAffiliation(),
+					createCompleteDoctoralAffiliation(),
 					StudentId.fromString("725A0100"),
 				),
 			).toThrow(InvalidAffiliationOperationException);
@@ -256,12 +256,12 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createDoctoralAffiliation(),
+				affiliation: createCompleteDoctoralAffiliation(),
 			});
 
 			expect(() =>
 				doctoralMember.advanceInternally(
-					createDoctoralAffiliation(),
+					createCompleteDoctoralAffiliation(),
 					StudentId.fromString("725A0100"),
 				),
 			).toThrow(InvalidAffiliationOperationException);
@@ -276,9 +276,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
-			const newAffiliation: UndergraduateAffiliation = {
+			const newAffiliation: CompleteUndergraduateAffiliation = {
 				type: "undergraduate",
 				value: {
 					faculty: "工学部",
@@ -299,9 +299,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createMasterAffiliation(),
+				affiliation: createCompleteMasterAffiliation(),
 			});
-			const newAffiliation: UndergraduateAffiliation = {
+			const newAffiliation: CompleteUndergraduateAffiliation = {
 				type: "undergraduate",
 				value: {
 					faculty: "工学部",
@@ -325,9 +325,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
-			const newAffiliation: UndergraduateAffiliation = {
+			const newAffiliation: CompleteUndergraduateAffiliation = {
 				type: "undergraduate",
 				value: { faculty: "情報学部", department: "行動情報学科", year: 3 },
 			};
@@ -343,9 +343,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
-			const newAffiliation: UndergraduateAffiliation = {
+			const newAffiliation: CompleteUndergraduateAffiliation = {
 				type: "undergraduate",
 				value: {
 					faculty: "工学部",
@@ -369,9 +369,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createMasterAffiliation(),
+				affiliation: createCompleteMasterAffiliation(),
 			});
-			const newAffiliation: MasterAffiliation = {
+			const newAffiliation: CompleteMasterAffiliation = {
 				type: "master",
 				value: {
 					school: "総合科学技術研究科",
@@ -392,12 +392,12 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createUndergraduateAffiliation(),
+				affiliation: createCompleteUndergraduateAffiliation(),
 			});
 
-			expect(() => member.transferMajor(createMasterAffiliation())).toThrow(
-				InvalidAffiliationOperationException,
-			);
+			expect(() =>
+				member.transferMajor(createCompleteMasterAffiliation()),
+			).toThrow(InvalidAffiliationOperationException);
 		});
 
 		it("別研究科への転専攻はエラー", () => {
@@ -407,9 +407,9 @@ describe("ActiveMember", () => {
 				name: "テスト太郎",
 				personalEmail: notRecorded(),
 				studentId: createStudentId(),
-				affiliation: createMasterAffiliation(),
+				affiliation: createCompleteMasterAffiliation(),
 			});
-			const newAffiliation: MasterAffiliation = {
+			const newAffiliation: CompleteMasterAffiliation = {
 				type: "master",
 				value: {
 					school: "人文社会科学研究科",
@@ -437,7 +437,7 @@ describe("UnconfirmedMember", () => {
 			});
 			const active = unconfirmed.confirm(
 				createStudentId(),
-				createUndergraduateAffiliation(),
+				createCompleteUndergraduateAffiliation(),
 			);
 
 			expect(active.status).toBe("active");
@@ -453,7 +453,7 @@ describe("UnconfirmedMember", () => {
 			});
 			const active = unconfirmed.confirm(
 				createStudentId(),
-				createUndergraduateAffiliation(),
+				createCompleteUndergraduateAffiliation(),
 			);
 			const events = active.getDomainEvents();
 
@@ -503,7 +503,7 @@ describe("FormerMember", () => {
 			});
 			const active = former.reregister(
 				createStudentId(),
-				createMasterAffiliation(),
+				createCompleteMasterAffiliation(),
 			);
 
 			expect(active.status).toBe("active");
@@ -520,7 +520,7 @@ describe("FormerMember", () => {
 			});
 			const active = former.reregister(
 				createStudentId(),
-				createMasterAffiliation(),
+				createCompleteMasterAffiliation(),
 			);
 			const events = active.getDomainEvents();
 
@@ -553,13 +553,13 @@ describe("状態遷移のライフサイクル", () => {
 			name: "テスト太郎",
 			personalEmail: notRecorded(),
 			studentId: createStudentId(),
-			affiliation: createUndergraduateAffiliation(),
+			affiliation: createCompleteUndergraduateAffiliation(),
 		});
 
 		const former = active.remove("graduation");
 		const reregistered = former.reregister(
 			StudentId.fromString("725A0099"),
-			createMasterAffiliation(),
+			createCompleteMasterAffiliation(),
 		);
 
 		const events = reregistered.getDomainEvents();
@@ -576,13 +576,13 @@ describe("状態遷移のライフサイクル", () => {
 			name: "テスト太郎",
 			personalEmail: notRecorded(),
 			studentId: createStudentId(),
-			affiliation: createUndergraduateAffiliation(),
+			affiliation: createCompleteUndergraduateAffiliation(),
 		});
 
 		const unconfirmed = active.unconfirm();
 		const confirmed = unconfirmed.confirm(
 			createStudentId(),
-			createMasterAffiliation(),
+			createCompleteMasterAffiliation(),
 		);
 
 		const events = confirmed.getDomainEvents();
