@@ -371,7 +371,7 @@ const undergraduateFaculties: readonly InstitutionEntry[] = [
 	{ name: "人文社会科学部", subdivisions: [...humanitiesDepts.day] },
 	{ name: "教育学部", subdivisions: keysOf(educationMajors) },
 	{ name: "情報学部", subdivisions: [...informaticsDepts] },
-	{ name: "理学部", subdivisions: [...scienceDepts] },
+	{ name: "理学部", subdivisions: [...scienceDepts, ...scienceCourses] },
 	{ name: "工学部", subdivisions: keysOf(engineeringDeptCourses) },
 	{ name: "農学部", subdivisions: keysOf(agricultureDeptCourses) },
 	{ name: "グローバル共創科学部", subdivisions: ["グローバル共創科学科"] },
@@ -541,11 +541,13 @@ function getUndergraduateSteps(
 			});
 			break;
 		case "理学部":
-			steps.push({
-				field: "department",
-				label: "学科",
-				options: [...scienceDepts],
-			});
+			if (!s.course) {
+				steps.push({
+					field: "department",
+					label: "学科",
+					options: [...scienceDepts],
+				});
+			}
 			if (!s.department) {
 				steps.push({
 					field: "course",
