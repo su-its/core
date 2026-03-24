@@ -31,7 +31,9 @@ export type ProfessionalYear = 1 | 2;
 // ============================================================================
 
 /** Object.keys の型安全版 */
-function keysOf<T extends Record<string, unknown>>(obj: T): (keyof T & string)[] {
+function keysOf<T extends Record<string, unknown>>(
+	obj: T,
+): (keyof T & string)[] {
 	return Object.keys(obj) as (keyof T & string)[];
 }
 
@@ -377,8 +379,14 @@ const undergraduateFaculties: readonly InstitutionEntry[] = [
 ];
 
 const masterSchools: readonly InstitutionEntry[] = [
-	{ name: "人文社会科学研究科", subdivisions: keysOf(humanitiesMasterMajorCourses) },
-	{ name: "総合科学技術研究科", subdivisions: keysOf(integratedSciTechMajorCourses) },
+	{
+		name: "人文社会科学研究科",
+		subdivisions: keysOf(humanitiesMasterMajorCourses),
+	},
+	{
+		name: "総合科学技術研究科",
+		subdivisions: keysOf(integratedSciTechMajorCourses),
+	},
 	{ name: "山岳流域研究院", subdivisions: [] },
 ];
 
@@ -393,10 +401,18 @@ const professionalSchools: readonly InstitutionEntry[] = [
 ];
 
 export const UNIVERSITY_STRUCTURE = {
-	undergraduate: { label: "学士課程", maxYear: 4, institutions: undergraduateFaculties },
+	undergraduate: {
+		label: "学士課程",
+		maxYear: 4,
+		institutions: undergraduateFaculties,
+	},
 	master: { label: "修士課程", maxYear: 2, institutions: masterSchools },
 	doctoral: { label: "博士課程", maxYear: 3, institutions: doctoralSchools },
-	professional: { label: "専門職学位課程", maxYear: 2, institutions: professionalSchools },
+	professional: {
+		label: "専門職学位課程",
+		maxYear: 2,
+		institutions: professionalSchools,
+	},
 } as const;
 
 /** 課程区分 */
@@ -406,7 +422,9 @@ export type CourseType = keyof typeof UNIVERSITY_STRUCTURE;
 // ヘルパー関数
 // ============================================================================
 
-export function getInstitutions(courseType: CourseType): readonly InstitutionEntry[] {
+export function getInstitutions(
+	courseType: CourseType,
+): readonly InstitutionEntry[] {
 	return UNIVERSITY_STRUCTURE[courseType].institutions;
 }
 
@@ -415,8 +433,14 @@ export function getInstitutions(courseType: CourseType): readonly InstitutionEnt
  * 簡易的なフラットリストのため、入学区分やコースなどの階層は含まない。
  * 正確な階層選択には getAffiliationSteps を使用すること。
  */
-export function getSubdivisions(courseType: CourseType, institution: string): readonly string[] {
-	return getInstitutions(courseType).find((i) => i.name === institution)?.subdivisions ?? [];
+export function getSubdivisions(
+	courseType: CourseType,
+	institution: string,
+): readonly string[] {
+	return (
+		getInstitutions(courseType).find((i) => i.name === institution)
+			?.subdivisions ?? []
+	);
 }
 
 export function getMaxYear(courseType: CourseType): number {
@@ -446,14 +470,20 @@ export function getAffiliationSteps(
 	selections: Readonly<Record<string, string>>,
 ): AffiliationStep[] {
 	switch (courseType) {
-		case "undergraduate": return getUndergraduateSteps(selections);
-		case "master": return getMasterSteps(selections);
-		case "doctoral": return getDoctoralSteps(selections);
-		case "professional": return getProfessionalSteps(selections);
+		case "undergraduate":
+			return getUndergraduateSteps(selections);
+		case "master":
+			return getMasterSteps(selections);
+		case "doctoral":
+			return getDoctoralSteps(selections);
+		case "professional":
+			return getProfessionalSteps(selections);
 	}
 }
 
-function getUndergraduateSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
+function getUndergraduateSteps(
+	s: Readonly<Record<string, string>>,
+): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({
 		field: "faculty",
@@ -464,59 +494,120 @@ function getUndergraduateSteps(s: Readonly<Record<string, string>>): Affiliation
 
 	switch (s.faculty) {
 		case "人文社会科学部":
-			steps.push({ field: "enrollmentType", label: "入学区分", options: ["昼間コース", "夜間主コース"] });
+			steps.push({
+				field: "enrollmentType",
+				label: "入学区分",
+				options: ["昼間コース", "夜間主コース"],
+			});
 			if (!s.enrollmentType) return steps;
 			steps.push({
 				field: "department",
 				label: "学科",
-				options: s.enrollmentType === "夜間主コース" ? [...humanitiesDepts.night] : [...humanitiesDepts.day],
+				options:
+					s.enrollmentType === "夜間主コース"
+						? [...humanitiesDepts.night]
+						: [...humanitiesDepts.day],
 			});
 			break;
 		case "教育学部":
-			steps.push({ field: "program", label: "課程", options: ["学校教育教員養成課程"] });
+			steps.push({
+				field: "program",
+				label: "課程",
+				options: ["学校教育教員養成課程"],
+			});
 			if (!s.program) return steps;
-			steps.push({ field: "major", label: "専攻", options: keysOf(educationMajors) });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: keysOf(educationMajors),
+			});
 			if (!s.major) return steps;
 			if (s.major in educationMajors) {
 				const subs = educationMajors[s.major as keyof typeof educationMajors];
 				if (subs.length > 0) {
-					steps.push({ field: "subspecialty", label: "専修", options: [...subs] });
+					steps.push({
+						field: "subspecialty",
+						label: "専修",
+						options: [...subs],
+					});
 				}
 			}
 			break;
 		case "情報学部":
-			steps.push({ field: "department", label: "学科", options: [...informaticsDepts] });
+			steps.push({
+				field: "department",
+				label: "学科",
+				options: [...informaticsDepts],
+			});
 			break;
 		case "理学部":
-			steps.push({ field: "department", label: "学科", options: [...scienceDepts] });
+			steps.push({
+				field: "department",
+				label: "学科",
+				options: [...scienceDepts],
+			});
 			if (!s.department) {
-				steps.push({ field: "course", label: "コース", options: [...scienceCourses] });
+				steps.push({
+					field: "course",
+					label: "コース",
+					options: [...scienceCourses],
+				});
 			}
 			break;
 		case "工学部":
-			steps.push({ field: "department", label: "学科", options: keysOf(engineeringDeptCourses) });
+			steps.push({
+				field: "department",
+				label: "学科",
+				options: keysOf(engineeringDeptCourses),
+			});
 			if (!s.department) return steps;
 			if (s.department in engineeringDeptCourses) {
-				const courses = engineeringDeptCourses[s.department as keyof typeof engineeringDeptCourses];
+				const courses =
+					engineeringDeptCourses[
+						s.department as keyof typeof engineeringDeptCourses
+					];
 				if (courses.length > 0) {
-					steps.push({ field: "course", label: "コース", options: [...courses] });
+					steps.push({
+						field: "course",
+						label: "コース",
+						options: [...courses],
+					});
 				}
 			}
 			break;
 		case "農学部":
-			steps.push({ field: "department", label: "学科", options: keysOf(agricultureDeptCourses) });
+			steps.push({
+				field: "department",
+				label: "学科",
+				options: keysOf(agricultureDeptCourses),
+			});
 			if (!s.department) return steps;
 			if (s.department in agricultureDeptCourses) {
-				const courses = agricultureDeptCourses[s.department as keyof typeof agricultureDeptCourses];
+				const courses =
+					agricultureDeptCourses[
+						s.department as keyof typeof agricultureDeptCourses
+					];
 				if (courses.length > 0) {
-					steps.push({ field: "course", label: "コース", options: [...courses] });
+					steps.push({
+						field: "course",
+						label: "コース",
+						options: [...courses],
+					});
 				}
 			}
 			break;
 		case "グローバル共創科学部":
-			steps.push({ field: "department", label: "学科", options: ["グローバル共創科学科"] });
+			steps.push({
+				field: "department",
+				label: "学科",
+				options: ["グローバル共創科学科"],
+			});
 			if (!s.department) return steps;
-			steps.push({ field: "course", label: "コース", options: [...globalCoCreationCourses] });
+			steps.push({
+				field: "course",
+				label: "コース",
+				options: [...globalCoCreationCourses],
+			});
 			break;
 		case "地域創造学環":
 			break;
@@ -524,26 +615,46 @@ function getUndergraduateSteps(s: Readonly<Record<string, string>>): Affiliation
 	return steps;
 }
 
-function getMasterSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
+function getMasterSteps(
+	s: Readonly<Record<string, string>>,
+): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
-	steps.push({ field: "school", label: "研究科", options: masterSchools.map((sc) => sc.name) });
+	steps.push({
+		field: "school",
+		label: "研究科",
+		options: masterSchools.map((sc) => sc.name),
+	});
 	if (!s.school) return steps;
 
 	switch (s.school) {
 		case "人文社会科学研究科": {
-			steps.push({ field: "major", label: "専攻", options: keysOf(humanitiesMasterMajorCourses) });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: keysOf(humanitiesMasterMajorCourses),
+			});
 			if (!s.major) return steps;
 			if (s.major in humanitiesMasterMajorCourses) {
-				const courses = humanitiesMasterMajorCourses[s.major as keyof typeof humanitiesMasterMajorCourses];
+				const courses =
+					humanitiesMasterMajorCourses[
+						s.major as keyof typeof humanitiesMasterMajorCourses
+					];
 				steps.push({ field: "course", label: "コース", options: [...courses] });
 			}
 			break;
 		}
 		case "総合科学技術研究科": {
-			steps.push({ field: "major", label: "専攻", options: keysOf(integratedSciTechMajorCourses) });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: keysOf(integratedSciTechMajorCourses),
+			});
 			if (!s.major) return steps;
 			if (s.major in integratedSciTechMajorCourses) {
-				const courses = integratedSciTechMajorCourses[s.major as keyof typeof integratedSciTechMajorCourses];
+				const courses =
+					integratedSciTechMajorCourses[
+						s.major as keyof typeof integratedSciTechMajorCourses
+					];
 				steps.push({ field: "course", label: "コース", options: [...courses] });
 			}
 			break;
@@ -554,29 +665,53 @@ function getMasterSteps(s: Readonly<Record<string, string>>): AffiliationStep[] 
 	return steps;
 }
 
-function getDoctoralSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
+function getDoctoralSteps(
+	s: Readonly<Record<string, string>>,
+): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
-	steps.push({ field: "school", label: "研究科", options: doctoralSchools.map((sc) => sc.name) });
+	steps.push({
+		field: "school",
+		label: "研究科",
+		options: doctoralSchools.map((sc) => sc.name),
+	});
 	if (!s.school) return steps;
 
 	switch (s.school) {
 		case "創造科学技術大学院":
-			steps.push({ field: "major", label: "専攻", options: [...creativeSciTechMajors] });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: [...creativeSciTechMajors],
+			});
 			break;
 		case "教育学研究科":
-			steps.push({ field: "major", label: "専攻", options: ["共同教科開発学専攻"] });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: ["共同教科開発学専攻"],
+			});
 			break;
 		case "光医工学研究科":
-			steps.push({ field: "major", label: "専攻", options: ["光医工学共同専攻"] });
+			steps.push({
+				field: "major",
+				label: "専攻",
+				options: ["光医工学共同専攻"],
+			});
 			break;
 	}
 	return steps;
 }
 
-function getProfessionalSteps(s: Readonly<Record<string, string>>): AffiliationStep[] {
+function getProfessionalSteps(
+	s: Readonly<Record<string, string>>,
+): AffiliationStep[] {
 	const steps: AffiliationStep[] = [];
 	steps.push({ field: "school", label: "研究科", options: ["教育学研究科"] });
 	if (!s.school) return steps;
-	steps.push({ field: "major", label: "専攻", options: ["教育実践高度化専攻"] });
+	steps.push({
+		field: "major",
+		label: "専攻",
+		options: ["教育実践高度化専攻"],
+	});
 	return steps;
 }
