@@ -35,6 +35,18 @@ export class EventNotFoundException extends ApplicationException {
 	}
 }
 
+export class EventNotFoundByExhibitIdException extends ApplicationException {
+	readonly code = "EVENT_NOT_FOUND_BY_EXHIBIT_ID";
+	readonly category = "NOT_FOUND";
+	readonly context: { exhibitId: string };
+	readonly hint = "展示IDが正しいか、または展示がイベントに紐付いているか確認してください";
+
+	constructor(exhibitId: string, options?: { cause?: unknown }) {
+		super(`指定された展示IDに紐付くイベントが見つかりません: ${exhibitId}`, options);
+		this.context = { exhibitId };
+	}
+}
+
 export class ExhibitNotFoundException extends ApplicationException {
 	readonly code = "EXHIBIT_NOT_FOUND";
 	readonly category = "NOT_FOUND";
