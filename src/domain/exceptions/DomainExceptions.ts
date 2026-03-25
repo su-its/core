@@ -83,10 +83,7 @@ export class InvalidUrlProtocolException extends DomainException {
 	readonly hint = "http または https プロトコルのURLを指定してください";
 
 	constructor(url: string, protocol: string, options?: { cause?: unknown }) {
-		super(
-			`許可されていないプロトコルです: ${protocol} (URL: ${url})`,
-			options,
-		);
+		super(`許可されていないプロトコルです: ${protocol} (URL: ${url})`, options);
 		this.context = { url, protocol };
 	}
 }
@@ -167,10 +164,7 @@ export class LightningTalkNotFoundException extends DomainException {
 	readonly hint = "この展示にはライトニングトークが登録されていません";
 
 	constructor(exhibitId: string, options?: { cause?: unknown }) {
-		super(
-			`展示に紐づくライトニングトークが存在しません: 展示ID ${exhibitId}`,
-			options,
-		);
+		super(`展示に紐づくライトニングトークが存在しません: 展示ID ${exhibitId}`, options);
 		this.context = { exhibitId };
 	}
 }
@@ -199,14 +193,9 @@ export class LightningTalkExhibitIdMismatchException extends DomainException {
 	readonly code = "LIGHTNING_TALK_EXHIBIT_ID_MISMATCH";
 	readonly category = "INVARIANT_VIOLATION" as const;
 	readonly context: { lightningTalkExhibitId: string; exhibitId: string };
-	readonly hint =
-		"ライトニングトークの展示IDが、追加先の展示IDと一致している必要があります";
+	readonly hint = "ライトニングトークの展示IDが、追加先の展示IDと一致している必要があります";
 
-	constructor(
-		exhibitId: string,
-		lightningTalkExhibitId: string,
-		options?: { cause?: unknown },
-	) {
+	constructor(exhibitId: string, lightningTalkExhibitId: string, options?: { cause?: unknown }) {
 		super(
 			`ライトニングトークの展示IDが一致しません: 展示ID ${exhibitId}, ライトニングトークの展示ID ${lightningTalkExhibitId}`,
 			options,
@@ -219,14 +208,9 @@ export class ExhibitHasMemberException extends DomainException {
 	readonly code = "EXHIBIT_HAS_MEMBER";
 	readonly category = "INVARIANT_VIOLATION" as const;
 	readonly context: { exhibitId: string; memberId: string };
-	readonly hint =
-		"展示からメンバーを先に除外してから、イベントからの削除を行ってください";
+	readonly hint = "展示からメンバーを先に除外してから、イベントからの削除を行ってください";
 
-	constructor(
-		exhibitId: string,
-		memberId: string,
-		options?: { cause?: unknown },
-	) {
+	constructor(exhibitId: string, memberId: string, options?: { cause?: unknown }) {
 		super(
 			`展示にメンバーが所属しているため削除できません: 展示ID ${exhibitId}, メンバーID ${memberId}`,
 			options,
@@ -251,10 +235,7 @@ export class InvalidAffiliationOperationException extends DomainException {
 		reason: string,
 		options?: { cause?: unknown },
 	) {
-		super(
-			`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`,
-			options,
-		);
+		super(`${operation}に失敗: 現在の所属=${currentAffiliationType}, 理由=${reason}`, options);
 		this.context = { operation, currentAffiliationType, reason };
 		this.hint = `現在の所属種別（${currentAffiliationType}）では${operation}はできません。${reason}`;
 	}

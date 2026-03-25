@@ -1,10 +1,7 @@
 /**
  * アプリケーション例外のカテゴリ。
  */
-export type ApplicationExceptionCategory =
-	| "NOT_FOUND"
-	| "CONFLICT"
-	| "PRECONDITION_FAILED";
+export type ApplicationExceptionCategory = "NOT_FOUND" | "CONFLICT" | "PRECONDITION_FAILED";
 
 /**
  * 全アプリケーション例外の基底クラス。
@@ -54,8 +51,7 @@ export class ExhibitNotFoundFromExhibitIdException extends ApplicationException 
 	readonly code = "EXHIBIT_NOT_FOUND_BY_EXHIBIT_ID";
 	readonly category = "NOT_FOUND" as const;
 	readonly context: { exhibitId: string };
-	readonly hint =
-		"展示IDが正しいか、またはイベントに登録済みか確認してください";
+	readonly hint = "展示IDが正しいか、またはイベントに登録済みか確認してください";
 
 	constructor(exhibitId: string, options?: { cause?: unknown }) {
 		super(`指定された展示IDで展示が見つかりません: ${exhibitId}`, options);
@@ -67,8 +63,7 @@ export class MemberNotFoundException extends ApplicationException {
 	readonly code = "MEMBER_NOT_FOUND";
 	readonly category = "NOT_FOUND" as const;
 	readonly context: { memberId: string };
-	readonly hint =
-		"メンバーIDが正しいか、または削除されていないか確認してください";
+	readonly hint = "メンバーIDが正しいか、または削除されていないか確認してください";
 
 	constructor(memberId: string, options?: { cause?: unknown }) {
 		super(`メンバーが見つかりません: ${memberId}`, options);
@@ -80,14 +75,10 @@ export class MemberNotFoundFromDiscordAccountIdException extends ApplicationExce
 	readonly code = "MEMBER_NOT_FOUND_BY_DISCORD_ID";
 	readonly category = "NOT_FOUND" as const;
 	readonly context: { discordAccountId: string };
-	readonly hint =
-		"Discordアカウントがメンバーに紐付けられているか確認してください";
+	readonly hint = "Discordアカウントがメンバーに紐付けられているか確認してください";
 
 	constructor(discordAccountId: string, options?: { cause?: unknown }) {
-		super(
-			`DiscordアカウントIDからメンバーが見つかりません: ${discordAccountId}`,
-			options,
-		);
+		super(`DiscordアカウントIDからメンバーが見つかりません: ${discordAccountId}`, options);
 		this.context = { discordAccountId };
 	}
 }
@@ -139,11 +130,7 @@ export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 	readonly hint =
 		"このDiscordアカウントは別のメンバーに紐付いています。先に既存の紐付けを解除してください";
 
-	constructor(
-		discordAccountId: string,
-		existingMemberId: string,
-		options?: { cause?: unknown },
-	) {
+	constructor(discordAccountId: string, existingMemberId: string, options?: { cause?: unknown }) {
 		super(
 			`Discordアカウント ${discordAccountId} は既にメンバー ${existingMemberId} に紐付いています`,
 			options,
@@ -158,11 +145,7 @@ export class DiscordAccountAlreadyLinkedToSameMemberException extends Applicatio
 	readonly context: { discordAccountId: string; memberId: string };
 	readonly hint = "このDiscordアカウントは既にこのメンバーに紐付いています。操作は不要です";
 
-	constructor(
-		discordAccountId: string,
-		memberId: string,
-		options?: { cause?: unknown },
-	) {
+	constructor(discordAccountId: string, memberId: string, options?: { cause?: unknown }) {
 		super(
 			`Discordアカウント ${discordAccountId} は既にこのメンバー ${memberId} に紐付いています`,
 			options,
@@ -179,18 +162,10 @@ export class DiscordAccountNotConnectedException extends ApplicationException {
 	readonly code = "DISCORD_ACCOUNT_NOT_CONNECTED";
 	readonly category = "PRECONDITION_FAILED" as const;
 	readonly context: { userId: string; discordUserId: string };
-	readonly hint =
-		"先にDiscordアカウントをメンバーに紐付けてから、この操作を行ってください";
+	readonly hint = "先にDiscordアカウントをメンバーに紐付けてから、この操作を行ってください";
 
-	constructor(
-		userId: string,
-		discordUserId: string,
-		options?: { cause?: unknown },
-	) {
-		super(
-			`ユーザー ${userId} のDiscordアカウントは紐づいていません: ${discordUserId}`,
-			options,
-		);
+	constructor(userId: string, discordUserId: string, options?: { cause?: unknown }) {
+		super(`ユーザー ${userId} のDiscordアカウントは紐づいていません: ${discordUserId}`, options);
 		this.context = { userId, discordUserId };
 	}
 }
@@ -201,11 +176,7 @@ export class MemberNotActiveException extends ApplicationException {
 	readonly context: { memberId: string; currentStatus: string };
 	readonly hint: string;
 
-	constructor(
-		memberId: string,
-		currentStatus: string,
-		options?: { cause?: unknown },
-	) {
+	constructor(memberId: string, currentStatus: string, options?: { cause?: unknown }) {
 		super(
 			`この操作は室員のみ可能です: メンバーID=${memberId}, 現在のステータス=${currentStatus}`,
 			options,
