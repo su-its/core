@@ -25,7 +25,7 @@ export abstract class ApplicationException extends Error {
 
 export class EventNotFoundException extends ApplicationException {
 	readonly code = "EVENT_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { eventId: string };
 	readonly hint = "イベントIDが正しいか、または削除されていないか確認してください";
 
@@ -37,7 +37,7 @@ export class EventNotFoundException extends ApplicationException {
 
 export class ExhibitNotFoundException extends ApplicationException {
 	readonly code = "EXHIBIT_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { exhibitId: string };
 	readonly hint = "展示IDが正しいか確認してください";
 
@@ -49,7 +49,7 @@ export class ExhibitNotFoundException extends ApplicationException {
 
 export class ExhibitNotFoundFromExhibitIdException extends ApplicationException {
 	readonly code = "EXHIBIT_NOT_FOUND_BY_EXHIBIT_ID";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { exhibitId: string };
 	readonly hint = "展示IDが正しいか、またはイベントに登録済みか確認してください";
 
@@ -61,7 +61,7 @@ export class ExhibitNotFoundFromExhibitIdException extends ApplicationException 
 
 export class MemberNotFoundException extends ApplicationException {
 	readonly code = "MEMBER_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { memberId: string };
 	readonly hint = "メンバーIDが正しいか、または削除されていないか確認してください";
 
@@ -73,7 +73,7 @@ export class MemberNotFoundException extends ApplicationException {
 
 export class MemberNotFoundFromDiscordAccountIdException extends ApplicationException {
 	readonly code = "MEMBER_NOT_FOUND_BY_DISCORD_ID";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { discordAccountId: string };
 	readonly hint = "Discordアカウントがメンバーに紐付けられているか確認してください";
 
@@ -85,7 +85,7 @@ export class MemberNotFoundFromDiscordAccountIdException extends ApplicationExce
 
 export class KarteNotFoundException extends ApplicationException {
 	readonly code = "KARTE_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { karteId: string };
 	readonly hint = "カルテIDが正しいか確認してください";
 
@@ -97,7 +97,7 @@ export class KarteNotFoundException extends ApplicationException {
 
 export class DiscordAccountNotFoundException extends ApplicationException {
 	readonly code = "DISCORD_ACCOUNT_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { discordAccountId: string };
 	readonly hint = "DiscordアカウントIDが正しいか確認してください";
 
@@ -113,7 +113,7 @@ export class DiscordAccountNotFoundException extends ApplicationException {
 
 export class MemberEmailAlreadyExistsException extends ApplicationException {
 	readonly code = "MEMBER_EMAIL_ALREADY_EXISTS";
-	readonly category = "CONFLICT" as const;
+	readonly category = "CONFLICT";
 	readonly context: { email: string };
 	readonly hint = "別のメールアドレスを使用するか、既存アカウントを確認してください";
 
@@ -125,7 +125,7 @@ export class MemberEmailAlreadyExistsException extends ApplicationException {
 
 export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 	readonly code = "DISCORD_ACCOUNT_ALREADY_LINKED";
-	readonly category = "CONFLICT" as const;
+	readonly category = "CONFLICT";
 	readonly context: { discordAccountId: string; existingMemberId: string };
 	readonly hint =
 		"このDiscordアカウントは別のメンバーに紐付いています。先に既存の紐付けを解除してください";
@@ -141,7 +141,7 @@ export class DiscordAccountAlreadyLinkedException extends ApplicationException {
 
 export class DiscordAccountAlreadyLinkedToSameMemberException extends ApplicationException {
 	readonly code = "DISCORD_ACCOUNT_ALREADY_LINKED_TO_SAME_MEMBER";
-	readonly category = "CONFLICT" as const;
+	readonly category = "CONFLICT";
 	readonly context: { discordAccountId: string; memberId: string };
 	readonly hint = "このDiscordアカウントは既にこのメンバーに紐付いています。操作は不要です";
 
@@ -160,7 +160,7 @@ export class DiscordAccountAlreadyLinkedToSameMemberException extends Applicatio
 
 export class DiscordAccountNotConnectedException extends ApplicationException {
 	readonly code = "DISCORD_ACCOUNT_NOT_CONNECTED";
-	readonly category = "PRECONDITION_FAILED" as const;
+	readonly category = "PRECONDITION_FAILED";
 	readonly context: { userId: string; discordUserId: string };
 	readonly hint = "先にDiscordアカウントをメンバーに紐付けてから、この操作を行ってください";
 
@@ -172,7 +172,7 @@ export class DiscordAccountNotConnectedException extends ApplicationException {
 
 export class MemberNotActiveException extends ApplicationException {
 	readonly code = "MEMBER_NOT_ACTIVE";
-	readonly category = "PRECONDITION_FAILED" as const;
+	readonly category = "PRECONDITION_FAILED";
 	readonly context: { memberId: string; currentStatus: string };
 	readonly hint: string;
 

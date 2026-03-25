@@ -30,7 +30,7 @@ export abstract class DomainException extends Error {
 
 export class InvalidEmailFormatException extends DomainException {
 	readonly code = "INVALID_EMAIL_FORMAT";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { email: string };
 	readonly hint = "有効なメールアドレス形式（例: user@example.com）で入力してください";
 
@@ -42,7 +42,7 @@ export class InvalidEmailFormatException extends DomainException {
 
 export class InvalidUniversityEmailException extends DomainException {
 	readonly code = "INVALID_UNIVERSITY_EMAIL";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { email: string };
 	readonly hint = "大学ドメインのメールアドレスを使用してください";
 
@@ -54,7 +54,7 @@ export class InvalidUniversityEmailException extends DomainException {
 
 export class InvalidLightningTalkDurationException extends DomainException {
 	readonly code = "INVALID_LIGHTNING_TALK_DURATION";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { duration: number };
 	readonly hint = "正の整数値（分単位）で指定してください";
 
@@ -66,7 +66,7 @@ export class InvalidLightningTalkDurationException extends DomainException {
 
 export class InvalidUrlException extends DomainException {
 	readonly code = "INVALID_URL";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { url: string };
 	readonly hint = "有効なURL形式（例: https://example.com）で入力してください";
 
@@ -78,7 +78,7 @@ export class InvalidUrlException extends DomainException {
 
 export class InvalidUrlProtocolException extends DomainException {
 	readonly code = "INVALID_URL_PROTOCOL";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { url: string; protocol: string };
 	readonly hint = "http または https プロトコルのURLを指定してください";
 
@@ -90,7 +90,7 @@ export class InvalidUrlProtocolException extends DomainException {
 
 export class InvalidStudentIdException extends DomainException {
 	readonly code = "INVALID_STUDENT_ID";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { studentId: string };
 	readonly hint =
 		"学籍番号は 8桁数字 または 3桁数字+英大文字1文字+4桁数字 の形式で入力してください";
@@ -103,7 +103,7 @@ export class InvalidStudentIdException extends DomainException {
 
 export class InvalidWorkDurationException extends DomainException {
 	readonly code = "INVALID_WORK_DURATION";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { minutes: number };
 	readonly hint = "0以上の整数値（分単位）で指定してください";
 
@@ -115,7 +115,7 @@ export class InvalidWorkDurationException extends DomainException {
 
 export class InvalidConsultedAtException extends DomainException {
 	readonly code = "INVALID_CONSULTED_AT";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { reason: string };
 	readonly hint = "有効な日時を指定してください";
 
@@ -127,7 +127,7 @@ export class InvalidConsultedAtException extends DomainException {
 
 export class EmptyStringException extends DomainException {
 	readonly code = "EMPTY_STRING";
-	readonly category = "VALIDATION" as const;
+	readonly category = "VALIDATION";
 	readonly context: { fieldName: string | undefined };
 	readonly hint: string;
 
@@ -147,7 +147,7 @@ export class EmptyStringException extends DomainException {
 
 export class ExhibitNotFoundException extends DomainException {
 	readonly code = "DOMAIN_EXHIBIT_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { exhibitId: string };
 	readonly hint = "展示IDが正しいか確認してください";
 
@@ -159,7 +159,7 @@ export class ExhibitNotFoundException extends DomainException {
 
 export class LightningTalkNotFoundException extends DomainException {
 	readonly code = "DOMAIN_LIGHTNING_TALK_NOT_FOUND";
-	readonly category = "NOT_FOUND" as const;
+	readonly category = "NOT_FOUND";
 	readonly context: { exhibitId: string };
 	readonly hint = "この展示にはライトニングトークが登録されていません";
 
@@ -175,7 +175,7 @@ export class LightningTalkNotFoundException extends DomainException {
 
 export class ExhibitAlreadyExistsException extends DomainException {
 	readonly code = "EXHIBIT_ALREADY_EXISTS";
-	readonly category = "CONFLICT" as const;
+	readonly category = "CONFLICT";
 	readonly context: { exhibitId: string };
 	readonly hint = "同一IDの展示が既に登録されています。別の展示IDを使用してください";
 
@@ -191,7 +191,7 @@ export class ExhibitAlreadyExistsException extends DomainException {
 
 export class LightningTalkExhibitIdMismatchException extends DomainException {
 	readonly code = "LIGHTNING_TALK_EXHIBIT_ID_MISMATCH";
-	readonly category = "INVARIANT_VIOLATION" as const;
+	readonly category = "INVARIANT_VIOLATION";
 	readonly context: { lightningTalkExhibitId: string; exhibitId: string };
 	readonly hint = "ライトニングトークの展示IDが、追加先の展示IDと一致している必要があります";
 
@@ -206,7 +206,7 @@ export class LightningTalkExhibitIdMismatchException extends DomainException {
 
 export class ExhibitHasMemberException extends DomainException {
 	readonly code = "EXHIBIT_HAS_MEMBER";
-	readonly category = "INVARIANT_VIOLATION" as const;
+	readonly category = "INVARIANT_VIOLATION";
 	readonly context: { exhibitId: string; memberId: string };
 	readonly hint = "展示からメンバーを先に除外してから、イベントからの削除を行ってください";
 
@@ -221,7 +221,7 @@ export class ExhibitHasMemberException extends DomainException {
 
 export class InvalidAffiliationOperationException extends DomainException {
 	readonly code = "INVALID_AFFILIATION_OPERATION";
-	readonly category = "INVARIANT_VIOLATION" as const;
+	readonly category = "INVARIANT_VIOLATION";
 	readonly context: {
 		operation: string;
 		currentAffiliationType: string;
