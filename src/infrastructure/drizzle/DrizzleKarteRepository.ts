@@ -21,7 +21,7 @@ import {
 	type Resolution,
 	type SupportRecord,
 } from "#domain";
-import { getDb } from "./client";
+import { getClient } from "./client";
 import { karteAssignees, kartes } from "./schema";
 
 // ============================================================================
@@ -250,7 +250,7 @@ function consultedAtToPrecision(r: Recorded<ConsultedAt>): ConsultedAt["precisio
 
 export class DrizzleKarteRepository implements KarteRepository {
 	async findById(id: KarteId): Promise<Karte | null> {
-		const db = getDb();
+		const db = getClient();
 		const row = await db.query.kartes.findFirst({
 			where: eq(kartes.id, id as string),
 			with: {
@@ -263,7 +263,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 	}
 
 	async findAll(): Promise<Karte[]> {
-		const db = getDb();
+		const db = getClient();
 		const rows = await db.query.kartes.findMany({
 			with: {
 				karteAssignees: true,
@@ -274,7 +274,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 	}
 
 	async save(karte: Karte): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 
 		const clientCols = clientToColumns(karte.client);
 		const resCols = resolutionToColumns(karte.supportRecord.resolution);
