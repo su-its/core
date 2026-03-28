@@ -1,7 +1,11 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
+import type { PgDatabase } from "drizzle-orm/pg-core";
 import { Pool } from "pg";
 import * as schema from "./schema";
+
+export type DrizzleClient = PgDatabase<NodePgQueryResultHKT, typeof schema>;
 
 let pool: Pool | null = null;
 
@@ -16,11 +20,9 @@ function getPool(): Pool {
 	return pool;
 }
 
-function createClient() {
+function createClient(): DrizzleClient {
 	return drizzle(getPool(), { schema });
 }
-
-export type DrizzleClient = ReturnType<typeof createClient>;
 
 const transactionContext = new AsyncLocalStorage<DrizzleClient>();
 
@@ -45,6 +47,6 @@ export function runInTransaction<T>(fn: () => Promise<T>): Promise<T> {
 	}
 	const db = createClient();
 	return db.transaction(async (tx) => {
-		return transactionContext.run(tx as unknown as DrizzleClient, fn);
+		return transactionContext.run(tx, fn);
 	});
 }
