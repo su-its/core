@@ -8,7 +8,7 @@ import {
 	discordId,
 	memberId,
 } from "#domain";
-import { getClient } from "./client";
+import { getClient, runInTransaction } from "./client";
 import { discordAccountDomainEvents, discordAccounts } from "./schema";
 import { serializeDiscordAccountEventPayload } from "./serializeDiscordAccountEvent";
 
@@ -37,12 +37,12 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	}
 
 	async save(account: DiscordAccount): Promise<void> {
-		const db = getClient();
 		const now = new Date().toISOString();
 		const events = account.getDomainEvents();
 
-		await db.transaction(async (tx) => {
-			await tx
+		await runInTransaction(async () => {
+			const client = getClient();
+			await client
 				.insert(discordAccounts)
 				.values({
 					discordId: account.discordId as string,
@@ -59,7 +59,7 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 				});
 
 			if (events.length > 0) {
-				await tx.insert(discordAccountDomainEvents).values(
+				await client.insert(discordAccountDomainEvents).values(
 					events.map((event) => ({
 						id: uuid(),
 						discordId: event.discordId as string,

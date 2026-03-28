@@ -14,7 +14,7 @@ import {
 	exhibitId,
 	memberId,
 } from "#domain";
-import { type DrizzleClient, getClient } from "./client";
+import { type DrizzleClient, getClient, runInTransaction } from "./client";
 import { events, exhibits, lightningTalks, memberEvents, memberExhibits } from "./schema";
 
 // ============================================================================
@@ -101,45 +101,47 @@ export class DrizzleEventRepository implements EventRepository {
 	// ==========================================================================
 
 	private async persistEvent(event: Event): Promise<void> {
-		const db = getClient();
-		const snapshot = event.toSnapshot();
-		const now = new Date().toISOString();
-		const dateStr = snapshot.date instanceof Date ? snapshot.date.toISOString() : snapshot.date;
+		await runInTransaction(async () => {
+			const client = getClient();
+			const snapshot = event.toSnapshot();
+			const now = new Date().toISOString();
+			const dateStr = snapshot.date instanceof Date ? snapshot.date.toISOString() : snapshot.date;
 
-		// 1) Event upsert
-		await db
-			.insert(events)
-			.values({
-				id: snapshot.id,
-				name: snapshot.name,
-				date: dateStr,
-				updatedAt: now,
-			})
-			.onConflictDoUpdate({
-				target: events.id,
-				set: {
+			// 1) Event upsert
+			await client
+				.insert(events)
+				.values({
+					id: snapshot.id,
 					name: snapshot.name,
 					date: dateStr,
 					updatedAt: now,
-				},
-			});
+				})
+				.onConflictDoUpdate({
+					target: events.id,
+					set: {
+						name: snapshot.name,
+						date: dateStr,
+						updatedAt: now,
+					},
+				});
 
-		// 2) Find obsolete exhibits and clean up
-		const snapshotExhibitIds = snapshot.exhibits.map((ex) => ex.id);
-		await this.deleteObsoleteExhibits(db, snapshot.id, snapshotExhibitIds);
+			// 2) Find obsolete exhibits and clean up
+			const snapshotExhibitIds = snapshot.exhibits.map((ex) => ex.id);
+			await this.deleteObsoleteExhibits(client, snapshot.id, snapshotExhibitIds);
 
-		// 3) Upsert exhibits
-		for (const ex of snapshot.exhibits) {
-			await this.upsertExhibit(db, snapshot.id, ex);
-		}
+			// 3) Upsert exhibits
+			for (const ex of snapshot.exhibits) {
+				await this.upsertExhibit(client, snapshot.id, ex);
+			}
 
-		// 4) Sync member events
-		await this.syncMemberEvents(db, snapshot.id, event.getMemberIds());
+			// 4) Sync member events
+			await this.syncMemberEvents(client, snapshot.id, event.getMemberIds());
 
-		// 5) Sync member exhibits
-		for (const exhibitDomain of event.getExhibits()) {
-			await this.syncMemberExhibits(db, exhibitDomain.id, exhibitDomain.getMemberIds());
-		}
+			// 5) Sync member exhibits
+			for (const exhibitDomain of event.getExhibits()) {
+				await this.syncMemberExhibits(client, exhibitDomain.id, exhibitDomain.getMemberIds());
+			}
+		});
 	}
 
 	private async deleteObsoleteExhibits(
