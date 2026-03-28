@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { AsyncLocalStorage } from "node:async_hooks";
+<<<<<<< HEAD
 import type { PgDatabase } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
 import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js/session";
@@ -7,6 +8,17 @@ import postgres, { type Sql } from "postgres";
 import * as schema from "./schema";
 
 export type DrizzleDb = PgDatabase<PostgresJsQueryResultHKT, typeof schema>;
+=======
+import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
+import type { PgDatabase } from "drizzle-orm/pg-core";
+import { Pool } from "pg";
+import * as schema from "./schema";
+
+export type DrizzleClient = PgDatabase<NodePgQueryResultHKT, typeof schema>;
+
+let pool: Pool | null = null;
+>>>>>>> 6d5f1a6 (refactor: DrizzleClientをPgDatabase型で定義しトランザクションの強制キャストを除去)
 
 let sqlClient: Sql | null = null;
 
@@ -23,6 +35,7 @@ function getSqlClient(): Sql {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function createDb() {
 	return drizzle(getSqlClient(), { schema });
 }
@@ -30,10 +43,11 @@ function createDb() {
 const transactionContext = new AsyncLocalStorage<DrizzleDb>();
 =======
 function createClient() {
+=======
+function createClient(): DrizzleClient {
+>>>>>>> 6d5f1a6 (refactor: DrizzleClientをPgDatabase型で定義しトランザクションの強制キャストを除去)
 	return drizzle(getPool(), { schema });
 }
-
-export type DrizzleClient = ReturnType<typeof createClient>;
 
 const transactionContext = new AsyncLocalStorage<DrizzleClient>();
 >>>>>>> 91008a2 (refactor: getDb/createDb/DrizzleDb を getClient/createClient/DrizzleClient にリネーム)
@@ -60,9 +74,13 @@ export function runInTransaction<T>(fn: () => Promise<T>): Promise<T> {
 	const db = createClient();
 	return db.transaction(async (tx) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return transactionContext.run(tx, fn);
 =======
 		return transactionContext.run(tx as unknown as DrizzleClient, fn);
 >>>>>>> 91008a2 (refactor: getDb/createDb/DrizzleDb を getClient/createClient/DrizzleClient にリネーム)
+=======
+		return transactionContext.run(tx, fn);
+>>>>>>> 6d5f1a6 (refactor: DrizzleClientをPgDatabase型で定義しトランザクションの強制キャストを除去)
 	});
 }
