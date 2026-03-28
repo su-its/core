@@ -22,21 +22,31 @@ function getSqlClient(): Sql {
 	return sqlClient;
 }
 
+<<<<<<< HEAD
 function createDb() {
 	return drizzle(getSqlClient(), { schema });
 }
 
 const transactionContext = new AsyncLocalStorage<DrizzleDb>();
+=======
+function createClient() {
+	return drizzle(getPool(), { schema });
+}
+
+export type DrizzleClient = ReturnType<typeof createClient>;
+
+const transactionContext = new AsyncLocalStorage<DrizzleClient>();
+>>>>>>> 91008a2 (refactor: getDb/createDb/DrizzleDb を getClient/createClient/DrizzleClient にリネーム)
 
 /**
- * DB接続を取得する
+ * Drizzleクライアントを取得する
  * トランザクション中であればそのトランザクションを返し、
- * そうでなければ新しいDB接続を返す
+ * そうでなければ新しいクライアントを返す
  */
-export function getDb(): DrizzleDb {
+export function getClient(): DrizzleClient {
 	const tx = transactionContext.getStore();
 	if (tx) return tx;
-	return createDb();
+	return createClient();
 }
 
 /**
@@ -47,8 +57,12 @@ export function runInTransaction<T>(fn: () => Promise<T>): Promise<T> {
 	if (transactionContext.getStore()) {
 		return fn();
 	}
-	const db = createDb();
+	const db = createClient();
 	return db.transaction(async (tx) => {
+<<<<<<< HEAD
 		return transactionContext.run(tx, fn);
+=======
+		return transactionContext.run(tx as unknown as DrizzleClient, fn);
+>>>>>>> 91008a2 (refactor: getDb/createDb/DrizzleDb を getClient/createClient/DrizzleClient にリネーム)
 	});
 }
