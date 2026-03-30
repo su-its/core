@@ -1,0 +1,16 @@
+services:
+  test-db:
+    image: postgres:17-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: core_test
+      POSTGRES_PASSWORD: core_test
+      POSTGRES_DB: core_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U core_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    tmpfs:
+      - /var/lib/postgresql/data
