@@ -45,6 +45,10 @@ export type MemberService = {
 
 	list(): Promise<{ members: Member[] }>;
 
+	listMembersWithDiscordAccounts(): Promise<{
+		entries: Array<{ member: Member; discordAccounts: DiscordAccount[] }>;
+	}>;
+
 	connectDiscordAccount(input: {
 		memberId: string;
 		discordAccountId: string;
@@ -108,6 +112,26 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 		getByDiscordId: (id) => getMemberByDiscordId.execute({ discordId: discordId(id) }),
 
 		list: () => getMemberList.execute({} as Record<string, never>),
+
+		listMembersWithDiscordAccounts: async () => {
+			const { members } = await getMemberList.execute({} as Record<string, never>);
+			const allDiscordAccounts = await discordRepo.findAll();
+
+			const accountsByMemberId = new Map<string, DiscordAccount[]>();
+			for (const account of allDiscordAccounts) {
+				const key = account.memberId as string;
+				const existing = accountsByMemberId.get(key) ?? [];
+				existing.push(account);
+				accountsByMemberId.set(key, existing);
+			}
+
+			return {
+				entries: members.map((member) => ({
+					member,
+					discordAccounts: accountsByMemberId.get(member.id as string) ?? [],
+				})),
+			};
+		},
 
 		connectDiscordAccount: (input) =>
 			connectDiscordAccountUC.execute({
