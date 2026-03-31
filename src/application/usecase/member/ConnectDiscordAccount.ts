@@ -53,7 +53,7 @@ export class ConnectDiscordAccountUseCase extends IUseCase<
 		const discordAccount = DiscordAccount.link(
 			input.discordAccountId,
 			input.memberId,
-			input.discordNickName ?? "",
+			input.discordNickName,
 		);
 
 		await this.discordRepo.save(discordAccount);
