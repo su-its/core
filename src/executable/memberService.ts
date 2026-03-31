@@ -5,6 +5,8 @@ import {
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
+	ListMembersWithDiscordAccountsUseCase,
+	type MemberWithDiscordAccounts,
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "#application";
@@ -20,6 +22,8 @@ import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation
 import { recorded, notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
+
+export type { MemberWithDiscordAccounts } from "#application";
 
 export type MemberService = {
 	register(input: {
@@ -44,6 +48,10 @@ export type MemberService = {
 	getByDiscordId(discordId: string): Promise<{ member: Member | null }>;
 
 	list(): Promise<{ members: Member[] }>;
+
+	listMembersWithDiscordAccounts(): Promise<{
+		entries: MemberWithDiscordAccounts[];
+	}>;
 
 	connectDiscordAccount(input: {
 		memberId: string;
@@ -72,6 +80,7 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 	const getMemberByEmail = new GetMemberByEmailUseCase(memberRepo);
 	const getMemberByDiscordId = new GetMemberByDiscordIdUseCase(discordRepo, memberRepo);
 	const getMemberList = new GetMemberListUseCase(memberRepo);
+	const listMembersWithDiscord = new ListMembersWithDiscordAccountsUseCase(memberRepo, discordRepo);
 	const connectDiscordAccountUC = new ConnectDiscordAccountUseCase(memberRepo, discordRepo);
 	const changeDiscordNickNameUC = new ChangeDiscordNickNameUseCase(discordRepo);
 
@@ -108,6 +117,9 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 		getByDiscordId: (id) => getMemberByDiscordId.execute({ discordId: discordId(id) }),
 
 		list: () => getMemberList.execute({} as Record<string, never>),
+
+		listMembersWithDiscordAccounts: () =>
+			listMembersWithDiscord.execute({} as Record<string, never>),
 
 		connectDiscordAccount: (input) =>
 			connectDiscordAccountUC.execute({

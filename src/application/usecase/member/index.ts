@@ -4,5 +4,6 @@ export * from "./GetMember";
 export * from "./GetMemberByDiscordId";
 export * from "./GetMemberByEmail";
 export * from "./GetMemberList";
+export * from "./ListMembersWithDiscordAccounts";
 export * from "./RegisterMember";
 export * from "./UpdateMember";
