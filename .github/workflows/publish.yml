@@ -38,6 +38,4 @@ jobs:
           else
             echo "tag=" >> "$GITHUB_OUTPUT"
           fi
-      - run: npm publish --access public ${{ steps.tag.outputs.tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public --provenance ${{ steps.tag.outputs.tag }}
