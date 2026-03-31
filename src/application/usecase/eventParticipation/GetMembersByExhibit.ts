@@ -1,5 +1,5 @@
 import type { EventRepository, ExhibitId, Member, MemberRepository } from "#domain";
-import { ExhibitNotFoundFromExhibitIdException } from "../../exceptions";
+import { EventNotFoundByExhibitIdException } from "../../exceptions";
 import { IUseCase } from "../base";
 
 export interface GetMembersByExhibitInput {
@@ -24,7 +24,7 @@ export class GetMembersByExhibit extends IUseCase<
 	async execute(input: GetMembersByExhibitInput): Promise<GetMembersByExhibitOutput> {
 		const event = await this.eventRepository.findByExhibitId(input.exhibitId);
 		if (!event) {
-			throw new ExhibitNotFoundFromExhibitIdException(input.exhibitId);
+			throw new EventNotFoundByExhibitIdException(input.exhibitId);
 		}
 		const memberResults = await Promise.all(
 			event.getMemberIds().map((memberId) => this.memberRepository.findById(memberId)),

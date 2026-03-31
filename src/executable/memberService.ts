@@ -48,7 +48,7 @@ export type MemberService = {
 	connectDiscordAccount(input: {
 		memberId: string;
 		discordAccountId: string;
-		discordNickName: string;
+		discordNickName?: string;
 	}): Promise<{ discordAccount: DiscordAccount }>;
 
 	changeDiscordNickName(input: {
