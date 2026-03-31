@@ -1,12 +1,13 @@
-import type { DiscordAccount, DiscordAccountRepository, Member, MemberRepository } from "#domain";
+import type { DiscordAccountRepository, MemberRepository } from "#domain";
+import type { DiscordAccountDTO, MemberDTO } from "../../dto";
+import { toDiscordAccountDTO, toMemberDTO } from "../../dto";
 import { IUseCase } from "../base";
 
 export type ListMembersWithDiscordAccountsInput = Record<string, never>;
 
-export interface MemberWithDiscordAccounts {
-	member: Member;
-	discordAccounts: DiscordAccount[];
-}
+export type MemberWithDiscordAccounts = MemberDTO & {
+	discordAccounts: DiscordAccountDTO[];
+};
 
 export interface ListMembersWithDiscordAccountsOutput {
 	entries: MemberWithDiscordAccounts[];
@@ -31,17 +32,17 @@ export class ListMembersWithDiscordAccountsUseCase extends IUseCase<
 			this.discordRepo.findAll(),
 		]);
 
-		const accountsByMemberId = new Map<string, DiscordAccount[]>();
+		const accountsByMemberId = new Map<string, DiscordAccountDTO[]>();
 		for (const account of allDiscordAccounts) {
 			const key = account.memberId as string;
 			const existing = accountsByMemberId.get(key) ?? [];
-			existing.push(account);
+			existing.push(toDiscordAccountDTO(account));
 			accountsByMemberId.set(key, existing);
 		}
 
 		return {
 			entries: members.map((member) => ({
-				member,
+				...toMemberDTO(member),
 				discordAccounts: accountsByMemberId.get(member.id as string) ?? [],
 			})),
 		};
