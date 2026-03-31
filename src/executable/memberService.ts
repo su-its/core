@@ -21,6 +21,11 @@ import { recorded, notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
 
+export type MemberWithDiscordAccounts = {
+	member: Member;
+	discordAccounts: DiscordAccount[];
+};
+
 export type MemberService = {
 	register(input: {
 		name: string;
@@ -46,7 +51,7 @@ export type MemberService = {
 	list(): Promise<{ members: Member[] }>;
 
 	listMembersWithDiscordAccounts(): Promise<{
-		entries: Array<{ member: Member; discordAccounts: DiscordAccount[] }>;
+		entries: MemberWithDiscordAccounts[];
 	}>;
 
 	connectDiscordAccount(input: {
