@@ -1,30 +1,23 @@
 import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation";
 import type { DiscordAccount, Member } from "#domain";
+import type { Email } from "#domain/aggregates/member/Email";
+import type { Recorded } from "#domain/shared/Recorded";
+
+type MemberDTOBase = {
+	id: string;
+	email: string;
+	name: string;
+	personalEmail: string | null;
+};
 
 export type MemberDTO =
-	| {
-			id: string;
-			email: string;
-			name: string;
-			personalEmail: string | null;
+	| (MemberDTOBase & {
 			status: "active";
 			studentId: string;
 			affiliation: CompleteAffiliation;
-	  }
-	| {
-			id: string;
-			email: string;
-			name: string;
-			personalEmail: string | null;
-			status: "unconfirmed";
-	  }
-	| {
-			id: string;
-			email: string;
-			name: string;
-			personalEmail: string | null;
-			status: "former";
-	  };
+	  })
+	| (MemberDTOBase & { status: "unconfirmed" })
+	| (MemberDTOBase & { status: "former" });
 
 export type DiscordAccountDTO = {
 	discordId: string;
@@ -32,9 +25,7 @@ export type DiscordAccountDTO = {
 	nickName: string;
 };
 
-function personalEmailToString(
-	personalEmail: { type: "recorded"; value: { getValue(): string } } | { type: "notRecorded" },
-): string | null {
+function personalEmailToString(personalEmail: Recorded<Email>): string | null {
 	return personalEmail.type === "recorded" ? personalEmail.value.getValue() : null;
 }
 
