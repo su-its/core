@@ -41,7 +41,7 @@ export class DiscordAccount {
 		private readonly domainEvents: readonly DiscordAccountDomainEvent[] = [],
 	) {}
 
-	static link(discordId: DiscordId, memberId: MemberId, nickName: string): DiscordAccount {
+	static link(discordId: DiscordId, memberId: MemberId, nickName = ""): DiscordAccount {
 		return new DiscordAccount(discordId, memberId, nickName, [
 			{
 				eventName: "DiscordAccountLinked",
