@@ -5,6 +5,8 @@ import {
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
+	ListMembersWithDiscordAccountsUseCase,
+	type MemberWithDiscordAccounts,
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "#application";
@@ -21,10 +23,7 @@ import { recorded, notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
 
-export type MemberWithDiscordAccounts = {
-	member: Member;
-	discordAccounts: DiscordAccount[];
-};
+export type { MemberWithDiscordAccounts } from "#application";
 
 export type MemberService = {
 	register(input: {
@@ -81,6 +80,7 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 	const getMemberByEmail = new GetMemberByEmailUseCase(memberRepo);
 	const getMemberByDiscordId = new GetMemberByDiscordIdUseCase(discordRepo, memberRepo);
 	const getMemberList = new GetMemberListUseCase(memberRepo);
+	const listMembersWithDiscord = new ListMembersWithDiscordAccountsUseCase(memberRepo, discordRepo);
 	const connectDiscordAccountUC = new ConnectDiscordAccountUseCase(memberRepo, discordRepo);
 	const changeDiscordNickNameUC = new ChangeDiscordNickNameUseCase(discordRepo);
 
@@ -118,25 +118,8 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 
 		list: () => getMemberList.execute({} as Record<string, never>),
 
-		listMembersWithDiscordAccounts: async () => {
-			const { members } = await getMemberList.execute({} as Record<string, never>);
-			const allDiscordAccounts = await discordRepo.findAll();
-
-			const accountsByMemberId = new Map<string, DiscordAccount[]>();
-			for (const account of allDiscordAccounts) {
-				const key = account.memberId as string;
-				const existing = accountsByMemberId.get(key) ?? [];
-				existing.push(account);
-				accountsByMemberId.set(key, existing);
-			}
-
-			return {
-				entries: members.map((member) => ({
-					member,
-					discordAccounts: accountsByMemberId.get(member.id as string) ?? [],
-				})),
-			};
-		},
+		listMembersWithDiscordAccounts: () =>
+			listMembersWithDiscord.execute({} as Record<string, never>),
 
 		connectDiscordAccount: (input) =>
 			connectDiscordAccountUC.execute({
