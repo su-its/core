@@ -28,6 +28,16 @@ jobs:
       - uses: voidzero-dev/setup-vp@v1
       - run: vp install
       - run: vp pack
-      - run: npm publish --access public
+      - name: Determine npm publish tag
+        id: tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if echo "$VERSION" | grep -q '-'; then
+            PRERELEASE_ID=$(echo "$VERSION" | sed 's/.*-\([a-zA-Z]*\).*/\1/')
+            echo "tag=--tag $PRERELEASE_ID" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          fi
+      - run: npm publish --access public ${{ steps.tag.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
