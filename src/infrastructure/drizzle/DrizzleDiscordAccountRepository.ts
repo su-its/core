@@ -8,7 +8,7 @@ import {
 	discordId,
 	memberId,
 } from "#domain";
-import { getDb } from "./client";
+import { getClient } from "./client";
 import { discordAccountDomainEvents, discordAccounts } from "./schema";
 import { serializeDiscordAccountEventPayload } from "./serializeDiscordAccountEvent";
 
@@ -20,7 +20,7 @@ function toDomain(row: DiscordAccountRow): DiscordAccount {
 
 export class DrizzleDiscordAccountRepository implements DiscordAccountRepository {
 	async findByDiscordId(id: DiscordId): Promise<DiscordAccount | null> {
-		const db = getDb();
+		const db = getClient();
 		const row = await db.query.discordAccounts.findFirst({
 			where: eq(discordAccounts.discordId, id as string),
 		});
@@ -29,7 +29,7 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	}
 
 	async findByMemberId(id: MemberId): Promise<DiscordAccount[]> {
-		const db = getDb();
+		const db = getClient();
 		const rows = await db.query.discordAccounts.findMany({
 			where: eq(discordAccounts.memberId, id as string),
 		});
@@ -43,7 +43,7 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	}
 
 	async save(account: DiscordAccount): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 		const now = new Date().toISOString();
 		const events = account.getDomainEvents();
 
@@ -80,7 +80,7 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	}
 
 	async delete(id: DiscordId): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 		await db.delete(discordAccounts).where(eq(discordAccounts.discordId, id as string));
 	}
 }

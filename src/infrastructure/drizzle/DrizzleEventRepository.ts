@@ -14,7 +14,7 @@ import {
 	exhibitId,
 	memberId,
 } from "#domain";
-import { type DrizzleDb, getDb } from "./client";
+import { type DrizzleClient, getClient } from "./client";
 import { events, exhibits, lightningTalks, memberEvents, memberExhibits } from "./schema";
 
 // ============================================================================
@@ -101,7 +101,7 @@ export class DrizzleEventRepository implements EventRepository {
 	// ==========================================================================
 
 	private async persistEvent(event: Event): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 		const snapshot = event.toSnapshot();
 		const now = new Date().toISOString();
 		const dateStr = snapshot.date instanceof Date ? snapshot.date.toISOString() : snapshot.date;
@@ -143,7 +143,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	private async deleteObsoleteExhibits(
-		db: DrizzleDb,
+		db: DrizzleClient,
 		eventId: EventId,
 		keptExhibitIds: ExhibitId[],
 	): Promise<void> {
@@ -164,7 +164,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	private async upsertExhibit(
-		db: DrizzleDb,
+		db: DrizzleClient,
 		eventId: EventId,
 		ex: ReturnType<Event["toSnapshot"]>["exhibits"][number],
 	): Promise<void> {
@@ -220,7 +220,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	private async syncMemberEvents(
-		db: DrizzleDb,
+		db: DrizzleClient,
 		eventId: EventId,
 		memberIds: MemberId[],
 	): Promise<void> {
@@ -241,7 +241,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	private async syncMemberExhibits(
-		db: DrizzleDb,
+		db: DrizzleClient,
 		exhibitId: ExhibitId,
 		memberIds: MemberId[],
 	): Promise<void> {
@@ -266,7 +266,7 @@ export class DrizzleEventRepository implements EventRepository {
 	// ==========================================================================
 
 	async findById(id: EventId): Promise<Event | null> {
-		const db = getDb();
+		const db = getClient();
 		const record = await db.query.events.findFirst({
 			where: eq(events.id, id),
 			with: {
@@ -285,7 +285,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	async findByParticipantMemberId(memberId: MemberId): Promise<Event[]> {
-		const db = getDb();
+		const db = getClient();
 
 		const participations = await db
 			.select({ eventId: memberEvents.eventId })
@@ -312,7 +312,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	async findByExhibitId(exhibitId: ExhibitId): Promise<Event | null> {
-		const db = getDb();
+		const db = getClient();
 
 		const exhibit = await db
 			.select({ eventId: exhibits.eventId })
@@ -325,7 +325,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	async findAll(): Promise<Event[]> {
-		const db = getDb();
+		const db = getClient();
 		const records = await db.query.events.findMany({
 			with: {
 				memberEvents: true,
@@ -346,7 +346,7 @@ export class DrizzleEventRepository implements EventRepository {
 	}
 
 	async delete(eventId: EventId): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 
 		const exhibitRecords = await db
 			.select({ id: exhibits.id })
