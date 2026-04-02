@@ -15,7 +15,7 @@ import { IUseCase } from "../base";
 export interface ConnectDiscordAccountInput {
 	memberId: MemberId;
 	discordAccountId: DiscordId;
-	discordNickName: string;
+	discordNickName?: string;
 }
 
 export interface ConnectDiscordAccountOutput {

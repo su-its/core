@@ -5,6 +5,9 @@ import {
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
+	GetMemberWithDiscordAccountsUseCase,
+	ListMembersWithDiscordAccountsUseCase,
+	type MemberWithDiscordAccounts,
 	RegisterMemberUseCase,
 	UpdateMemberUseCase,
 } from "#application";
@@ -20,6 +23,8 @@ import type { CompleteAffiliation } from "#domain/shared/affiliation/Affiliation
 import { recorded, notRecorded } from "#domain/shared/Recorded";
 import { StudentId } from "#domain/shared/StudentId";
 import { DrizzleDiscordAccountRepository, DrizzleMemberRepository } from "#infrastructure";
+
+export type { MemberWithDiscordAccounts } from "#application";
 
 export type MemberService = {
 	register(input: {
@@ -45,10 +50,18 @@ export type MemberService = {
 
 	list(): Promise<{ members: Member[] }>;
 
+	getMemberWithDiscordAccounts(id: string): Promise<{
+		member: MemberWithDiscordAccounts | null;
+	}>;
+
+	listMembersWithDiscordAccounts(): Promise<{
+		entries: MemberWithDiscordAccounts[];
+	}>;
+
 	connectDiscordAccount(input: {
 		memberId: string;
 		discordAccountId: string;
-		discordNickName: string;
+		discordNickName?: string;
 	}): Promise<{ discordAccount: DiscordAccount }>;
 
 	changeDiscordNickName(input: {
@@ -72,6 +85,8 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 	const getMemberByEmail = new GetMemberByEmailUseCase(memberRepo);
 	const getMemberByDiscordId = new GetMemberByDiscordIdUseCase(discordRepo, memberRepo);
 	const getMemberList = new GetMemberListUseCase(memberRepo);
+	const getMemberWithDiscord = new GetMemberWithDiscordAccountsUseCase(memberRepo, discordRepo);
+	const listMembersWithDiscord = new ListMembersWithDiscordAccountsUseCase(memberRepo, discordRepo);
 	const connectDiscordAccountUC = new ConnectDiscordAccountUseCase(memberRepo, discordRepo);
 	const changeDiscordNickNameUC = new ChangeDiscordNickNameUseCase(discordRepo);
 
@@ -108,6 +123,11 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 		getByDiscordId: (id) => getMemberByDiscordId.execute({ discordId: discordId(id) }),
 
 		list: () => getMemberList.execute({} as Record<string, never>),
+
+		getMemberWithDiscordAccounts: (id) => getMemberWithDiscord.execute({ id: memberId(id) }),
+
+		listMembersWithDiscordAccounts: () =>
+			listMembersWithDiscord.execute({} as Record<string, never>),
 
 		connectDiscordAccount: (input) =>
 			connectDiscordAccountUC.execute({
