@@ -3,6 +3,7 @@ export * from "./ConnectDiscordAccount";
 export * from "./GetMember";
 export * from "./GetMemberByDiscordId";
 export * from "./GetMemberByEmail";
+export * from "./GetMemberWithDiscordAccounts";
 export * from "./GetMemberList";
 export * from "./ListMembersWithDiscordAccounts";
 export * from "./RegisterMember";

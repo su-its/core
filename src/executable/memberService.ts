@@ -5,6 +5,7 @@ import {
 	GetMemberByEmailUseCase,
 	GetMemberListUseCase,
 	GetMemberUseCase,
+	GetMemberWithDiscordAccountsUseCase,
 	ListMembersWithDiscordAccountsUseCase,
 	type MemberWithDiscordAccounts,
 	RegisterMemberUseCase,
@@ -49,6 +50,10 @@ export type MemberService = {
 
 	list(): Promise<{ members: Member[] }>;
 
+	getMemberWithDiscordAccounts(id: string): Promise<{
+		member: MemberWithDiscordAccounts | null;
+	}>;
+
 	listMembersWithDiscordAccounts(): Promise<{
 		entries: MemberWithDiscordAccounts[];
 	}>;
@@ -80,6 +85,7 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 	const getMemberByEmail = new GetMemberByEmailUseCase(memberRepo);
 	const getMemberByDiscordId = new GetMemberByDiscordIdUseCase(discordRepo, memberRepo);
 	const getMemberList = new GetMemberListUseCase(memberRepo);
+	const getMemberWithDiscord = new GetMemberWithDiscordAccountsUseCase(memberRepo, discordRepo);
 	const listMembersWithDiscord = new ListMembersWithDiscordAccountsUseCase(memberRepo, discordRepo);
 	const connectDiscordAccountUC = new ConnectDiscordAccountUseCase(memberRepo, discordRepo);
 	const changeDiscordNickNameUC = new ChangeDiscordNickNameUseCase(discordRepo);
@@ -117,6 +123,9 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 		getByDiscordId: (id) => getMemberByDiscordId.execute({ discordId: discordId(id) }),
 
 		list: () => getMemberList.execute({} as Record<string, never>),
+
+		getMemberWithDiscordAccounts: (id) =>
+			getMemberWithDiscord.execute({ id: memberId(id) }),
 
 		listMembersWithDiscordAccounts: () =>
 			listMembersWithDiscord.execute({} as Record<string, never>),
