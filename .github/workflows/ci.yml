@@ -54,24 +54,22 @@ jobs:
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_USER: core_test
-          POSTGRES_PASSWORD: core_test
-          POSTGRES_DB: core_test
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd "pg_isready -U core_test"
-          --health-interval 2s
-          --health-timeout 5s
-          --health-retries 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup-node
+      - name: Create test env file
+        run: |
+          cat <<'EOF' > .env.test
+          POSTGRES_HOST=localhost
+          POSTGRES_USER=core_test
+          POSTGRES_PASSWORD=core_test
+          POSTGRES_DB=core_test
+          POSTGRES_PORT=5433
+          EOF
+      - run: docker compose --env-file .env.test -f docker-compose.test.yml up -d --wait
       - run: npm run test:integration
+      - if: always()
+        run: docker compose --env-file .env.test -f docker-compose.test.yml down
 
   build:
     runs-on: ubuntu-latest
