@@ -1,7 +1,7 @@
 import type { DiscordAccountRepository, MemberId, MemberRepository } from "#domain";
+import type { MemberWithDiscordAccounts } from "../../dto";
 import { toDiscordAccountDTO, toMemberDTO } from "../../dto";
 import { IUseCase } from "../base";
-import type { MemberWithDiscordAccounts } from "../../dto";
 
 export interface GetMemberWithDiscordAccountsInput {
 	id: MemberId;
