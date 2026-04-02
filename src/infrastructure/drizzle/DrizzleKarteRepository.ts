@@ -21,7 +21,7 @@ import {
 	type Resolution,
 	type SupportRecord,
 } from "#domain";
-import { getClient } from "./client";
+import { getClient, runInTransaction } from "./client";
 import { karteAssignees, kartes } from "./schema";
 
 // ============================================================================
@@ -274,8 +274,6 @@ export class DrizzleKarteRepository implements KarteRepository {
 	}
 
 	async save(karte: Karte): Promise<void> {
-		const db = getClient();
-
 		const clientCols = clientToColumns(karte.client);
 		const resCols = resolutionToColumns(karte.supportRecord.resolution);
 
@@ -305,15 +303,16 @@ export class DrizzleKarteRepository implements KarteRepository {
 
 		const { id: _, ...updateValues } = values;
 
-		await db.transaction(async (tx) => {
+		await runInTransaction(async () => {
+			const client = getClient();
 			// Upsert karte
-			await tx.insert(kartes).values(values).onConflictDoUpdate({
+			await client.insert(kartes).values(values).onConflictDoUpdate({
 				target: kartes.id,
 				set: updateValues,
 			});
 
 			// Sync assignees (delete-all-then-insert)
-			await tx.delete(karteAssignees).where(eq(karteAssignees.karteId, karte.id as string));
+			await client.delete(karteAssignees).where(eq(karteAssignees.karteId, karte.id as string));
 
 			if (karte.supportRecord.assignees.type === "recorded") {
 				const assigneeRows = karte.supportRecord.assignees.value.map((assignee) => ({
@@ -322,7 +321,7 @@ export class DrizzleKarteRepository implements KarteRepository {
 					memberId: assignee.type === "resolved" ? (assignee.memberId as string) : null,
 					assigneeName: assignee.type === "unresolved" ? assignee.name : null,
 				}));
-				await tx.insert(karteAssignees).values(assigneeRows);
+				await client.insert(karteAssignees).values(assigneeRows);
 			}
 		});
 	}
