@@ -124,8 +124,7 @@ export function createMemberService(deps?: MemberServiceDeps): MemberService {
 
 		list: () => getMemberList.execute({} as Record<string, never>),
 
-		getMemberWithDiscordAccounts: (id) =>
-			getMemberWithDiscord.execute({ id: memberId(id) }),
+		getMemberWithDiscordAccounts: (id) => getMemberWithDiscord.execute({ id: memberId(id) }),
 
 		listMembersWithDiscordAccounts: () =>
 			listMembersWithDiscord.execute({} as Record<string, never>),
