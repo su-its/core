@@ -52,6 +52,10 @@ export function toMemberDTO(member: Member): MemberDTO {
 	};
 }
 
+export type MemberWithDiscordAccounts = MemberDTO & {
+	discordAccounts: DiscordAccountDTO[];
+};
+
 export function toDiscordAccountDTO(account: DiscordAccount): DiscordAccountDTO {
 	return {
 		discordId: account.discordId as string,

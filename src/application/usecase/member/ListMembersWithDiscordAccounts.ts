@@ -1,13 +1,9 @@
 import type { DiscordAccountRepository, MemberId, MemberRepository } from "#domain";
-import type { DiscordAccountDTO, MemberDTO } from "../../dto";
+import type { DiscordAccountDTO, MemberWithDiscordAccounts } from "../../dto";
 import { toDiscordAccountDTO, toMemberDTO } from "../../dto";
 import { IUseCase } from "../base";
 
 export type ListMembersWithDiscordAccountsInput = Record<string, never>;
-
-export type MemberWithDiscordAccounts = MemberDTO & {
-	discordAccounts: DiscordAccountDTO[];
-};
 
 export interface ListMembersWithDiscordAccountsOutput {
 	entries: MemberWithDiscordAccounts[];
