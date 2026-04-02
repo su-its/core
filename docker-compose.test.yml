@@ -1,6 +1,6 @@
 services:
   test-db:
-    image: postgres:17-alpine
+    image: "postgres:${POSTGRES_VERSION:-15}"
     ports:
       - "${POSTGRES_PORT}:5432"
     environment:

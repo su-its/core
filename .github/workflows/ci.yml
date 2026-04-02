@@ -61,6 +61,7 @@ jobs:
         run: |
           cat <<'EOF' > .env.test
           POSTGRES_HOST=localhost
+          POSTGRES_VERSION=15
           POSTGRES_USER=core_test
           POSTGRES_PASSWORD=core_test
           POSTGRES_DB=core_test
