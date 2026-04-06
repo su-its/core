@@ -16,7 +16,7 @@ import {
 	type MemberRepository,
 	type Recorded,
 } from "#domain";
-import { getDb } from "./client";
+import { getClient } from "./client";
 import { memberDomainEvents, members } from "./schema";
 import { serializeMemberEventPayload } from "./serializeMemberEvent";
 
@@ -100,7 +100,7 @@ function toInsertValues(member: Member): MemberInsert {
 
 export class DrizzleMemberRepository implements MemberRepository {
 	async findById(id: MemberId): Promise<Member | null> {
-		const db = getDb();
+		const db = getClient();
 		const row = await db.query.members.findFirst({
 			where: eq(members.id, id as string),
 		});
@@ -109,7 +109,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 	}
 
 	async findByEmail(email: UniversityEmail): Promise<Member | null> {
-		const db = getDb();
+		const db = getClient();
 		const row = await db.query.members.findFirst({
 			where: eq(members.email, email.getValue()),
 		});
@@ -118,13 +118,13 @@ export class DrizzleMemberRepository implements MemberRepository {
 	}
 
 	async findAll(): Promise<Member[]> {
-		const db = getDb();
+		const db = getClient();
 		const rows = await db.query.members.findMany();
 		return rows.map(toDomain);
 	}
 
 	async save(member: Member): Promise<void> {
-		const db = getDb();
+		const db = getClient();
 		const values = toInsertValues(member);
 		const events = member.getDomainEvents();
 

@@ -1,4 +1,4 @@
-export * from "./dto";
+export * from "./UnitOfWork";
 export * from "./usecase/member";
 export * from "./usecase/event";
 export * from "./usecase/eventParticipation";
