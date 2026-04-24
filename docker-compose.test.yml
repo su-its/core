@@ -1,6 +1,6 @@
 services:
   test-db:
-    image: "postgres:${POSTGRES_VERSION:-15}"
+    image: "postgres:${POSTGRES_VERSION:-15}" #15のバージョン
     ports:
       - "${POSTGRES_PORT}:5432"
     environment:
