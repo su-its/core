@@ -6,20 +6,20 @@ import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js/session";
 import postgres, { type Sql } from "postgres";
 import * as schema from "./schema";
 
-let client: Sql | null = null;
-
 export type DrizzleClient = PgDatabase<PostgresJsQueryResultHKT, typeof schema>;
 
+let sqlClient: Sql | null = null;
+
 function getSqlClient(): Sql {
-	if (!client) {
+	if (!sqlClient) {
 		const connectionString = process.env.DATABASE_URL;
 		if (!connectionString) {
 			throw new Error("DATABASE_URL environment variable is not set");
 		}
 		// Supabase の Transaction pool mode は prepared statement をサポートしないため無効化
-		client = postgres(connectionString, { prepare: false });
+		sqlClient = postgres(connectionString, { prepare: false });
 	}
-	return client;
+	return sqlClient;
 }
 
 function createClient(): DrizzleClient {
