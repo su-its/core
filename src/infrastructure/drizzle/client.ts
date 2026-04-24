@@ -1,27 +1,29 @@
+/// <reference types="node" />
 import { AsyncLocalStorage } from "node:async_hooks";
-import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
-import { drizzle } from "drizzle-orm/node-postgres";
 import type { PgDatabase } from "drizzle-orm/pg-core";
-import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/postgres-js";
+import type { PostgresJsQueryResultHKT } from "drizzle-orm/postgres-js/session";
+import postgres, { type Sql } from "postgres";
 import * as schema from "./schema";
 
-export type DrizzleClient = PgDatabase<NodePgQueryResultHKT, typeof schema>;
+let client: Sql | null = null;
 
-let pool: Pool | null = null;
+export type DrizzleClient = PgDatabase<PostgresJsQueryResultHKT, typeof schema>;
 
-function getPool(): Pool {
-	if (!pool) {
+function getSqlClient(): Sql {
+	if (!client) {
 		const connectionString = process.env.DATABASE_URL;
 		if (!connectionString) {
 			throw new Error("DATABASE_URL environment variable is not set");
 		}
-		pool = new Pool({ connectionString });
+		// Supabase の Transaction pool mode は prepared statement をサポートしないため無効化
+		client = postgres(connectionString, { prepare: false });
 	}
-	return pool;
+	return client;
 }
 
 function createClient(): DrizzleClient {
-	return drizzle(getPool(), { schema });
+	return drizzle(getSqlClient(), { schema });
 }
 
 const transactionContext = new AsyncLocalStorage<DrizzleClient>();

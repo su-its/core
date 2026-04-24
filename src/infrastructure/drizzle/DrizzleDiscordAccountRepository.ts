@@ -37,7 +37,7 @@ export class DrizzleDiscordAccountRepository implements DiscordAccountRepository
 	}
 
 	async findAll(): Promise<DiscordAccount[]> {
-		const db = getDb();
+		const db = getClient();
 		const rows = await db.query.discordAccounts.findMany();
 		return rows.map(toDomain);
 	}
