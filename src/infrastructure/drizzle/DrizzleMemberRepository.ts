@@ -16,7 +16,7 @@ import {
 	type MemberRepository,
 	type Recorded,
 } from "#domain";
-import { getClient } from "./client";
+import { getClient, runInTransaction } from "./client";
 import { memberDomainEvents, members } from "./schema";
 import { serializeMemberEventPayload } from "./serializeMemberEvent";
 
@@ -124,12 +124,12 @@ export class DrizzleMemberRepository implements MemberRepository {
 	}
 
 	async save(member: Member): Promise<void> {
-		const db = getClient();
 		const values = toInsertValues(member);
 		const events = member.getDomainEvents();
 
-		await db.transaction(async (tx) => {
-			await tx
+		await runInTransaction(async () => {
+			const client = getClient();
+			await client
 				.insert(members)
 				.values(values)
 				.onConflictDoUpdate({
@@ -146,7 +146,7 @@ export class DrizzleMemberRepository implements MemberRepository {
 				});
 
 			if (events.length > 0) {
-				await tx.insert(memberDomainEvents).values(
+				await client.insert(memberDomainEvents).values(
 					events.map((event) => ({
 						id: uuid(),
 						memberId: event.id as string,
